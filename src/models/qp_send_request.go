@@ -5,6 +5,7 @@ import (
 	"mime"
 	"net/http"
 	"path/filepath"
+	"strings"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -105,6 +106,10 @@ func (source *QpSendRequest) ToWhatsappAttachment() (attach *whatsapp.WhatsappAt
 		if len(extension) > 0 {
 			fileName = fileName + extension[0]
 		}
+	}
+
+	if strings.Contains(mimeType, "ogg") && !strings.Contains(mimeType, "opus") {
+		mimeType = "audio/ogg; codecs=opus"
 	}
 
 	attach.FileName = fileName

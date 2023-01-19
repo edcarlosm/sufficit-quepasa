@@ -2,6 +2,7 @@ package whatsmeow
 
 import (
 	"encoding/base64"
+	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
 	"google.golang.org/protobuf/proto"
@@ -78,7 +79,7 @@ func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, attach *wh
 			FileLength:    proto.Uint64(response.FileLength),
 
 			Mimetype: proto.String(attach.Mimetype),
-			Ptt:      proto.Bool(attach.Mimetype == "audio/ogg"),
+			Ptt:      proto.Bool(ShouldUsePtt(attach.Mimetype)),
 		}
 		msg = &waProto.Message{AudioMessage: internal}
 		return
@@ -111,6 +112,11 @@ func NewWhatsmeowMessageAttachment(response whatsmeow.UploadResponse, attach *wh
 		msg = &waProto.Message{DocumentMessage: internal}
 		return
 	}
+}
+
+// Use that to set if the message should be sent as PTT audio
+func ShouldUsePtt(Mimetype string) bool {
+	return strings.Contains(Mimetype, "ogg") && strings.Contains(Mimetype, "opus")
 }
 
 func GetStringFromBytes(bytes []byte) string {
