@@ -208,11 +208,9 @@ func (server *QPWhatsappServer) Start() (err error) {
 	server.Log.Infof("requesting connection ...")
 	err = server.connection.Connect()
 	if err != nil {
-		if unauthorized, ok := err.(*whatsapp.UnAuthorizedError); ok {
+		if _, ok := err.(*whatsapp.UnAuthorizedError); ok {
 			server.Log.Warningf("unauthorized, setting unverified")
-			err = unauthorized
-
-			err = server.Bot.UpdateVerified(false)
+			err = server.MarkVerified(false)
 		}
 		return
 	}

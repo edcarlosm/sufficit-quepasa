@@ -89,12 +89,18 @@ func (conn *WhatsmeowConnection) Connect() (err error) {
 		return
 	}
 
-	if !conn.Client.IsLoggedIn() {
-		conn.failedToken = true
-		return &whatsapp.UnLoggedError{
-			Inner: fmt.Errorf("starting whatsmeow connection, connected but not logged"),
+	/*
+		// Makes no diference
+		// Whatsmeow will try to authenticate asyncronous after connected
+		// Maybe lookup this on qrcode reads, for now on inspection
+
+		if !conn.Client.IsLoggedIn() {
+			conn.failedToken = true
+			return &whatsapp.UnLoggedError{
+				Inner: fmt.Errorf("starting whatsmeow connection, connected but not logged"),
+			}
 		}
-	}
+	*/
 
 	conn.failedToken = false
 	return

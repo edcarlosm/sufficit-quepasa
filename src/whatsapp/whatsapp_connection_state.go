@@ -20,7 +20,12 @@ const (
 
 	Restarting
 
-	// Connected to whatsapp servers
+	/*
+		<summary>
+			Connected to whatsapp servers
+			Start to logging with saved keys or waiting for qrcode reads
+		</summary>
+	*/
 	Connected
 
 	// Fetching messages from servers
