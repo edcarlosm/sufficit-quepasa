@@ -92,7 +92,7 @@ func (conn *WhatsmeowConnection) Connect() (err error) {
 	if !conn.Client.IsLoggedIn() {
 		conn.failedToken = true
 		conn.log.Warn("starting whatsmeow connection, connected but not logged")
-		return &whatsapp.UnauthorizedError{}
+		return
 	}
 
 	conn.failedToken = false
