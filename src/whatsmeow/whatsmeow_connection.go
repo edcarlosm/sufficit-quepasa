@@ -91,8 +91,9 @@ func (conn *WhatsmeowConnection) Connect() (err error) {
 
 	if !conn.Client.IsLoggedIn() {
 		conn.failedToken = true
-		conn.log.Warn("starting whatsmeow connection, connected but not logged")
-		return
+		return &whatsapp.UnLoggedError{
+			Inner: fmt.Errorf("starting whatsmeow connection, connected but not logged"),
+		}
 	}
 
 	conn.failedToken = false

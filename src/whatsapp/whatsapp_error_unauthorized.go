@@ -4,10 +4,10 @@ import (
 	"fmt"
 )
 
-type UnauthorizedError struct {
+type UnAuthorizedError struct {
 	Inner error
 }
 
-func (e *UnauthorizedError) Error() string {
-	return fmt.Sprintf("Unauthorized: %s", e.Inner)
+func (e *UnAuthorizedError) Error() string {
+	return fmt.Sprintf("UnAuthorized: %s", e.Inner)
 }
