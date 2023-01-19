@@ -215,7 +215,11 @@ func (server *QPWhatsappServer) Start() (err error) {
 		return
 	}
 
-	server.MarkVerified(true)
+	// If at this moment the connect is already logged, ensure a valid mark
+	if server.connection.IsValid() {
+		server.MarkVerified(true)
+	}
+
 	return
 }
 

@@ -44,4 +44,7 @@ type IWhatsappConnection interface {
 	Dispose()
 
 	IsInterfaceNil() bool
+
+	// Is connected and logged, valid verification
+	IsValid() bool
 }

@@ -47,6 +47,19 @@ func (conn *WhatsmeowConnection) GetWid() (wid string, err error) {
 	return
 }
 
+func (conn *WhatsmeowConnection) IsValid() bool {
+	if conn != nil {
+		if conn.Client != nil {
+			if conn.Client.IsConnected() {
+				if conn.Client.IsLoggedIn() {
+					return true
+				}
+			}
+		}
+	}
+	return false
+}
+
 func (conn *WhatsmeowConnection) GetStatus() (state whatsapp.WhatsappConnectionState) {
 	if conn != nil {
 		state = whatsapp.Created
