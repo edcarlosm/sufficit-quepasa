@@ -16,7 +16,7 @@ type IWhatsappConnection interface {
 
 	Connect() error
 	Disconnect() error
-	Delete() error
+
 	GetWhatsAppQRChannel(chan<- string) error
 
 	// Get group invite link
@@ -40,8 +40,22 @@ type IWhatsappConnection interface {
 	// Define the log level for this connection
 	UpdateLog(*log.Entry)
 
-	// Release all resources
+	/*
+		<summary>
+			Disconnect if connected
+			Cleanup Handlers
+			Dispose resources
+			Does not erase permanent data !
+		</summary>
+	*/
 	Dispose()
+
+	/*
+		<summary>
+			Erase permanent data + Dispose !
+		</summary>
+	*/
+	Delete() error
 
 	IsInterfaceNil() bool
 

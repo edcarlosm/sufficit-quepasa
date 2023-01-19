@@ -443,6 +443,8 @@ func (server *QPWhatsappServer) Delete() (err error) {
 		if err != nil {
 			return
 		}
+
+		server.connection = nil
 	}
 
 	return server.Bot.Delete()

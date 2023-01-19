@@ -252,7 +252,7 @@ func receiveWebSocketHandler(user models.QPUser, connection *websocket.Conn) {
 // Delete
 //
 
-// DeleteHandler renders route POST "/bot/{botID}/delete"
+// DeleteHandler renders route POST "/form/delete"
 func FormDeleteController(w http.ResponseWriter, r *http.Request) {
 	_, server, err := GetUserAndServer(w, r)
 	if err != nil {
@@ -260,6 +260,7 @@ func FormDeleteController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	server.Log.Warnf("delete requested by form !")
 	if err := models.WhatsappService.Delete(server); err != nil {
 		RespondServerError(server, w, err)
 		return

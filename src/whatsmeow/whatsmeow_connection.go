@@ -3,7 +3,9 @@ package whatsmeow
 import (
 	"context"
 	"fmt"
+	"strings"
 	"sync"
+	"time"
 	"unicode"
 
 	log "github.com/sirupsen/logrus"
@@ -101,6 +103,10 @@ func (conn *WhatsmeowConnection) Connect() (err error) {
 		conn.failedToken = true
 		return
 	}
+
+	// waits 2 seconds for loggedin
+	// not required
+	_ = conn.Client.WaitForConnection(time.Millisecond * 2000)
 
 	/*
 		// Makes no diference
@@ -264,29 +270,6 @@ func (conn *WhatsmeowConnection) Disconnect() (err error) {
 	return
 }
 
-func (conn *WhatsmeowConnection) Delete() (err error) {
-	if conn != nil {
-		if conn.Client != nil {
-			if conn.Client.IsLoggedIn() {
-				err = conn.Client.Logout()
-				if err != nil {
-					return
-				}
-			}
-
-			if conn.Client.IsConnected() {
-				conn.Client.Disconnect()
-			}
-
-			if conn.Client.Store != nil {
-				err = conn.Client.Store.Delete()
-				return
-			}
-		}
-	}
-	return
-}
-
 func (conn *WhatsmeowConnection) GetInvite(groupId string) (link string, err error) {
 	jid, err := types.ParseJID(groupId)
 	if err != nil {
@@ -338,14 +321,20 @@ func (conn *WhatsmeowConnection) EnsureHandlers() error {
 }
 
 /*
-<summary>
-	Disconnect if connected
-	Cleanup Handlers
-</summary>
+	<summary>
+		Disconnect if connected
+		Cleanup Handlers
+		Dispose resources
+		Does not erase permanent data !
+	</summary>
 */
 func (conn *WhatsmeowConnection) Dispose() {
+	if conn.log != nil {
+		conn.log.Infof("disposing connection ...")
+		conn.log = nil
+	}
+
 	if conn.logger != nil {
-		conn.logger.Warnf("disposing connection ...")
 		conn.logger = nil
 	}
 
@@ -362,6 +351,42 @@ func (conn *WhatsmeowConnection) Dispose() {
 	}
 
 	conn = nil
+}
+
+/*
+	<summary>
+		Erase permanent data + Dispose !
+	</summary>
+*/
+func (conn *WhatsmeowConnection) Delete() (err error) {
+	if conn != nil {
+		if conn.Client != nil {
+			if conn.Client.IsLoggedIn() {
+				err = conn.Client.Logout()
+				if err != nil {
+					return
+				}
+				conn.log.Infof("logged out for delete")
+			}
+
+			if conn.Client.Store != nil {
+				err = conn.Client.Store.Delete()
+				if err != nil {
+					// ignoring error about JID, just checked and the delete process was succeded
+					if strings.Contains(err.Error(), "device JID must be known before accessing database") {
+						err = nil
+					} else {
+						err = fmt.Errorf("error on trying to delete store: %s", err.Error())
+						return
+					}
+				}
+				conn.log.Infof("store deleted")
+			}
+		}
+	}
+
+	conn.Dispose()
+	return
 }
 
 func (conn *WhatsmeowConnection) IsInterfaceNil() bool {
