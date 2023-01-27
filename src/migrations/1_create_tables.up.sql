@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS `webhooks` (
   `context` VARCHAR (255) NOT NULL REFERENCES `bots`(`id`),
   `url` VARCHAR (255) NOT NULL,
   `forwardinternal` BIT NOT NULL DEFAULT 0 ,
-  `trackid` VARCHAR (100) NOT NULL DEFAULT '',
+  /* `trackid` VARCHAR (100) NOT NULL DEFAULT '', */ /* Include on next full version */
+  /* `extra` BLOB DEFAULT NULL, */ /* Include on next full version */
   CONSTRAINT `webhooks_pkey` PRIMARY KEY (`context`, `url`)
 );
