@@ -20,7 +20,19 @@ file_env() {
    unset "$fileVar"
 }
 
+buildGo() {
+	# if [ ! -f "quepasa.db" ]; then
+		go build -o quepasa main.go
+		#echo "error: quepasa not found"
+		#exit 1
+	# else
+	# 	echo "quepasa founded"
+	# fi
+}
+
 file_env "PGPASSWORD"
 file_env "SIGNING_SECRET"
 
+# go build -o quepasa main.go
+buildGo
 exec "$@"

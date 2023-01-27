@@ -4,6 +4,9 @@
 # VSCode
 .vscode
 
+# PHPStorm
+.idea
+
 # Emacs
 *~
 \#*\#
@@ -13,7 +16,6 @@ client.rest
 
 secrets/
 tmp/
-docker-compose.yml
 __debug_bin
 
 #files for production
