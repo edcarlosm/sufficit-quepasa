@@ -9,7 +9,11 @@ apt install gcc -y
 echo INSTALL GO
 wget https://go.dev/dl/go1.20.linux-amd64.tar.gz
 rm -rf /usr/local/go && tar -C /usr/local -xzf go1.20.linux-amd64.tar.gz
-ln -s /usr/local/go/bin/go /usr/sbin/go
+GOPATH=/usr/local/go
+PATH=$PATH:$GOPATH/bin
+ln -s ${GOPATH}/bin/go /usr/sbin/go
+sed -nir '/^export GOPATH=/!p;$a export GOPATH='${GOPATH} ~/.bashrc
+sed -nir '/^export PATH=/!p;$a export PATH='$PATH:$GOPATH/bin ~/.bashrc
 go version
 
 echo UPDATING QUEPASA LINK
