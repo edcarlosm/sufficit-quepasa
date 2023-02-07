@@ -12,16 +12,16 @@ require (
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/mattn/go-sqlite3 v1.14.11
 	github.com/sirupsen/logrus v1.8.1
-	go.mau.fi/libsignal v0.0.0-20220628090436-4d18b66b087e // indirect
-	go.mau.fi/whatsmeow v0.0.0-20221008133908-7f01b3072802
-	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d // indirect
-	golang.org/x/sys v0.0.0-20210615035016-665e8c7367d1 // indirect
+	go.mau.fi/libsignal v0.1.0 // indirect
+	go.mau.fi/whatsmeow v0.0.0-20230204181151-b1f00ea99464
+	golang.org/x/crypto v0.5.0 // indirect
+	golang.org/x/sys v0.4.0 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
-	google.golang.org/protobuf v1.28.0 // indirect
+	google.golang.org/protobuf v1.28.1 // indirect
 )
 
 replace github.com/sufficit/sufficit-quepasa/whatsmeow => ./
 
 replace github.com/sufficit/sufficit-quepasa/whatsapp => ../whatsapp
 
-go 1.17
+go 1.18

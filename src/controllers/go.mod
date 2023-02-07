@@ -41,13 +41,13 @@ require (
 	github.com/swaggo/files v0.0.0-20220728132757-551d4a08d97a // indirect
 	github.com/swaggo/http-swagger v1.3.3 // indirect
 	github.com/swaggo/swag v1.8.5 // indirect
-	go.mau.fi/libsignal v0.0.0-20220628090436-4d18b66b087e // indirect
-	go.mau.fi/whatsmeow v0.0.0-20220811191500-f650c10b0068 // indirect
-	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d // indirect
-	golang.org/x/net v0.0.0-20220907135653-1e95f45603a7 // indirect
-	golang.org/x/sys v0.0.0-20220908164124-27713097b956 // indirect
+	go.mau.fi/libsignal v0.1.0 // indirect
+	go.mau.fi/whatsmeow v0.0.0-20230204181151-b1f00ea99464 // indirect
+	golang.org/x/crypto v0.5.0 // indirect
+	golang.org/x/net v0.5.0 // indirect
+	golang.org/x/sys v0.4.0 // indirect
 	golang.org/x/tools v0.1.12 // indirect
-	google.golang.org/protobuf v1.28.0 // indirect
+	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
@@ -62,4 +62,4 @@ replace github.com/sufficit/sufficit-quepasa/whatsapp => ../whatsapp
 
 replace github.com/sufficit/sufficit-quepasa/whatsmeow => ../whatsmeow
 
-go 1.17
+go 1.18

@@ -34,7 +34,7 @@ func ToQPMessageV2(source whatsapp.WhatsappMessage, wid string) (message QPMessa
 	message.Chat = ChatToQPChatV2(source.Chat)
 
 	if source.Participant != nil {
-		message.Participant = ToQPEndPointV2(source.Participant)
+		message.Participant = ChatToQPEndPointV2(*source.Participant)
 	}
 
 	if source.HasAttachment() {
@@ -68,7 +68,8 @@ func ToQPMessageV1(source whatsapp.WhatsappMessage, wid string) (message QPMessa
 	message.ReplyTo = ChatToQPEndPointV1(source.Chat)
 
 	if source.Participant != nil {
-		message.Participant = ToQPEndPointV1(source.Participant)
+		message.Participant = ChatToQPEndPointV1(*source.Participant)
+		//message.Participant = ToQPEndPointV1(source.Participant)
 	}
 
 	if source.HasAttachment() {

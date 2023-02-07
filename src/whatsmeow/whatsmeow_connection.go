@@ -170,7 +170,11 @@ func (conn *WhatsmeowConnection) GetProfilePicture(wid string, knowingId string)
 		return
 	}
 
-	pictureInfo, err := conn.Client.GetProfilePictureInfo(jid, false, knowingId)
+	params := &whatsmeow.GetProfilePictureParams{}
+	params.ExistingID = knowingId
+	params.Preview = false
+
+	pictureInfo, err := conn.Client.GetProfilePictureInfo(jid, params)
 	if err != nil {
 		return
 	}
@@ -231,7 +235,11 @@ func (conn *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp.I
 		msg.Id = whatsmeow.GenerateMessageID()
 	}
 
-	resp, err := conn.Client.SendMessage(context.Background(), jid, msg.Id, newMessage)
+	extra := whatsmeow.SendRequestExtra{
+		ID: msg.Id,
+	}
+
+	resp, err := conn.Client.SendMessage(context.Background(), jid, newMessage, extra)
 	if err != nil {
 		conn.log.Infof("send error: %s", err)
 		return msg, err

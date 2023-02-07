@@ -26,11 +26,11 @@ require (
 	github.com/sirupsen/logrus v1.8.1
 	github.com/skip2/go-qrcode v0.0.0-20191027152451-9434209cb086
 	github.com/stretchr/testify v1.4.0 // indirect
-	go.mau.fi/libsignal v0.0.0-20220628090436-4d18b66b087e // indirect
-	go.mau.fi/whatsmeow v0.0.0-20220811191500-f650c10b0068 // indirect
-	golang.org/x/crypto v0.0.0-20220622213112-05595931fe9d
-	golang.org/x/sys v0.0.0-20210615035016-665e8c7367d1 // indirect
-	google.golang.org/protobuf v1.28.0 // indirect
+	go.mau.fi/libsignal v0.1.0 // indirect
+	go.mau.fi/whatsmeow v0.0.0-20230204181151-b1f00ea99464 // indirect
+	golang.org/x/crypto v0.5.0
+	golang.org/x/sys v0.4.0 // indirect
+	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/yaml.v2 v2.2.7 // indirect
 )
 
@@ -42,4 +42,4 @@ replace github.com/sufficit/sufficit-quepasa/whatsapp => ../whatsapp
 
 replace github.com/sufficit/sufficit-quepasa/models => ./
 
-go 1.17
+go 1.18

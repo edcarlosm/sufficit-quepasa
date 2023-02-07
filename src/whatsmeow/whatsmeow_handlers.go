@@ -7,6 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	whatsapp "github.com/sufficit/sufficit-quepasa/whatsapp"
 	whatsmeow "go.mau.fi/whatsmeow"
+	types "go.mau.fi/whatsmeow/types"
 	"go.mau.fi/whatsmeow/types/events"
 )
 
@@ -54,6 +55,14 @@ func (handler *WhatsmeowHandlers) EventsHandler(evt interface{}) {
 
 	case *events.Message:
 		go handler.Message(*v)
+		return
+
+	case *events.CallOffer:
+		go handler.CallMessage(*&v.BasicCallMeta)
+		return
+
+	case *events.CallOfferNotice:
+		go handler.CallMessage(*&v.BasicCallMeta)
 		return
 
 	case *events.Connected:
@@ -118,7 +127,7 @@ func (handler *WhatsmeowHandlers) Message(evt events.Message) {
 			message.Chat.Title = gInfo.Name
 		}
 
-		message.Participant = &whatsapp.WhatsappEndpoint{}
+		message.Participant = &whatsapp.WhatsappChat{}
 
 		participantID := fmt.Sprint(evt.Info.Sender.User, "@", evt.Info.Sender.Server)
 		message.Participant.ID = participantID
@@ -132,6 +141,32 @@ func (handler *WhatsmeowHandlers) Message(evt events.Message) {
 	if message.Type == whatsapp.UnknownMessageType {
 		HandleUnknownMessage(handler.log, evt)
 	}
+
+	if handler.WAHandlers != nil {
+
+		// following to internal handlers
+		go handler.WAHandlers.Message(message)
+	}
+}
+
+//endregion
+//region EVENT CALL
+
+func (handler *WhatsmeowHandlers) CallMessage(evt types.BasicCallMeta) {
+	handler.log.Trace("event CallMessage !")
+
+	message := &whatsapp.WhatsappMessage{Content: evt}
+
+	// basic information
+	message.Id = evt.CallID
+	message.Timestamp = evt.Timestamp
+	message.FromMe = false
+
+	message.Chat = whatsapp.WhatsappChat{}
+	chatID := fmt.Sprint(evt.From.User, "@", evt.From.Server)
+	message.Chat.ID = chatID
+
+	message.Type = whatsapp.CallMessageType
 
 	if handler.WAHandlers != nil {
 

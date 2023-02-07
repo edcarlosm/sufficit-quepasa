@@ -281,7 +281,7 @@ func (server *QPWhatsappServer) GetOwnerID() string {
 
 //region QP BOT EXTENSIONS
 
-// Check if the current connection state is valid for a start call
+// Check if the current connection state is valid for a start method
 func IsValidToStart(status whatsapp.WhatsappConnectionState) bool {
 	if status == whatsapp.Stopped {
 		return true

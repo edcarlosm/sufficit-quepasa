@@ -100,15 +100,15 @@ bash /opt/quepasa-source/helpers/install.sh
   ## Prerequisites Local Deployment
 
   * Mysql (Recommended)
-  * Golang (Version go1.14.15)
+  * Golang (Version go1.18 minimum version)
 
   ### *installing above golang version*
 
   ```bash
   cd /usr/src
 
-  sudo wget https://golang.org/dl/go1.14.15.linux-amd64.tar.gz
-  sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.14.15.linux-amd64.tar.gz
+  sudo wget https://go.dev/dl/go1.20.linux-amd64.tar.gz
+  sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.20.linux-amd64.tar.gz
 
   #export the PATH
   export PATH=$PATH:/usr/local/go/bin

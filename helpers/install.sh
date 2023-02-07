@@ -7,8 +7,8 @@ echo INSTALL GCC
 apt install gcc -y
 
 echo INSTALL GO
-wget https://go.dev/dl/go1.17.12.linux-amd64.tar.gz
-rm -rf /usr/local/go && tar -C /usr/local -xzf go1.17.12.linux-amd64.tar.gz
+wget https://go.dev/dl/go1.20.linux-amd64.tar.gz
+rm -rf /usr/local/go && tar -C /usr/local -xzf go1.20.linux-amd64.tar.gz
 ln -s /usr/local/go/bin/go /usr/sbin/go
 go version
 
