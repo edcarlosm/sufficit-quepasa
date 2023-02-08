@@ -93,6 +93,12 @@ func HandleImageMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto
 
 		JpegThumbnail: jpeg,
 	}
+
+	// get file extension from mime type
+	extension, _ := mime.ExtensionsByType(out.Attachment.Mimetype)
+	if len(extension) > 0 {
+		out.Attachment.FileName = out.Id + extension[0]
+	}
 }
 
 func HandleStickerMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.StickerMessage) {
@@ -106,6 +112,12 @@ func HandleStickerMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pro
 		FileLength: *in.FileLength,
 
 		JpegThumbnail: jpeg,
+	}
+
+	// get file extension from mime type
+	extension, _ := mime.ExtensionsByType(out.Attachment.Mimetype)
+	if len(extension) > 0 {
+		out.Attachment.FileName = out.Id + extension[0]
 	}
 }
 
@@ -125,6 +137,12 @@ func HandleVideoMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto
 		FileLength: *in.FileLength,
 
 		JpegThumbnail: jpeg,
+	}
+
+	// get file extension from mime type
+	extension, _ := mime.ExtensionsByType(out.Attachment.Mimetype)
+	if len(extension) > 0 {
+		out.Attachment.FileName = out.Id + extension[0]
 	}
 }
 

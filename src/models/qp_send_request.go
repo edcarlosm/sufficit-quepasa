@@ -2,13 +2,11 @@ package models
 
 import (
 	"fmt"
-	"mime"
 	"net/http"
-	"path/filepath"
 	"strings"
-	"time"
 
 	log "github.com/sirupsen/logrus"
+	library "github.com/sufficit/sufficit-quepasa/library"
 	whatsapp "github.com/sufficit/sufficit-quepasa/whatsapp"
 )
 
@@ -83,33 +81,19 @@ func (source *QpSendRequest) ToWhatsappMessage() (msg *whatsapp.WhatsappMessage,
 func (source *QpSendRequest) ToWhatsappAttachment() (attach *whatsapp.WhatsappAttachment, err error) {
 	attach = &whatsapp.WhatsappAttachment{}
 
-	mimeType := http.DetectContentType(source.Content)
-	if mimeType == "application/octet-stream" && len(source.FileName) > 0 {
-		extension := filepath.Ext(source.FileName)
-		newMimeType := mime.TypeByExtension(extension)
-		if len(newMimeType) > 0 {
-			mimeType = newMimeType
-		}
-	}
+	mimeType := library.GetMimeTypeFromContent(source.Content, source.FileName)
 
+	// adjusting codec for ptt audio messages
 	if strings.Contains(mimeType, "ogg") && !strings.Contains(mimeType, "opus") {
 		mimeType = "audio/ogg; codecs=opus"
 	}
 
 	log.Tracef("detected mime type: %s, filename: %s", mimeType, source.FileName)
-
 	fileName := source.FileName
+
 	// Defining a filename if not found before
 	if len(fileName) == 0 {
-		const layout = "20060201150405"
-		t := time.Now().UTC()
-		fileName = "file-" + t.Format(layout)
-
-		// get file extension from mime type
-		extension, _ := mime.ExtensionsByType(mimeType)
-		if len(extension) > 0 {
-			fileName = fileName + extension[0]
-		}
+		fileName = library.GenerateFileNameFromMimeType(mimeType)
 	}
 
 	attach.FileName = fileName

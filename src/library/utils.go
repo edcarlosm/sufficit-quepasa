@@ -1,8 +1,12 @@
 package library
 
 import (
+	"mime"
+	"net/http"
+	"path/filepath"
 	"reflect"
 	"regexp"
+	"time"
 )
 
 // Validate email string
@@ -23,4 +27,40 @@ func GetTypeString(myvar interface{}) string {
 	} else {
 		return t.Name()
 	}
+}
+
+func GetMimeTypeFromContent(content []byte, filename string) string {
+	mimeType := http.DetectContentType(content)
+	if mimeType == "application/octet-stream" && len(filename) > 0 {
+		extension := filepath.Ext(filename)
+		newMimeType := mime.TypeByExtension(extension)
+		if len(newMimeType) > 0 {
+			mimeType = newMimeType
+		}
+	}
+	return mimeType
+}
+
+func GenerateFileNameFromMimeType(mimeType string) string {
+
+	const layout = "20060201150405"
+	t := time.Now().UTC()
+	fileName := "file-" + t.Format(layout)
+
+	// get file extension from mime type
+	extension, _ := mime.ExtensionsByType(mimeType)
+	if len(extension) > 0 {
+		fileName = fileName + extension[0]
+	}
+
+	return fileName
+}
+
+// Get the first discovered extension from a given mime type (with dot = .ext)
+func GetExtensionFromMimeType(mimeType string) (exten string, err error) {
+	extensions, err := mime.ExtensionsByType(mimeType)
+	if len(extensions) > 0 {
+		exten = extensions[0]
+	}
+	return
 }

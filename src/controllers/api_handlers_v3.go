@@ -170,6 +170,8 @@ func DownloadControllerV3(w http.ResponseWriter, r *http.Request) {
 
 	if len(att.FileName) > 0 {
 		w.Header().Set("Content-Disposition", "attachment; filename="+att.FileName)
+	} else {
+		w.Header().Set("Content-Disposition", "attachment;")
 	}
 
 	w.WriteHeader(http.StatusOK)
