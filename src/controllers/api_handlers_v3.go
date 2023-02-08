@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
+	library "github.com/sufficit/sufficit-quepasa/library"
 	metrics "github.com/sufficit/sufficit-quepasa/metrics"
 	models "github.com/sufficit/sufficit-quepasa/models"
 	whatsapp "github.com/sufficit/sufficit-quepasa/whatsapp"
@@ -168,11 +169,22 @@ func DownloadControllerV3(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if len(att.FileName) > 0 {
-		w.Header().Set("Content-Disposition", "attachment; filename="+att.FileName)
+	var fileName string
+
+	// If filename not setted
+	if len(att.FileName) == 0 {
+		exten, _ := library.GetExtensionFromMimeType(att.Mimetype)
+		if len(exten) > 0 {
+
+			// Generate from mime type and message id
+			fileName = fmt.Sprint("; filename=", messageId, ".", exten)
+		}
 	} else {
-		w.Header().Set("Content-Disposition", "attachment;")
+		fileName = fmt.Sprint("; filename=", att.FileName)
 	}
+
+	// setting header filename
+	w.Header().Set("Content-Disposition", fmt.Sprint("attachment", fileName))
 
 	w.WriteHeader(http.StatusOK)
 	w.Write(*att.GetContent())

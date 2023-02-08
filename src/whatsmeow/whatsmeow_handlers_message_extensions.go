@@ -4,7 +4,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"mime"
 	"strings"
 
 	slug "github.com/gosimple/slug"
@@ -82,22 +81,13 @@ func HandleImageMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto
 	out.Type = whatsapp.ImageMessageType
 
 	// in case of caption passed
-	if in.Caption != nil {
-		out.Text = *in.Caption
-	}
+	out.Text = in.GetCaption()
 
 	jpeg := GetStringFromBytes(in.JpegThumbnail)
 	out.Attachment = &whatsapp.WhatsappAttachment{
-		Mimetype:   *in.Mimetype,
-		FileLength: *in.FileLength,
-
+		Mimetype:      *in.Mimetype,
+		FileLength:    *in.FileLength,
 		JpegThumbnail: jpeg,
-	}
-
-	// get file extension from mime type
-	extension, _ := mime.ExtensionsByType(out.Attachment.Mimetype)
-	if len(extension) > 0 {
-		out.Attachment.FileName = out.Id + extension[0]
 	}
 }
 
@@ -112,12 +102,6 @@ func HandleStickerMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *pro
 		FileLength: *in.FileLength,
 
 		JpegThumbnail: jpeg,
-	}
-
-	// get file extension from mime type
-	extension, _ := mime.ExtensionsByType(out.Attachment.Mimetype)
-	if len(extension) > 0 {
-		out.Attachment.FileName = out.Id + extension[0]
 	}
 }
 
@@ -137,12 +121,6 @@ func HandleVideoMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto
 		FileLength: *in.FileLength,
 
 		JpegThumbnail: jpeg,
-	}
-
-	// get file extension from mime type
-	extension, _ := mime.ExtensionsByType(out.Attachment.Mimetype)
-	if len(extension) > 0 {
-		out.Attachment.FileName = out.Id + extension[0]
 	}
 }
 
@@ -180,12 +158,6 @@ func HandleAudioMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto
 		FileLength: *in.FileLength,
 
 		Seconds: seconds,
-	}
-
-	// get file extension from mime type
-	extension, _ := mime.ExtensionsByType(out.Attachment.Mimetype)
-	if len(extension) > 0 {
-		out.Attachment.FileName = out.Id + extension[0]
 	}
 }
 
