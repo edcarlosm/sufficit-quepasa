@@ -208,11 +208,7 @@ func (server *QPWhatsappServer) Start() (err error) {
 	server.Log.Infof("requesting connection ...")
 	err = server.connection.Connect()
 	if err != nil {
-		if _, ok := err.(*whatsapp.UnAuthorizedError); ok {
-			server.Log.Warningf("unauthorized, setting unverified")
-			err = server.MarkVerified(false)
-		}
-		return
+		return server.StartConnectionError(err)
 	}
 
 	// If at this moment the connect is already logged, ensure a valid mark
@@ -221,6 +217,19 @@ func (server *QPWhatsappServer) Start() (err error) {
 	}
 
 	return
+}
+
+// Process an error at start connection
+func (server *QPWhatsappServer) StartConnectionError(err error) error {
+	server.connection.Dispose()
+	server.Handler.Clear()
+
+	if _, ok := err.(*whatsapp.UnAuthorizedError); ok {
+		server.Log.Warningf("unauthorized, setting unverified")
+		return server.MarkVerified(false)
+	}
+
+	return err
 }
 
 func (server *QPWhatsappServer) Stop(cause string) (err error) {
