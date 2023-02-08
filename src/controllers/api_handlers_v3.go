@@ -154,6 +154,9 @@ func DownloadControllerV3(w http.ResponseWriter, r *http.Request) {
 		messageId = r.Header.Get("X-QUEPASA-MESSAGEID")
 	}
 
+	// removing white spaces if exists
+	messageId = strings.TrimSpace(messageId)
+
 	if len(messageId) == 0 {
 		metrics.MessageSendErrors.Inc()
 		err := fmt.Errorf("empty message id")
@@ -173,11 +176,11 @@ func DownloadControllerV3(w http.ResponseWriter, r *http.Request) {
 
 	// If filename not setted
 	if len(att.FileName) == 0 {
-		exten, _ := library.GetExtensionFromMimeType(att.Mimetype)
+		exten, _ := library.TryGetExtensionFromMimeType(att.Mimetype)
 		if len(exten) > 0 {
 
 			// Generate from mime type and message id
-			fileName = fmt.Sprint("; filename=", messageId, ".", exten)
+			fileName = fmt.Sprint("; filename=", messageId, exten)
 		}
 	} else {
 		fileName = fmt.Sprint("; filename=", att.FileName)

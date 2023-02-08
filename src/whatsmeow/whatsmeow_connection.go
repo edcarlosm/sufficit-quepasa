@@ -160,6 +160,7 @@ func (conn *WhatsmeowConnection) Download(imsg whatsapp.IWhatsappMessage) (att *
 
 	sourceAttach := imsg.GetAttachment()
 	att.FileName = sourceAttach.FileName
+	att.Mimetype = sourceAttach.Mimetype
 
 	return
 }

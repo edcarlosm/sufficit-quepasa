@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -56,11 +57,19 @@ func GenerateFileNameFromMimeType(mimeType string) string {
 	return fileName
 }
 
-// Get the first discovered extension from a given mime type (without dot = {.ext} => {ext})
-func GetExtensionFromMimeType(mimeType string) (exten string, err error) {
+// Get the first discovered extension from a given mime type (with dot = {.ext})
+func TryGetExtensionFromMimeType(mimeType string) (exten string, err error) {
 	extensions, err := mime.ExtensionsByType(mimeType)
 	if len(extensions) > 0 {
 		exten = extensions[0]
+		if !strings.HasPrefix(exten, ".") {
+			exten = "." + exten
+		}
 	}
 	return
+}
+
+// Force the recognition of some types of mime string
+func EnsureMimesMapping() {
+	_ = mime.AddExtensionType(".webp", "image/webp")
 }
