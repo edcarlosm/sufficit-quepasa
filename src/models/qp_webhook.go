@@ -50,7 +50,7 @@ func (source *QpWebhook) Post(wid string, message *whatsapp.WhatsappMessage) (er
 	client.Timeout = time.Second * 10
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Warn("(%s) erro ao postar no webhook: %s", wid, err.Error())
+		log.Warnf("(%s) error at post webhook: %s", wid, err.Error())
 	}
 
 	if resp != nil {
