@@ -249,7 +249,7 @@ bash /opt/quepasa-source/helpers/install.sh
   make docker_build
   # edit docker-compose.yml.sample to your hearts content
   docker-compose up
-   
+  ```
 </details>
 
 ### Environment Variables
