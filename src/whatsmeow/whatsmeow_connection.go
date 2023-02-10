@@ -325,10 +325,6 @@ func (conn *WhatsmeowConnection) UpdateHandler(handlers whatsapp.IWhatsappHandle
 
 //endregion
 
-func (conn *WhatsmeowConnection) EnsureHandlers() error {
-	return nil
-}
-
 /*
 	<summary>
 		Disconnect if connected
@@ -389,7 +385,8 @@ func (conn *WhatsmeowConnection) Delete() (err error) {
 						return
 					}
 				}
-				conn.log.Infof("store deleted")
+
+				// here the conn.log (*Entry) is already nil
 			}
 		}
 	}

@@ -4,6 +4,14 @@ import (
 	"errors"
 	"os"
 	"strconv"
+	"strings"
+)
+
+const (
+	ENVIRONMENT         = "APP_ENV"
+	TITLE               = "APP_TITLE"
+	DEBUG_REQUESTS      = "DEBUGREQUESTS"
+	DEBUG_JSON_MESSAGES = "DEBUGJSONMESSAGES"
 )
 
 type Environment struct{}
@@ -11,18 +19,23 @@ type Environment struct{}
 var ENV Environment
 
 func (_ *Environment) IsDevelopment() bool {
-	environment, _ := getenvStr("APP_ENV")
-	if environment == "development" {
+	environment, _ := GetEnvStr(ENVIRONMENT)
+	if strings.ToLower(environment) == "development" {
 		return true
 	} else {
 		return false
 	}
 }
 
+func (_ *Environment) AppTitle() string {
+	title, _ := GetEnvStr(TITLE)
+	return title
+}
+
 func (_ *Environment) DEBUGRequests() bool {
 
 	if ENV.IsDevelopment() {
-		environment, err := GetEnvBool("DEBUGREQUESTS", true)
+		environment, err := GetEnvBool(DEBUG_REQUESTS, true)
 		if err == nil {
 			return environment
 		}
@@ -34,7 +47,7 @@ func (_ *Environment) DEBUGRequests() bool {
 func (_ *Environment) DEBUGJsonMessages() bool {
 
 	if ENV.IsDevelopment() {
-		environment, err := GetEnvBool("DEBUGJSONMESSAGES", true)
+		environment, err := GetEnvBool(DEBUG_JSON_MESSAGES, true)
 		if err == nil {
 			return environment
 		}
@@ -47,7 +60,7 @@ var ErrEnvVarEmpty = errors.New("getenv: environment variable empty")
 
 func GetEnvBool(key string, value bool) (bool, error) {
 	result := value
-	s, err := getenvStr(key)
+	s, err := GetEnvStr(key)
 	if err == nil {
 		trying, err := strconv.ParseBool(s)
 		if err == nil {
@@ -57,7 +70,7 @@ func GetEnvBool(key string, value bool) (bool, error) {
 	return result, err
 }
 
-func getenvStr(key string) (string, error) {
+func GetEnvStr(key string) (string, error) {
 	v := os.Getenv(key)
 	if v == "" {
 		return v, ErrEnvVarEmpty

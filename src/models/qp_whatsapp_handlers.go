@@ -6,66 +6,73 @@ import (
 	"sync"
 	"time"
 
-	log "github.com/sirupsen/logrus"
 	whatsapp "github.com/sufficit/sufficit-quepasa/whatsapp"
 )
 
 // Serviço que controla os servidores / bots individuais do whatsapp
 type QPWhatsappHandlers struct {
+	server *QPWhatsappServer
+
 	messages     map[string]whatsapp.WhatsappMessage
 	sync         *sync.Mutex // Objeto de sinaleiro para evitar chamadas simultâneas a este objeto
 	syncRegister *sync.Mutex
-	log          *log.Entry
 
 	// Appended events handler
 	aeh []interface {
 		Handle(*whatsapp.WhatsappMessage)
 	}
-
-	//filters
-	HandleGroups    bool
-	HandleBroadcast bool
 }
 
-//region CONTRUCTORS
-
-// Create a new QuePasa WhatsApp Event Handler
-func NewQPWhatsappHandlers(groups bool, broadcast bool, logger *log.Entry) (handler *QPWhatsappHandlers) {
-	handlerMessages := make(map[string]whatsapp.WhatsappMessage)
-	handler = &QPWhatsappHandlers{
-		HandleGroups:    groups,
-		HandleBroadcast: broadcast,
-
-		messages:     handlerMessages,
-		sync:         &sync.Mutex{},
-		syncRegister: &sync.Mutex{},
-		log:          logger,
-	}
-
-	if handler.log == nil {
-		handler.log = log.NewEntry(log.StandardLogger())
-	}
-
-	return
+func (handler *QPWhatsappHandlers) HandleGroups() bool {
+	return handler.server.Bot.HandleGroups
 }
 
-//endregion
+func (handler *QPWhatsappHandlers) HandleBroadcast() bool {
+	return handler.server.Bot.HandleBroadcast
+}
+
 //#region EVENTS FROM WHATSAPP SERVICE
 
 func (handler *QPWhatsappHandlers) Message(msg *whatsapp.WhatsappMessage) {
 
 	// skipping groups if choosed
-	if !handler.HandleGroups && msg.FromGroup() {
+	if !handler.HandleGroups() && msg.FromGroup() {
 		return
 	}
 
 	// skipping broadcast if choosed
-	if !handler.HandleBroadcast && msg.FromBroadcast() {
+	if !handler.HandleBroadcast() && msg.FromBroadcast() {
 		return
 	}
 
-	handler.log.Trace("msg recebida/(enviada por outro meio) em models: %s", msg.Id)
+	handler.server.Log.Trace("msg recebida/(enviada por outro meio) em models: %s", msg.Id)
 	handler.appendMsgToCache(msg)
+}
+
+/*
+<summary>
+	Event on:
+		* User Logged Out from whatsapp app
+		* Maximum numbers of devices reached
+		* Banned
+		* Token Expired
+</summary>
+*/
+func (handler *QPWhatsappHandlers) LoggedOut(reason string) {
+
+	// one step at a time
+	if handler.server != nil {
+
+		msg := "logged out !"
+		if len(reason) > 0 {
+			msg += " reason: " + reason
+		}
+
+		handler.server.Log.Warn(msg)
+
+		// marking unverified and wait for more analyses
+		handler.server.MarkVerified(false)
+	}
 }
 
 //#endregion

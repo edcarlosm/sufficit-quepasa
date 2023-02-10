@@ -31,7 +31,7 @@ func (service *WhatsmeowServiceModel) Start() {
 
 		WhatsmeowService = &WhatsmeowServiceModel{Container: container}
 
-		showing := whatsapp.WhatsappWebAppName + " Multi"
+		showing := whatsapp.WhatsappWebAppName
 		if len(whatsapp.WhatsappWebAppSystem) > 0 {
 			showing += " " + whatsapp.WhatsappWebAppSystem
 		}

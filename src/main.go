@@ -5,6 +5,7 @@ import (
 	controllers "github.com/sufficit/sufficit-quepasa/controllers"
 	library "github.com/sufficit/sufficit-quepasa/library"
 	models "github.com/sufficit/sufficit-quepasa/models"
+	whatsapp "github.com/sufficit/sufficit-quepasa/whatsapp"
 	whatsmeow "github.com/sufficit/sufficit-quepasa/whatsmeow"
 
 	log "github.com/sirupsen/logrus"
@@ -31,6 +32,12 @@ func main() {
 	err := models.MigrateToLatest()
 	if err != nil {
 		log.Fatalf("Database migration error: %s", err.Error())
+	}
+
+	// should became before whatsmeow start
+	title := models.ENV.AppTitle()
+	if len(title) > 0 {
+		whatsapp.WhatsappWebAppSystem = title
 	}
 
 	whatsmeow.WhatsmeowService.Start()

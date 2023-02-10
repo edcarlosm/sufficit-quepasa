@@ -42,22 +42,41 @@ func NewQPWhatsappServer(bot *QPBot, dbWHooks *QpDataWebhookInterface) (server *
 	serverLogger.SetLevel(serverLogLevel)
 	serverLogEntry := serverLogger.WithField("wid", wid)
 
-	handler := NewQPWhatsappHandlers(bot.HandleGroups, bot.HandleBroadcast, serverLogEntry)
 	server = &QPWhatsappServer{
 		Bot:            bot,
 		syncConnection: &sync.Mutex{},
 		syncMessages:   &sync.Mutex{},
 		Battery:        WhatsAppBateryStatus{},
 		Timestamp:      time.Now(),
-		Handler:        handler,
 
 		stopRequested: false,
 		logger:        serverLogger,
 		Log:           serverLogEntry,
 	}
 
+	server.HandlerEnsure()
 	server.WebhookFill(wid, *dbWHooks)
 	return
+}
+
+// Ensure default handler
+func (server *QPWhatsappServer) HandlerEnsure() {
+	if server.Handler == nil {
+
+		if server.Log == nil {
+			server.Log = log.NewEntry(log.StandardLogger())
+		}
+
+		handlerMessages := make(map[string]whatsapp.WhatsappMessage)
+		handler := &QPWhatsappHandlers{
+			server:       server,
+			messages:     handlerMessages,
+			sync:         &sync.Mutex{},
+			syncRegister: &sync.Mutex{},
+		}
+
+		server.Handler = handler
+	}
 }
 
 //endregion
@@ -148,8 +167,6 @@ func (server *QPWhatsappServer) UpdateConnection(connection whatsapp.IWhatsappCo
 	if !server.Handler.IsAttached() {
 		server.Handler.Register(webhookDispatcher)
 	}
-
-	server.connection.EnsureHandlers()
 }
 
 func (server *QPWhatsappServer) EnsureUnderlying() (err error) {
@@ -391,7 +408,7 @@ func (server *QPWhatsappServer) ToggleGroups() (err error) {
 		return
 	}
 
-	server.Handler.HandleGroups = server.Bot.HandleGroups
+	//server.Handler.HandleGroups = server.Bot.HandleGroups
 	server.Log.Infof("toggling handler of group messages: %v", server.Handler.HandleGroups)
 	return
 }
@@ -406,8 +423,7 @@ func (server *QPWhatsappServer) ToggleBroadcast() (err error) {
 		return
 	}
 
-	server.Handler.HandleBroadcast = server.Bot.HandleBroadcast
-
+	//server.Handler.HandleBroadcast = server.Bot.HandleBroadcast
 	server.Log.Infof("toggling handler of broadcast messages: %v", server.Handler.HandleBroadcast)
 	return
 }

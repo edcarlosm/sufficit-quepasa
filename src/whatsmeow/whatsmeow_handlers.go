@@ -19,6 +19,7 @@ type WhatsmeowHandlers struct {
 	log                      *log.Entry
 }
 
+// only affects whatsmeow
 func (handler *WhatsmeowHandlers) UnRegister() {
 	handler.unregisterRequestedToken = true
 
@@ -71,7 +72,23 @@ func (handler *WhatsmeowHandlers) EventsHandler(evt interface{}) {
 		handler.Client.AutoReconnectErrors = 0
 		return
 
+	case *events.Disconnected:
+		msgDisconnected := "disconnected from server"
+		if handler.Client.EnableAutoReconnect {
+			handler.log.Info(msgDisconnected + ", dont worry, reconnecting")
+		} else {
+			handler.log.Warn(msgDisconnected)
+		}
+		return
+
 	case *events.LoggedOut:
+		reason := v.Reason.String()
+		handler.log.Trace("logged out " + reason)
+
+		if handler.WAHandlers != nil {
+			handler.WAHandlers.LoggedOut(reason)
+		}
+
 		handler.UnRegister()
 		return
 

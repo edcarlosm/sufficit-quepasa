@@ -25,6 +25,7 @@ src/.env
 src/go
 src/sqlite3
 src/*.db
+src/.dist/
 
 # symbolic link to src folder under linux
 quepasa/

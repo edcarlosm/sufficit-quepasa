@@ -26,7 +26,6 @@ type IWhatsappConnection interface {
 	GetProfilePicture(wid string, knowingId string) (*WhatsappProfilePicture, error)
 
 	UpdateHandler(IWhatsappHandlers)
-	EnsureHandlers() error
 
 	// Download message attachment if exists
 	DownloadData(IWhatsappMessage) ([]byte, error)
