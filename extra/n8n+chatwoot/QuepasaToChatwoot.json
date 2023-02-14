@@ -1,5 +1,5 @@
 {
-  "name": "Quepasa To Chatwoot",
+  "name": "QuepasaToChatwoot",
   "nodes": [
     {
       "parameters": {
@@ -786,26 +786,6 @@
         "conditions": {
           "string": [
             {
-              "value1": "={{$json?.chat}}",
-              "operation": "isNotEmpty"
-            }
-          ]
-        }
-      },
-      "id": "d6ac4107-c26b-4bb2-8ab6-bdb337544f62",
-      "name": "If Chat Exists ?2",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        -8000,
-        680
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "string": [
-            {
               "value1": "={{$json.participant ?? undefined}}",
               "operation": "isNotEmpty"
             }
@@ -1273,6 +1253,26 @@
         -10000,
         1000
       ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json?.chat}}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "d6ac4107-c26b-4bb2-8ab6-bdb337544f62",
+      "name": "If Chat Exists ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -8000,
+        680
+      ]
     }
   ],
   "pinData": {},
@@ -1656,25 +1656,7 @@
       "main": [
         [
           {
-            "node": "If Chat Exists ?2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If Chat Exists ?2": {
-      "main": [
-        [
-          {
-            "node": "If Group ?",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Stop And Error",
+            "node": "If Chat Exists ?",
             "type": "main",
             "index": 0
           }
@@ -1950,11 +1932,29 @@
           }
         ]
       ]
+    },
+    "If Chat Exists ?": {
+      "main": [
+        [
+          {
+            "node": "If Group ?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop And Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
   "settings": {},
-  "versionId": "e5741370-1332-46c0-a45d-1812181a34d7",
+  "versionId": "04b41240-dd15-4bd5-a7ea-308c96e2bf79",
   "id": "3",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
