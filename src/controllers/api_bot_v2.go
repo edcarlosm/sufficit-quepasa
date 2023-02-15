@@ -108,13 +108,13 @@ func SendTextAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 	response.Chat.Title = waMsg.Chat.Title
 	response.From.ID = server.Bot.ID
 	response.From.UserName = server.Bot.GetNumber()
-	response.ID = sendResponse.GetID()
+	response.ID = sendResponse.GetId()
 
 	// Para manter a compatibilidade
 	response.PreviusV1 = models.QPSendResult{
 		Source:    server.GetWid(),
 		Recipient: waMsg.Chat.ID,
-		MessageId: sendResponse.GetID(),
+		MessageId: sendResponse.GetId(),
 	}
 
 	metrics.MessagesSent.Inc()
@@ -181,13 +181,13 @@ func SendDocumentAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 	response.Chat.Title = server.GetTitle(waMsg.Chat.ID)
 	response.From.ID = server.Bot.ID
 	response.From.UserName = server.Bot.GetNumber()
-	response.ID = sendResponse.GetID()
+	response.ID = sendResponse.GetId()
 
 	// Para manter a compatibilidade
 	response.PreviusV1 = models.QPSendResult{
 		Source:    server.GetWid(),
 		Recipient: waMsg.Chat.ID,
-		MessageId: sendResponse.GetID(),
+		MessageId: sendResponse.GetId(),
 	}
 
 	metrics.MessagesSent.Inc()

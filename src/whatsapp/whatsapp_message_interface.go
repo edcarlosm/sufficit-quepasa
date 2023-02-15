@@ -3,6 +3,8 @@ package whatsapp
 type IWhatsappMessage interface {
 	IWhatsappChatId
 
+	GetId() string
+
 	// Clear text message or html encoded
 	GetText() string
 

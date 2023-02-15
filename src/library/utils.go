@@ -72,4 +72,5 @@ func TryGetExtensionFromMimeType(mimeType string) (exten string, err error) {
 // Force the recognition of some types of mime string
 func EnsureMimesMapping() {
 	_ = mime.AddExtensionType(".webp", "image/webp")
+	_ = mime.AddExtensionType(".mp4", "video/mp4")
 }

@@ -33,3 +33,7 @@ func (source *WhatsappAttachment) GetContent() *[]byte {
 func (source *WhatsappAttachment) SetContent(content *[]byte) {
 	source.content = content
 }
+
+func (source *WhatsappAttachment) HasContent() bool {
+	return nil != source.content
+}

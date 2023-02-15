@@ -75,7 +75,7 @@ func controllerHttpPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data.MessageId = msg.GetID()
+	data.MessageId = msg.GetId()
 
 	// Increment counter statistics
 	MessagesSent.Inc()

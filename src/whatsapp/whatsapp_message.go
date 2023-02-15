@@ -55,7 +55,7 @@ func (m ByTimestamp) Swap(i, j int)      { m[i], m[j] = m[j], m[i] }
 
 //region IMPLEMENT WHATSAPP SEND RESPONSE INTERFACE
 
-func (source WhatsappMessage) GetID() string { return source.Id }
+func (source WhatsappMessage) GetId() string { return source.Id }
 
 // Get the time of server processed message
 func (source WhatsappMessage) GetTime() time.Time { return source.Timestamp }
