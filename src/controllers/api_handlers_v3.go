@@ -3,7 +3,6 @@ package controllers
 import (
 	"fmt"
 	"net/http"
-	"strings"
 
 	"github.com/go-chi/chi/v5"
 
@@ -37,8 +36,8 @@ func RegisterAPIV3Controllers(r chi.Router) {
 	r.Post(ControllerPrefixV3+"/senddocument", SendDocumentAPIHandlerV2)
 
 	r.Post(ControllerPrefixV3+"/sendurl", SendDocumentFromUrl)
-	r.Post(ControllerPrefixV3+"/sendbinary/{chatid}/{fileName}/{text}", SendDocumentFromBinary)
-	r.Post(ControllerPrefixV3+"/sendbinary/{chatid}/{fileName}", SendDocumentFromBinary)
+	r.Post(ControllerPrefixV3+"/sendbinary/{chatid}/{filename}/{text}", SendDocumentFromBinary)
+	r.Post(ControllerPrefixV3+"/sendbinary/{chatid}/{filename}", SendDocumentFromBinary)
 	r.Post(ControllerPrefixV3+"/sendbinary/{chatid}", SendDocumentFromBinary)
 	r.Post(ControllerPrefixV3+"/sendbinary", SendDocumentFromBinary)
 	r.Post(ControllerPrefixV3+"/sendencoded", SendDocumentFromEncoded)
@@ -49,7 +48,7 @@ func RegisterAPIV3Controllers(r chi.Router) {
 	r.Get(ControllerPrefixV3+"/receive", ReceiveAPIHandler)
 	r.Post(ControllerPrefixV3+"/attachment", AttachmentAPIHandlerV2)
 
-	r.Get(ControllerPrefixV3+"/download/{messageId}", DownloadControllerV3)
+	r.Get(ControllerPrefixV3+"/download/{messageid}", DownloadControllerV3)
 	r.Get(ControllerPrefixV3+"/download", DownloadControllerV3)
 
 	// PICTURE INFO | DATA --------------------
@@ -107,21 +106,14 @@ func InformationControllerV3(w http.ResponseWriter, r *http.Request) {
 //endregion
 //region CONTROLLER - DOWNLOAD MESSAGE ATTACHMENT
 
-func GetDownloadPrefixV3(token string) (path string) {
-	path = ControllerPrefixV3 + "/download/{messageId}"
-	path = strings.Replace(path, "{token}", token, -1)
-	path = strings.Replace(path, "{messageId}", "", -1)
-	return
-}
-
 /*
 <summary>
-	Renders route GET "/{{version}}/bot/{{token}}/download/{messageId}"
+	Renders route GET "/{{version}}/bot/{{token}}/download/{messageid}"
 
 	Any of then, at this order of priority
-	Path parameters: {messageId}
-	Url parameters: ?messageId={messageId} || ?id={messageId}
-	Header parameters: X-QUEPASA-MESSAGEID = {messageId}
+	Path parameters: {messageid}
+	Url parameters: ?messageid={messageid} || ?id={messageid}
+	Header parameters: X-QUEPASA-MESSAGEID = {messageid}
 </summary>
 */
 func DownloadControllerV3(w http.ResponseWriter, r *http.Request) {
@@ -145,19 +137,9 @@ func DownloadControllerV3(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Default parameters
-	messageId := chi.URLParam(r, "messageId")
-	if strings.Contains(messageId, "message") || (len(messageId) == 0 && r.URL.Query().Has("id")) {
-		messageId = r.URL.Query().Get("id")
-	} else if len(messageId) == 0 && r.URL.Query().Has("messageId") {
-		messageId = r.URL.Query().Get("messageId")
-	} else if len(messageId) == 0 {
-		messageId = r.Header.Get("X-QUEPASA-MESSAGEID")
-	}
+	messageid := GetMessageId(r)
 
-	// removing white spaces if exists
-	messageId = strings.TrimSpace(messageId)
-
-	if len(messageId) == 0 {
+	if len(messageid) == 0 {
 		metrics.MessageSendErrors.Inc()
 		err := fmt.Errorf("empty message id")
 		response.ParseError(err)
@@ -165,14 +147,17 @@ func DownloadControllerV3(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	att, err := server.Download(messageId)
+	// Default parameters
+	cache := GetCache(r)
+
+	att, err := server.Download(messageid, cache)
 	if err != nil {
 		response.ParseError(err)
 		RespondInterface(w, response)
 		return
 	}
 
-	var fileName string
+	var filename string
 
 	// If filename not setted
 	if len(att.FileName) == 0 {
@@ -180,14 +165,14 @@ func DownloadControllerV3(w http.ResponseWriter, r *http.Request) {
 		if len(exten) > 0 {
 
 			// Generate from mime type and message id
-			fileName = fmt.Sprint("; filename=", messageId, exten)
+			filename = fmt.Sprint("; filename=", messageid, exten)
 		}
 	} else {
-		fileName = fmt.Sprint("; filename=", att.FileName)
+		filename = fmt.Sprint("; filename=", att.FileName)
 	}
 
 	// setting header filename
-	w.Header().Set("Content-Disposition", fmt.Sprint("attachment", fileName))
+	w.Header().Set("Content-Disposition", fmt.Sprint("attachment", filename))
 
 	w.WriteHeader(http.StatusOK)
 	w.Write(*att.GetContent())
