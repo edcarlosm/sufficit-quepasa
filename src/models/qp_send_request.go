@@ -89,14 +89,14 @@ func (source *QpSendRequest) ToWhatsappAttachment() (attach *whatsapp.WhatsappAt
 	}
 
 	log.Tracef("detected mime type: %s, filename: %s", mimeType, source.FileName)
-	fileName := source.FileName
+	filename := source.FileName
 
 	// Defining a filename if not found before
-	if len(fileName) == 0 {
-		fileName = library.GenerateFileNameFromMimeType(mimeType)
+	if len(filename) == 0 {
+		filename = library.GenerateFileNameFromMimeType(mimeType)
 	}
 
-	attach.FileName = fileName
+	attach.FileName = filename
 	attach.FileLength = uint64(len(source.Content))
 	attach.Mimetype = mimeType
 	attach.SetContent(&source.Content)

@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/go-chi/chi/v5"
 	models "github.com/sufficit/sufficit-quepasa/models"
 	whatsapp "github.com/sufficit/sufficit-quepasa/whatsapp"
 )
@@ -40,39 +39,66 @@ func GetMessages(server *models.QPWhatsappServer, timestamp int64) (messages []w
 	Getting from PATH => QUERY => HEADER
 </summary>
 */
-func GetTrackId(r *http.Request) (result string) {
-
-	// retrieve from url path parameter
-	result = chi.URLParam(r, "trackid")
-	if len(result) == 0 {
-
-		// retrieve from url query parameter
-		if r.URL.Query().Has("trackid") {
-			result = r.URL.Query().Get("trackid")
-		} else {
-
-			// retrieve from header parameter
-			result = r.Header.Get("X-QUEPASA-TRACKID")
-		}
-	}
-	return
+func GetTrackId(r *http.Request) string {
+	return models.GetRequestParameter(r, "trackid")
 }
 
-// Getting PictureId from PATH => QUERY => HEADER
-func GetPictureId(r *http.Request) (result string) {
+/*
+<summary>
+	Get Picture Identifier of contact
+	Getting from PATH => QUERY => HEADER
+</summary>
+*/
+func GetPictureId(r *http.Request) string {
+	return models.GetRequestParameter(r, "pictureid")
+}
 
-	// retrieve from url path parameter
-	result = chi.URLParam(r, "pictureid")
-	if len(result) == 0 {
+/*
+<summary>
+	Get Token From Http Request
+	Getting from PATH => QUERY => HEADER
+</summary>
+*/
+func GetToken(r *http.Request) string {
+	return models.GetRequestParameter(r, "token")
+}
 
-		// retrieve from url query parameter
-		if r.URL.Query().Has("pictureid") {
-			result = r.URL.Query().Get("pictureid")
-		} else {
+/*
+<summary>
+	Get Message Id From Http Request
+	Getting from PATH => QUERY => HEADER
+</summary>
+*/
+func GetMessageId(r *http.Request) string {
+	return models.GetRequestParameter(r, "messageid")
+}
 
-			// retrieve from header parameter
-			result = r.Header.Get("X-QUEPASA-PICTUREID")
-		}
-	}
-	return
+/*
+<summary>
+	Get File Name From Http Request
+	Getting from PATH => QUERY => HEADER
+</summary>
+*/
+func GetFileName(r *http.Request) string {
+	return models.GetRequestParameter(r, "filename")
+}
+
+/*
+<summary>
+	Get Text Label From Http Request
+	Getting from PATH => QUERY => HEADER
+</summary>
+*/
+func GetTextParameter(r *http.Request) string {
+	return models.GetRequestParameter(r, "text")
+}
+
+/*
+<summary>
+	Get a boolean indicating that cache should be used, From Http Request
+	Getting from PATH => QUERY => HEADER
+</summary>
+*/
+func GetCache(r *http.Request) bool {
+	return models.ToBoolean(models.GetRequestParameter(r, "cache"))
 }

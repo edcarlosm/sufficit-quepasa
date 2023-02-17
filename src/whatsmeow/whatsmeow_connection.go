@@ -149,17 +149,22 @@ func (conn *WhatsmeowConnection) DownloadData(imsg whatsapp.IWhatsappMessage) (d
 	return conn.Client.Download(downloadable)
 }
 
-func (conn *WhatsmeowConnection) Download(imsg whatsapp.IWhatsappMessage) (att *whatsapp.WhatsappAttachment, err error) {
+func (conn *WhatsmeowConnection) Download(imsg whatsapp.IWhatsappMessage, cache bool) (att *whatsapp.WhatsappAttachment, err error) {
 	att = imsg.GetAttachment()
 	if att == nil {
 		err = fmt.Errorf("message (%s) does not contains attachment info", imsg.GetId())
 		return
 	}
 
-	if !att.HasContent() {
+	if !att.HasContent() || !cache {
 		data, err := conn.DownloadData(imsg)
 		if err != nil {
 			return att, err
+		}
+
+		if !cache {
+			newAtt := *att
+			att = &newAtt
 		}
 
 		att.SetContent(&data)

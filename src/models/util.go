@@ -3,7 +3,9 @@ package models
 import (
 	"errors"
 	"net/http"
+	"net/url"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/go-chi/chi/v5"
@@ -55,21 +57,77 @@ func GetPhoneByID(id string) (out string, err error) {
 	return out, err
 }
 
-// Getting ChatId from PATH => QUERY => HEADER
-func GetChatId(r *http.Request) (result string) {
-
+/*
+<summary>
+	Get a parameter from http.Request
+	1º Url Param (/:parameter/)
+	2º Url Query (?parameter=)
+	3º Header (X-QUEPASA-PARAMETER)
+</summary>
+*/
+func GetRequestParameter(r *http.Request, parameter string) string {
 	// retrieve from url path parameter
-	result = chi.URLParam(r, "chatid")
+	result := chi.URLParam(r, parameter)
 	if len(result) == 0 {
 
-		// retrieve from url query parameter
-		if r.URL.Query().Has("chatid") {
-			result = r.URL.Query().Get("chatid")
+		/// retrieve from url query parameter
+		if QueryHasKey(r.URL, parameter) {
+			result = QueryGetValue(r.URL, parameter)
 		} else {
 
 			// retrieve from header parameter
-			result = r.Header.Get("X-QUEPASA-CHATID")
+			result = r.Header.Get("X-QUEPASA-" + strings.ToUpper(parameter))
 		}
 	}
-	return
+
+	// removing white spaces if exists
+	return strings.TrimSpace(result)
 }
+
+// Getting ChatId from PATH => QUERY => HEADER
+func GetChatId(r *http.Request) string {
+	return GetRequestParameter(r, "chatid")
+}
+
+//region TRIKCS
+
+/*
+<summary>
+	Converts string to boolean with default value "false"
+</summary>
+*/
+func ToBoolean(s string) bool {
+	b, _ := strconv.ParseBool(s)
+	return b
+}
+
+/*
+<summary>
+	URL has key, lowercase comparrison
+</summary>
+*/
+func QueryHasKey(query *url.URL, key string) bool {
+	for k := range query.Query() {
+		if strings.ToLower(k) == strings.ToLower(key) {
+			return true
+		}
+	}
+	return false
+}
+
+/*
+<summary>
+	Get URL Value from Key, lowercase comparrison
+</summary>
+*/
+func QueryGetValue(url *url.URL, key string) string {
+	query := url.Query()
+	for k := range query {
+		if strings.ToLower(k) == strings.ToLower(key) {
+			return query.Get(k)
+		}
+	}
+	return ""
+}
+
+//endregion

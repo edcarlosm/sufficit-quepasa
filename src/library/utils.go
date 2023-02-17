@@ -46,15 +46,15 @@ func GenerateFileNameFromMimeType(mimeType string) string {
 
 	const layout = "20060201150405"
 	t := time.Now().UTC()
-	fileName := "file-" + t.Format(layout)
+	filename := "file-" + t.Format(layout)
 
 	// get file extension from mime type
 	extension, _ := mime.ExtensionsByType(mimeType)
 	if len(extension) > 0 {
-		fileName = fileName + extension[0]
+		filename = filename + extension[0]
 	}
 
-	return fileName
+	return filename
 }
 
 // Get the first discovered extension from a given mime type (with dot = {.ext})

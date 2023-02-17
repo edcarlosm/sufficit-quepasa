@@ -6,7 +6,6 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/go-chi/chi/v5"
 	metrics "github.com/sufficit/sufficit-quepasa/metrics"
 	models "github.com/sufficit/sufficit-quepasa/models"
 	whatsapp "github.com/sufficit/sufficit-quepasa/whatsapp"
@@ -201,17 +200,17 @@ func SendText(w http.ResponseWriter, r *http.Request) {
 
 /*
 <summary>
-	Renders route POST "/{version}/bot/{token}/sendbinary/{chatid}/{fileName}/{text}"
+	Renders route POST "/{version}/bot/{token}/sendbinary/{chatid}/{filename}/{text}"
 
 	Any of then, at this order of priority
 	Path parameters: {chatid}
-	Path parameters: {fileName}
+	Path parameters: {filename}
 	Path parameters: {text} only images
-	Url parameters: ?chatid={chatId}
-	Url parameters: ?fileName={fileName}
+	Url parameters: ?chatid={chatid}
+	Url parameters: ?filename={filename}
 	Url parameters: ?text={text} only images
-	Header parameters: X-QUEPASA-CHATID = {chatId}
-	Header parameters: X-QUEPASA-FILENAME = {fileName}
+	Header parameters: X-QUEPASA-CHATID = {chatid}
+	Header parameters: X-QUEPASA-FILENAME = {filename}
 	Header parameters: X-QUEPASA-TEXT = {text} only images
 </summary>
 */
@@ -249,23 +248,13 @@ func SendDocumentFromBinary(w http.ResponseWriter, r *http.Request) {
 	request.Content = content
 
 	// Getting FileName parameter
-	fileName := chi.URLParam(r, "fileName")
-	if len(fileName) == 0 && r.URL.Query().Has("fileName") {
-		fileName = r.URL.Query().Get("fileName")
-	} else if len(fileName) == 0 {
-		fileName = r.Header.Get("X-QUEPASA-FILENAME")
-	}
+	filename := GetFileName(r)
 
 	// Setting filename
-	request.FileName = fileName
+	request.FileName = filename
 
 	// Getting textLabel parameter
-	text := chi.URLParam(r, "text")
-	if len(text) == 0 && r.URL.Query().Has("text") {
-		text = r.URL.Query().Get("text")
-	} else if len(text) == 0 {
-		text = r.Header.Get("X-QUEPASA-TEXT")
-	}
+	text := GetTextParameter(r)
 
 	request.Text = text
 
@@ -282,8 +271,8 @@ func SendDocumentFromBinary(w http.ResponseWriter, r *http.Request) {
 <summary>
 	Renders route POST "/{version}/bot/{token}/sendencoded"
 
-	Body parameter: {chatId}
-	Body parameter: {fileName}
+	Body parameter: {chatid}
+	Body parameter: {filename}
 	Body parameter: {text} only images
 	Body parameter: {content}
 </summary>
@@ -343,8 +332,8 @@ func SendDocumentFromEncoded(w http.ResponseWriter, r *http.Request) {
 	Renders route POST "/{version}/bot/{token}/sendurl"
 
 	Body parameter: {url}
-	Body parameter: {chatId}
-	Body parameter: {fileName}
+	Body parameter: {chatid}
+	Body parameter: {filename}
 	Body parameter: {text} only images
 </summary>
 */

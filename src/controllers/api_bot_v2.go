@@ -223,7 +223,7 @@ func AttachmentAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 	ss := strings.Split(p.Url, "/")
 	id := ss[len(ss)-1]
 
-	att, err := server.Download(id)
+	att, err := server.Download(id, false)
 	if err != nil {
 		RespondServerError(server, w, err)
 		return

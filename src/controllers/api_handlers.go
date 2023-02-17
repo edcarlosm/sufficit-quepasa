@@ -40,8 +40,8 @@ func RegisterAPIControllers(r chi.Router) {
 		r.Post(endpoint+"/senddocument", SendDocumentAPIHandlerV2)
 
 		r.Post(endpoint+"/sendurl", SendDocumentFromUrl)
-		r.Post(endpoint+"/sendbinary/{chatid}/{fileName}/{text}", SendDocumentFromBinary)
-		r.Post(endpoint+"/sendbinary/{chatid}/{fileName}", SendDocumentFromBinary)
+		r.Post(endpoint+"/sendbinary/{chatid}/{filename}/{text}", SendDocumentFromBinary)
+		r.Post(endpoint+"/sendbinary/{chatid}/{filename}", SendDocumentFromBinary)
 		r.Post(endpoint+"/sendbinary/{chatid}", SendDocumentFromBinary)
 		r.Post(endpoint+"/sendbinary", SendDocumentFromBinary)
 		r.Post(endpoint+"/sendencoded", SendDocumentFromEncoded)
@@ -52,8 +52,8 @@ func RegisterAPIControllers(r chi.Router) {
 		r.Get(endpoint+"/receive", ReceiveAPIHandler)
 		r.Post(endpoint+"/attachment", AttachmentAPIHandlerV2)
 
-		r.Get(endpoint+"/download/{messageId}", DownloadControllerV3)
-		r.Get(endpoint+"/download", DownloadControllerV3)
+		r.Get(endpoint+"/download/{messageid}", DownloadController)
+		r.Get(endpoint+"/download", DownloadController)
 
 		// PICTURE INFO | DATA --------------------
 		// ----------------------------------------

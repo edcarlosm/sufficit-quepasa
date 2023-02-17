@@ -111,14 +111,19 @@ func (server *QPWhatsappServer) DownloadData(id string) ([]byte, error) {
 	return server.connection.DownloadData(&msg)
 }
 
-func (server *QPWhatsappServer) Download(id string) (att *whatsapp.WhatsappAttachment, err error) {
+/*
+<summary>
+	Download attachment from msg id, optional use cached data or not
+</summary>
+*/
+func (server *QPWhatsappServer) Download(id string, cache bool) (att *whatsapp.WhatsappAttachment, err error) {
 	msg, err := server.Handler.GetMessage(id)
 	if err != nil {
 		return
 	}
 
-	server.Log.Infof("downloading msg %s", id)
-	att, err = server.connection.Download(&msg)
+	server.Log.Infof("downloading msg %s, using cache: %s", id, cache)
+	att, err = server.connection.Download(&msg, cache)
 	if err != nil {
 		return
 	}

@@ -11,12 +11,13 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/jwtauth"
 	log "github.com/sirupsen/logrus"
-	. "github.com/sufficit/sufficit-quepasa/models"
+	models "github.com/sufficit/sufficit-quepasa/models"
 )
 
 var FormLoginEndpoint string = "/login"
 var FormSetupEndpoint string = "/setup"
 var FormLogoutEndpoint string = "/logout"
+var FormDownloadEndpoint string = "/download"
 
 func RegisterFormControllers(r chi.Router) {
 	r.Get("/", IndexHandler)
@@ -29,7 +30,7 @@ func RegisterFormControllers(r chi.Router) {
 
 // LoginFormHandler renders route GET "/login"
 func LoginFormHandler(w http.ResponseWriter, r *http.Request) {
-	data := QPFormLoginData{PageTitle: "Login"}
+	data := models.QPFormLoginData{PageTitle: "Login"}
 
 	templates := template.Must(template.ParseFiles("views/layouts/main.tmpl", "views/login.tmpl"))
 	templates.ExecuteTemplate(w, "main", data)
@@ -46,7 +47,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := WhatsappService.GetUser(email, password)
+	user, err := models.WhatsappService.GetUser(email, password)
 	if err != nil {
 		RespondUnauthorized(w, errors.New("Incorrect username or password"))
 		return

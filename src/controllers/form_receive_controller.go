@@ -19,7 +19,7 @@ func FormReceiveController(w http.ResponseWriter, r *http.Request) {
 	} else {
 		data.Number = server.GetWid()
 		data.Token = server.Bot.Token
-		data.DownloadPrefix = GetDownloadPrefixV3(server.Bot.Token)
+		data.DownloadPrefix = GetDownloadPrefix(server.Bot.Token)
 	}
 
 	// Evitando tentativa de download de anexos sem o bot estar devidamente sincronizado

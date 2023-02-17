@@ -318,3 +318,10 @@ func GetServerFromAuthenticatedRequest(user models.QPUser, r *http.Request) (ser
 	}
 	return
 }
+
+func GetDownloadPrefix(token string) (path string) {
+	path = "/download?token={token}&cache=false&messageid={messageid}"
+	path = strings.Replace(path, "{token}", token, -1)
+	path = strings.Replace(path, "{messageid}", "", -1)
+	return
+}
