@@ -2,7 +2,8 @@ package models
 
 import (
 	"fmt"
-
+	"os"
+	
 	log "github.com/sirupsen/logrus"
 )
 
@@ -24,7 +25,14 @@ func (config *QPDatabaseConfig) GetConnectionString() (connection string) {
 		connection = fmt.Sprintf("host=%s dbname=%s port=%s user=%s password=%s sslmode=%s",
 			config.Host, config.DataBase, config.Port, config.User, config.Password, config.SSL)
 	} else if config.Driver == "sqlite3" {
-		connection = "quepasa.db?cache=shared&mode=memory"
+
+		// check if exists old quepasa.db
+		if _, err := os.Stat("quepasa.db"); err == nil {
+			connection = "quepasa.db?cache=shared&mode=memory"
+		} else {
+			// using new quepasa.sqlite
+			connection = "quepasa.sqlite?cache=shared&mode=memory"
+		}
 	} else {
 		log.Fatal("database driver not supported")
 	}
