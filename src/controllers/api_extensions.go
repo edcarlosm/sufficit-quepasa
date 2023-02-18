@@ -70,7 +70,13 @@ func GetToken(r *http.Request) string {
 </summary>
 */
 func GetMessageId(r *http.Request) string {
-	return models.GetRequestParameter(r, "messageid")
+	messageid := models.GetRequestParameter(r, "messageid")
+	if len(messageid) == 0 {
+
+		// compatibility with V3
+		messageid = models.QueryGetValue(r.URL, "id")
+	}
+	return messageid
 }
 
 /*
