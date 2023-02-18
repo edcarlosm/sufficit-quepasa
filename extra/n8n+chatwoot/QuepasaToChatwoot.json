@@ -16,8 +16,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -6920,
-        140
+        -5960,
+        160
       ],
       "id": "813e1570-6153-4074-a3e3-37fe77ca3e47"
     },
@@ -38,8 +38,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        -6120,
-        -40
+        -5160,
+        -20
       ],
       "id": "b77722ea-8c17-4618-a3f4-2097027f2da1"
     },
@@ -59,8 +59,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -1540,
-        740
+        -520,
+        760
       ],
       "id": "f7edfe24-76ef-46cd-9ee3-0ea9b5c36189"
     },
@@ -99,8 +99,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        -2240,
-        520
+        -1220,
+        540
       ],
       "id": "d3e4d2ee-510b-484f-b041-6038333b0dbb",
       "notes": "Important to use \"source_id\" to respond messages"
@@ -126,8 +126,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        -2000,
-        520
+        -980,
+        540
       ],
       "id": "b65fcaee-1d8e-4a3e-80ec-d72f518fcf80"
     },
@@ -158,8 +158,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        -1280,
-        520
+        -260,
+        540
       ],
       "id": "a4c020bd-3184-4a8a-8099-9f65e2457a0d"
     },
@@ -186,11 +186,12 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        -3980,
-        1140
+        -3200,
+        1040
       ],
       "id": "4fb9e66c-9793-4c64-8d20-1b3f74c13d32",
-      "retryOnFail": true,
+      "retryOnFail": false,
+      "executeOnce": true,
       "notes": "Missing filter by:\nContact Id\nInbox Id\nStatus = open | pending"
     },
     {
@@ -209,7 +210,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -11220,
+        -10860,
         760
       ],
       "id": "1f2ebf86-cc12-4cb8-b058-83fbd7038f80"
@@ -222,8 +223,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 1,
       "position": [
-        -3740,
-        1060
+        -2820,
+        940
       ],
       "id": "4d8442b4-893a-45a5-a31a-a50a4c98fc3a"
     },
@@ -238,7 +239,7 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
       "position": [
-        -11440,
+        -11080,
         760
       ],
       "webhookId": "f0d0e1da-e8cf-4956-8715-dccf5fe3c892"
@@ -258,8 +259,8 @@
       "type": "@sufficit/n8n-nodes-chatwoot.chatwoot",
       "typeVersion": 1,
       "position": [
-        -6600,
-        -20
+        -5640,
+        0
       ],
       "executeOnce": true,
       "continueOnFail": true
@@ -274,8 +275,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
-        -10900,
-        880
+        -10600,
+        1180
       ]
     },
     {
@@ -293,8 +294,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -2740,
-        720
+        -1720,
+        740
       ],
       "alwaysOutputData": false,
       "id": "62d121ce-badd-47c3-b5af-211c632d745d"
@@ -310,8 +311,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        60,
-        700
+        1080,
+        720
       ]
     },
     {
@@ -331,8 +332,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        640,
-        780
+        1660,
+        800
       ]
     },
     {
@@ -350,8 +351,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -2220,
-        180
+        -1200,
+        200
       ]
     },
     {
@@ -363,8 +364,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        -1760,
-        180
+        -740,
+        200
       ],
       "continueOnFail": true
     },
@@ -377,8 +378,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        -1980,
-        180
+        -960,
+        200
       ]
     },
     {
@@ -390,24 +391,24 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        960,
-        460
+        1980,
+        480
       ],
       "continueOnFail": true
     },
     {
       "parameters": {
         "content": "## Getting and Filtering Conversations\n",
-        "height": 389.53056603773587,
-        "width": 1524.686663072776
+        "height": 522.3007669591103,
+        "width": 1625.2969708820842
       },
       "id": "96317c09-f63f-45fe-a49e-aa0f7a8efe75",
       "name": "Note1",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -4500,
-        940
+        -3740,
+        820
       ]
     },
     {
@@ -448,8 +449,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        -4180,
-        1040
+        -3660,
+        920
       ]
     },
     {
@@ -461,8 +462,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
       "position": [
-        -3540,
-        1060
+        -3020,
+        1040
       ]
     },
     {
@@ -476,8 +477,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        -9440,
-        980
+        -9100,
+        1000
       ],
       "notesInFlow": true,
       "notes": "not need to be Multplex, only 1 first. But its bugged !!!"
@@ -498,9 +499,10 @@
       "type": "@sufficit/n8n-nodes-chatwoot.chatwoot",
       "typeVersion": 1,
       "position": [
-        -8800,
-        1080
-      ]
+        -8700,
+        1180
+      ],
+      "continueOnFail": true
     },
     {
       "parameters": {
@@ -513,8 +515,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -7220,
-        -120
+        -6480,
+        -100
       ]
     },
     {
@@ -526,8 +528,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        -6120,
-        160
+        -5160,
+        180
       ],
       "id": "79aace69-87e6-4cb2-b5b9-9013d0f3a771"
     },
@@ -557,8 +559,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        -10540,
-        980
+        -10300,
+        800
       ]
     },
     {
@@ -570,8 +572,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
       "position": [
-        -10320,
-        980
+        -10080,
+        800
       ]
     },
     {
@@ -596,8 +598,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        -7120,
-        140
+        -6160,
+        160
       ]
     },
     {
@@ -658,7 +660,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        -10900,
+        -10540,
         660
       ]
     },
@@ -678,8 +680,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -6400,
-        -20
+        -5440,
+        0
       ]
     },
     {
@@ -689,7 +691,7 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -11640,
+        -11280,
         560
       ]
     },
@@ -702,7 +704,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
       "position": [
-        -11440,
+        -11080,
         560
       ]
     },
@@ -713,8 +715,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        -5660,
-        60
+        -4700,
+        80
       ]
     },
     {
@@ -726,8 +728,8 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        -7780,
-        840
+        -6820,
+        860
       ]
     },
     {
@@ -735,7 +737,7 @@
         "conditions": {
           "string": [
             {
-              "value1": "={{$json?.payload?.id}}",
+              "value1": "={{$json.payload?.id}}",
               "operation": "isNotEmpty"
             }
           ]
@@ -746,23 +748,23 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -9060,
-        980
+        -8900,
+        1000
       ]
     },
     {
       "parameters": {
         "content": "## Chat Contact\n",
-        "height": 519.0878188679243,
-        "width": 1764.5342913207542
+        "height": 745.1581608776635,
+        "width": 2436.7449011708095
       },
       "id": "70402150-e8f6-4930-855c-e30e9fc11fcf",
       "name": "Note6",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -10080,
-        780
+        -9800,
+        800
       ]
     },
     {
@@ -776,8 +778,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        -8160,
-        680
+        -7200,
+        700
       ],
       "executeOnce": false
     },
@@ -797,8 +799,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -7680,
-        660
+        -6720,
+        680
       ],
       "notesInFlow": true,
       "notes": "Always false for now"
@@ -814,38 +816,10 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        -5180,
-        640
+        -4220,
+        660
       ],
       "executeOnce": false
-    },
-    {
-      "parameters": {
-        "keepOnlySet": true,
-        "values": {
-          "string": [
-            {
-              "name": "chat.chatwoot.source_id",
-              "value": "={{$json.chat.hex}}"
-            }
-          ],
-          "number": [
-            {
-              "name": "chat.chatwoot.id",
-              "value": "={{$json.payload.id}}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "name": "Set Chat Chatwoot Info",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 1,
-      "position": [
-        -8800,
-        880
-      ],
-      "id": "1f452d3e-7bb3-405f-8edb-5b5195771eeb"
     },
     {
       "parameters": {},
@@ -854,34 +828,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        -4760,
-        700
-      ]
-    },
-    {
-      "parameters": {
-        "keepOnlySet": true,
-        "values": {
-          "string": [
-            {
-              "name": "conversation.id",
-              "value": "={{$json.payload?.id}}"
-            },
-            {
-              "name": "conversation.status",
-              "value": "={{$json.payload?.status}}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "2b5f54cc-cfae-4bed-96eb-a900b81a2658",
-      "name": "Set Filter Conversation Parameters1",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 1,
-      "position": [
-        -3260,
-        1060
+        -4020,
+        720
       ]
     },
     {
@@ -895,8 +843,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        -2980,
-        720
+        -1960,
+        740
       ]
     },
     {
@@ -906,8 +854,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        -2480,
-        520
+        -1460,
+        540
       ]
     },
     {
@@ -921,8 +869,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        -1740,
-        680
+        -720,
+        700
       ]
     },
     {
@@ -932,8 +880,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        -700,
-        760
+        320,
+        780
       ]
     },
     {
@@ -947,37 +895,9 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
-        -940,
-        700
+        80,
+        720
       ]
-    },
-    {
-      "parameters": {
-        "keepOnlySet": true,
-        "values": {
-          "string": [
-            {
-              "name": "payload.source_id",
-              "value": "={{$json.payload.contact_inbox.source_id}}"
-            }
-          ],
-          "number": [
-            {
-              "name": "payload.id",
-              "value": "={{$json.payload.contact.id}}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "name": "Set Chat Chatwoot Info1",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 1,
-      "position": [
-        -8520,
-        1080
-      ],
-      "id": "24e4b62d-87ac-4919-9864-88e68ff7a2ee"
     },
     {
       "parameters": {
@@ -1034,8 +954,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        140,
-        780
+        1160,
+        800
       ],
       "id": "2b5459e8-27fe-4ad8-a402-e463d73e4a2c"
     },
@@ -1056,8 +976,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        -1100,
-        520
+        -80,
+        540
       ],
       "id": "41cdf633-7c3e-4a48-b006-5e2ec6e2bc05"
     },
@@ -1077,8 +997,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        400,
-        780
+        1420,
+        800
       ],
       "id": "9dfa2f0b-8c71-4015-b47d-acc9045d9735"
     },
@@ -1096,8 +1016,8 @@
       "type": "@sufficit/n8n-nodes-chatwoot.chatwoot",
       "typeVersion": 1,
       "position": [
-        -9800,
-        900
+        -9480,
+        1060
       ],
       "notesInFlow": false
     },
@@ -1122,8 +1042,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        -9640,
-        900
+        -9300,
+        1060
       ]
     },
     {
@@ -1135,38 +1055,24 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        960,
-        800
+        1980,
+        820
       ],
       "continueOnFail": true
     },
     {
       "parameters": {
-        "jsCode": "function hex2a3b(hexx) {\n    var hex = hexx.toString(); //force conversion\n    var str = '';\n    for (var i = 0; i < hex.length; i += 2)\n        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));\n    return str;\n}\n\nfunction ChatIdFromSender(sender){\n    if(sender){\n        \n        // new variable to identify external id\n        if(sender.identifier){\n            return sender.identifier;\n        }        \n\n        // from priority quepasa attribute\n        if(sender.custom_attributes && sender.custom_attributes.quepasa) {\n            return sender.custom_attributes.quepasa;\n        }\n\n        if(sender.source_id){\n            return hex2a3b(sender.source_id);\n        }\n\n        if(sender.email){\n            if(sender.email.endsWith('@g.us') || sender.email.endsWith('@s.whatsapp.net')){\n                return sender.email;\n            }\n        }\n    }\n}\n\n\nfor (const item of $input.all()){    \n  const chatid = item.json.chatid;\n  if(item.json.data){\n    if(item.json.data.payload){\n\n        let conversation = item.json.data.payload.find((e) => e.meta && ChatIdFromSender(e.meta.sender) == chatid);\n        item.json.payload = conversation;\n    }\n  }\n}\n\nreturn $input.all();"
-      },
-      "id": "96bcf1a5-58ed-43d0-9e5f-8e6e87f9e98f",
-      "name": "Filter by ChatId (deprecated)",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 1,
-      "position": [
-        -3540,
-        1260
-      ],
-      "disabled": true
-    },
-    {
-      "parameters": {
         "content": "## Call Request ?",
         "height": 354.0653279804751,
-        "width": 446.26260184928856
+        "width": 237.27247076935066
       },
       "id": "ff143a7a-1216-4737-bc80-deea7ac5a77c",
       "name": "Note2",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -500,
-        560
+        540,
+        660
       ]
     },
     {
@@ -1186,8 +1092,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -420,
-        760
+        600,
+        780
       ]
     },
     {
@@ -1213,8 +1119,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
       "position": [
-        -200,
-        620
+        820,
+        640
       ]
     },
     {
@@ -1226,8 +1132,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        140,
-        420
+        1160,
+        440
       ],
       "executeOnce": true,
       "continueOnFail": true
@@ -1239,19 +1145,8 @@
       "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
       "position": [
-        -8520,
-        880
-      ]
-    },
-    {
-      "parameters": {},
-      "id": "3674ce24-d097-43bc-b860-645b08cd948b",
-      "name": "Discover Chat Contact",
-      "type": "n8n-nodes-base.noOp",
-      "typeVersion": 1,
-      "position": [
-        -10000,
-        1000
+        -7620,
+        860
       ]
     },
     {
@@ -1270,8 +1165,275 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -8000,
-        680
+        -7040,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.payload}}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "e732d610-488c-4b06-887b-a9f36530860e",
+      "name": "IF",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -8540,
+        1180
+      ]
+    },
+    {
+      "parameters": {
+        "amount": "={{ (Math.random() * 5) + 1 }}",
+        "unit": "seconds"
+      },
+      "id": "b6920cd9-427a-4f14-a983-2ad4180cfa24",
+      "name": "Wait a while (5s)",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        -7620,
+        1040
+      ],
+      "webhookId": "94c8f44e-8e77-430b-8cb2-1e8a2ddff8a0"
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "chat.chatwoot.source_id",
+              "value": "={{$json.chat.hex}}"
+            }
+          ],
+          "number": [
+            {
+              "name": "chat.chatwoot.id",
+              "value": "={{$json.payload.id}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set SourceId and PayloadId",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        -8700,
+        860
+      ],
+      "id": "1f452d3e-7bb3-405f-8edb-5b5195771eeb"
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "chat.chatwoot.source_id",
+              "value": "={{$json.payload.contact_inbox.source_id}}"
+            }
+          ],
+          "number": [
+            {
+              "name": "chat.chatwoot.id",
+              "value": "={{$json.payload.contact.id}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set Created Chat Contact Info",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        -7880,
+        1160
+      ],
+      "id": "24e4b62d-87ac-4919-9864-88e68ff7a2ee"
+    },
+    {
+      "parameters": {
+        "errorMessage": "Error on create contact (expected 422)"
+      },
+      "id": "a3310ad2-b983-4543-97a5-50eccfd5c8ef",
+      "name": "! Unknown Error",
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        -8140,
+        1340
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "number": [
+            {
+              "name": "attempts",
+              "value": "={{ ($json.attempts ?? 0) + 1 }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c02b2b86-1e51-47e0-bc81-510cc2371116",
+      "name": "Set Increment For Conversations Attempts",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        -3420,
+        920
+      ]
+    },
+    {
+      "parameters": {
+        "amount": "={{ (Math.random() * 5) + 1 }}",
+        "unit": "seconds"
+      },
+      "id": "78dbbe93-cbaf-41b4-9a2e-feed34f30195",
+      "name": "Wait a while (5s) For Conversation",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        -2360,
+        1120
+      ],
+      "webhookId": "13d982e4-e253-4616-9e0a-3da472be5e56"
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "conversation.id",
+              "value": "={{$json.payload?.id}}"
+            },
+            {
+              "name": "conversation.status",
+              "value": "={{$json.payload?.status}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2b5f54cc-cfae-4bed-96eb-a900b81a2658",
+      "name": "Set Conversation Payload",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        -2360,
+        920
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.payload }}",
+              "operation": "isNotEmpty"
+            }
+          ],
+          "number": [
+            {
+              "value1": "={{ $json.attempts ?? 0 }}",
+              "operation": "larger",
+              "value2": 2
+            }
+          ]
+        },
+        "combineOperation": "any"
+      },
+      "id": "fb886a54-fb8e-4eb8-86f6-39836908fa1e",
+      "name": "If Conversation Found Or Max Attempts Reached ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -2600,
+        940
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "number": [
+            {
+              "name": "attempts",
+              "value": "={{ ($json.attempts ?? 0) + 1 }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c5b45d9d-dc2d-45d1-8beb-1d11efbc8c51",
+      "name": "Set Increment For Chat Contact Attempt",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        -9660,
+        980
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "id": "c1e14f81-7d57-42e9-a535-16014d680c3b",
+      "name": "Merge2",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2,
+      "position": [
+        -8160,
+        1040
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.error ?? \"\" }}",
+              "operation": "contains",
+              "value2": "could not be processed"
+            }
+          ],
+          "number": [
+            {
+              "value1": "={{ $json.attempts ?? 0 }}",
+              "value2": 2
+            }
+          ]
+        }
+      },
+      "id": "3b035c9e-09e6-4b3c-9674-b6754988c0a2",
+      "name": "If Error 422 And Has Attempts Remaning ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -8360,
+        1240
+      ],
+      "executeOnce": false
+    },
+    {
+      "parameters": {},
+      "id": "c9d6b540-f8bd-4264-9f68-456b2c4bb87c",
+      "name": "Retry To Chat Contact",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -7620,
+        1320
       ]
     }
   ],
@@ -1371,9 +1533,9 @@
       "main": [
         [
           {
-            "node": "Merge3",
+            "node": "Filter Open|Pend|Snooze",
             "type": "main",
-            "index": 1
+            "index": 0
           }
         ]
       ]
@@ -1390,17 +1552,6 @@
         [
           {
             "node": "Broadcast Message",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Merge3": {
-      "main": [
-        [
-          {
-            "node": "Filter Open|Pend|Snooze",
             "type": "main",
             "index": 0
           }
@@ -1496,23 +1647,7 @@
       "main": [
         [
           {
-            "node": "Merge3",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Get Conversation",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Filter Open|Pend|Snooze": {
-      "main": [
-        [
-          {
-            "node": "Set Filter Conversation Parameters1",
+            "node": "Set Increment For Conversations Attempts",
             "type": "main",
             "index": 0
           }
@@ -1534,7 +1669,7 @@
       "main": [
         [
           {
-            "node": "Set Chat Chatwoot Info1",
+            "node": "IF",
             "type": "main",
             "index": 0
           }
@@ -1567,7 +1702,7 @@
       "main": [
         [
           {
-            "node": "Discover Chat Contact",
+            "node": "Set Increment For Chat Contact Attempt",
             "type": "main",
             "index": 0
           }
@@ -1638,12 +1773,17 @@
       "main": [
         [
           {
-            "node": "Set Chat Chatwoot Info",
+            "node": "Set SourceId and PayloadId",
             "type": "main",
             "index": 0
           }
         ],
         [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          },
           {
             "node": "Create Chat Contact",
             "type": "main",
@@ -1708,17 +1848,6 @@
         ]
       ]
     },
-    "Set Chat Chatwoot Info": {
-      "main": [
-        [
-          {
-            "node": "Deliver Chat Contact Payload",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "new payload": {
       "main": [
         [
@@ -1731,17 +1860,6 @@
             "node": "Merge",
             "type": "main",
             "index": 0
-          }
-        ]
-      ]
-    },
-    "Set Filter Conversation Parameters1": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 1
           }
         ]
       ]
@@ -1806,17 +1924,6 @@
         ]
       ]
     },
-    "Set Chat Chatwoot Info1": {
-      "main": [
-        [
-          {
-            "node": "If Chat Contact Exists",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Chatwoot Message Payload": {
       "main": [
         [
@@ -1867,7 +1974,7 @@
           {
             "node": "Follow To Chat Contact Create",
             "type": "main",
-            "index": 0
+            "index": 1
           }
         ]
       ]
@@ -1917,22 +2024,6 @@
         ]
       ]
     },
-    "Discover Chat Contact": {
-      "main": [
-        [
-          {
-            "node": "Get Chat Contact",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Follow To Chat Contact Create",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
     "If Chat Exists ?": {
       "main": [
         [
@@ -1950,11 +2041,200 @@
           }
         ]
       ]
+    },
+    "IF": {
+      "main": [
+        [
+          {
+            "node": "Set Created Chat Contact Info",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If Error 422 And Has Attempts Remaning ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set SourceId and PayloadId": {
+      "main": [
+        [
+          {
+            "node": "Deliver Chat Contact Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Created Chat Contact Info": {
+      "main": [
+        [
+          {
+            "node": "Deliver Chat Contact Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait a while (5s)": {
+      "main": [
+        [
+          {
+            "node": "Retry To Chat Contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Increment For Conversations Attempts": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Conversation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "If Conversation Found Or Max Attempts Reached ?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Conversation Payload": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Wait a while (5s) For Conversation": {
+      "main": [
+        [
+          {
+            "node": "Set Increment For Conversations Attempts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Conversation Found Or Max Attempts Reached ?": {
+      "main": [
+        [
+          {
+            "node": "Set Conversation Payload",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait a while (5s) For Conversation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Open|Pend|Snooze": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Set Increment For Chat Contact Attempt": {
+      "main": [
+        [
+          {
+            "node": "Follow To Chat Contact Create",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Chat Contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Wait a while (5s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Error 422 And Has Attempts Remaning ?": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "! Unknown Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retry To Chat Contact": {
+      "main": [
+        [
+          {
+            "node": "Set Increment For Chat Contact Attempt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
-  "settings": {},
-  "versionId": "04b41240-dd15-4bd5-a7ea-308c96e2bf79",
+  "settings": {
+    "saveManualExecutions": false,
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionTimeout": 30
+  },
+  "versionId": "5b188ddc-d1cb-4e83-9420-9cb4999fd493",
   "id": "3",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
