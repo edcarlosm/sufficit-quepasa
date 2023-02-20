@@ -24,7 +24,12 @@ src/.profile
 src/.env
 src/go
 src/sqlite3
+
+# database files
 src/*.db
+src/*.sqlite
+
+# production or testing directory
 src/.dist/
 
 # symbolic link to src folder under linux
@@ -32,6 +37,5 @@ quepasa/
 
 src/__debug_bin.exe
 src/models/qp_database_config.go
-src/.dist/quepasa.db
 src/whatsmeow.db-journal
 src/main
