@@ -31,7 +31,7 @@ func ToWhatsappMessageV1(source *QPSendRequestV1) (msg *whatsapp.WhatsappMessage
 		return
 	}
 
-	chat := whatsapp.WhatsappChat{ID: recipient}
+	chat := whatsapp.WhatsappChat{Id: recipient}
 	msg = &whatsapp.WhatsappMessage{}
 	msg.Text = source.Message
 	msg.Chat = chat

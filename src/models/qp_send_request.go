@@ -60,7 +60,7 @@ func (source *QpSendRequest) ToWhatsappMessage() (msg *whatsapp.WhatsappMessage,
 		return
 	}
 
-	chat := whatsapp.WhatsappChat{ID: chatId}
+	chat := whatsapp.WhatsappChat{Id: chatId}
 	msg = &whatsapp.WhatsappMessage{
 		Id:           source.Id,
 		TrackId:      source.TrackId,

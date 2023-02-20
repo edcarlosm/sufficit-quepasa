@@ -66,7 +66,14 @@ func (source WhatsappMessage) GetTimestamp() uint64 { return uint64(source.Times
 //endregion
 
 func (source *WhatsappMessage) GetChatId() string {
-	return source.Chat.ID
+	return source.Chat.Id
+}
+
+func (source *WhatsappMessage) GetParticipantId() string {
+	if source.Participant == nil {
+		return ""
+	}
+	return source.Participant.Id
 }
 
 func (source *WhatsappMessage) GetText() string {
@@ -84,11 +91,11 @@ func (source *WhatsappMessage) GetSource() interface{} {
 }
 
 func (source *WhatsappMessage) FromGroup() bool {
-	return strings.HasSuffix(source.Chat.ID, "@g.us")
+	return strings.HasSuffix(source.Chat.Id, "@g.us")
 }
 
 func (source *WhatsappMessage) FromBroadcast() bool {
-	return source.Chat.ID == "status" || source.Chat.ID == "status@broadcast"
+	return source.Chat.Id == "status" || source.Chat.Id == "status@broadcast"
 }
 
 func (source *WhatsappMessage) GetAttachment() *WhatsappAttachment {

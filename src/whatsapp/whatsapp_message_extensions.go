@@ -15,7 +15,7 @@ func ToMessage(
 		return
 	}
 
-	chat := WhatsappChat{ID: chatId}
+	chat := WhatsappChat{Id: chatId}
 	msg = &WhatsappMessage{
 		TrackId:      trackid,
 		Text:         text,

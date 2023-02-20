@@ -419,7 +419,7 @@ func Send(server *models.QPWhatsappServer, response *models.QpSendResponse, requ
 	result := &models.QpSendResponseMessage{}
 	result.Wid = server.GetWid()
 	result.Id = sendResponse.GetId()
-	result.ChatId = waMsg.Chat.ID
+	result.ChatId = waMsg.Chat.Id
 	result.TrackId = waMsg.TrackId
 
 	response.ParseSuccess(result)

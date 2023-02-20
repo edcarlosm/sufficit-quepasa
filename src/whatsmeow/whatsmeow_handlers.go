@@ -136,7 +136,7 @@ func (handler *WhatsmeowHandlers) Message(evt events.Message) {
 
 	message.Chat = whatsapp.WhatsappChat{}
 	chatID := fmt.Sprint(evt.Info.Chat.User, "@", evt.Info.Chat.Server)
-	message.Chat.ID = chatID
+	message.Chat.Id = chatID
 
 	if evt.Info.IsGroup {
 		gInfo, _ := handler.Client.GetGroupInfo(evt.Info.Chat)
@@ -147,7 +147,7 @@ func (handler *WhatsmeowHandlers) Message(evt events.Message) {
 		message.Participant = &whatsapp.WhatsappChat{}
 
 		participantID := fmt.Sprint(evt.Info.Sender.User, "@", evt.Info.Sender.Server)
-		message.Participant.ID = participantID
+		message.Participant.Id = participantID
 		message.Participant.Title = evt.Info.PushName
 	} else if !message.FromMe {
 		message.Chat.Title = evt.Info.PushName
@@ -181,7 +181,7 @@ func (handler *WhatsmeowHandlers) CallMessage(evt types.BasicCallMeta) {
 
 	message.Chat = whatsapp.WhatsappChat{}
 	chatID := fmt.Sprint(evt.From.User, "@", evt.From.Server)
-	message.Chat.ID = chatID
+	message.Chat.Id = chatID
 
 	message.Type = whatsapp.CallMessageType
 

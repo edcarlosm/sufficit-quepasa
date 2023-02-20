@@ -86,13 +86,13 @@ func SendTextAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// setting source msg participant
-	if waMsg.FromGroup() && len(waMsg.Participant.ID) == 0 {
-		waMsg.Participant.ID = whatsapp.PhoneToWid(server.GetWid())
+	if waMsg.FromGroup() && len(waMsg.Participant.Id) == 0 {
+		waMsg.Participant.Id = whatsapp.PhoneToWid(server.GetWid())
 	}
 
 	// setting wa msg chat title
 	if len(waMsg.Chat.Title) == 0 {
-		waMsg.Chat.Title = server.GetTitle(waMsg.Chat.ID)
+		waMsg.Chat.Title = server.GetTitle(waMsg.Chat.Id)
 	}
 
 	sendResponse, err := server.SendMessage(waMsg)
@@ -103,8 +103,8 @@ func SendTextAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response := models.QPSendResponseV2{}
-	response.Chat.ID = waMsg.Chat.ID
-	response.Chat.UserName = waMsg.Chat.ID
+	response.Chat.ID = waMsg.Chat.Id
+	response.Chat.UserName = waMsg.Chat.Id
 	response.Chat.Title = waMsg.Chat.Title
 	response.From.ID = server.Bot.ID
 	response.From.UserName = server.Bot.GetNumber()
@@ -113,7 +113,7 @@ func SendTextAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 	// Para manter a compatibilidade
 	response.PreviusV1 = models.QPSendResult{
 		Source:    server.GetWid(),
-		Recipient: waMsg.Chat.ID,
+		Recipient: waMsg.Chat.Id,
 		MessageId: sendResponse.GetId(),
 	}
 
@@ -176,9 +176,9 @@ func SendDocumentAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response := models.QPSendResponseV2{}
-	response.Chat.ID = waMsg.Chat.ID
-	response.Chat.UserName = waMsg.Chat.ID
-	response.Chat.Title = server.GetTitle(waMsg.Chat.ID)
+	response.Chat.ID = waMsg.Chat.Id
+	response.Chat.UserName = waMsg.Chat.Id
+	response.Chat.Title = server.GetTitle(waMsg.Chat.Id)
 	response.From.ID = server.Bot.ID
 	response.From.UserName = server.Bot.GetNumber()
 	response.ID = sendResponse.GetId()
@@ -186,7 +186,7 @@ func SendDocumentAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 	// Para manter a compatibilidade
 	response.PreviusV1 = models.QPSendResult{
 		Source:    server.GetWid(),
-		Recipient: waMsg.Chat.ID,
+		Recipient: waMsg.Chat.Id,
 		MessageId: sendResponse.GetId(),
 	}
 

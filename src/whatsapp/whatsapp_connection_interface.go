@@ -36,6 +36,8 @@ type IWhatsappConnection interface {
 	// Default send message method
 	Send(*WhatsappMessage) (IWhatsappSendResponse, error)
 
+	Revoke(*WhatsappMessage) error
+
 	// Define the log level for this connection
 	UpdateLog(*log.Entry)
 

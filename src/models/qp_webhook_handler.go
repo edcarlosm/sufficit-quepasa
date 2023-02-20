@@ -27,7 +27,7 @@ func (w *QPWebhookHandler) Handle(payload *whatsapp.WhatsappMessage) {
 		return
 	}
 
-	if payload.Chat.ID == "status@broadcast" && !w.Server.HandleBroadcast() {
+	if payload.Chat.Id == "status@broadcast" && !w.Server.HandleBroadcast() {
 		log.Debug("ignoring broadcast message on webhook request: %v", payload.Id)
 		return
 	}

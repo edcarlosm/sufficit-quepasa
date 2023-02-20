@@ -171,16 +171,16 @@ func ToQPEndPointV2(source *whatsapp.WhatsappEndpoint) (destination QPEndpointV2
 }
 
 func ChatToQPEndPointV1(source whatsapp.WhatsappChat) (destination QPEndpointV1) {
-	if !strings.Contains(source.ID, "@") {
-		if source.ID == "status" {
-			destination.ID = source.ID + "@broadcast"
-		} else if strings.Contains(source.ID, "-") {
-			destination.ID = source.ID + "@g.us"
+	if !strings.Contains(source.Id, "@") {
+		if source.Id == "status" {
+			destination.ID = source.Id + "@broadcast"
+		} else if strings.Contains(source.Id, "-") {
+			destination.ID = source.Id + "@g.us"
 		} else {
-			destination.ID = source.ID + "@s.whatsapp.net"
+			destination.ID = source.Id + "@s.whatsapp.net"
 		}
 	} else {
-		destination.ID = source.ID
+		destination.ID = source.Id
 	}
 
 	destination.Title = source.Title
@@ -188,16 +188,16 @@ func ChatToQPEndPointV1(source whatsapp.WhatsappChat) (destination QPEndpointV1)
 }
 
 func ChatToQPChatV2(source whatsapp.WhatsappChat) (destination QPChatV2) {
-	if !strings.Contains(source.ID, "@") {
-		if source.ID == "status" {
-			destination.ID = source.ID + "@broadcast"
-		} else if strings.Contains(source.ID, "-") {
-			destination.ID = source.ID + "@g.us"
+	if !strings.Contains(source.Id, "@") {
+		if source.Id == "status" {
+			destination.ID = source.Id + "@broadcast"
+		} else if strings.Contains(source.Id, "-") {
+			destination.ID = source.Id + "@g.us"
 		} else {
-			destination.ID = source.ID + "@s.whatsapp.net"
+			destination.ID = source.Id + "@s.whatsapp.net"
 		}
 	} else {
-		destination.ID = source.ID
+		destination.ID = source.Id
 	}
 
 	destination.Title = source.Title
@@ -205,17 +205,17 @@ func ChatToQPChatV2(source whatsapp.WhatsappChat) (destination QPChatV2) {
 }
 
 func ChatToQPEndPointV2(source whatsapp.WhatsappChat) (destination QPEndpointV2) {
-	if !strings.Contains(source.ID, "@") {
-		if source.ID == "status" {
-			destination.ID = source.ID + "@broadcast"
-		} else if strings.Contains(source.ID, "-") {
-			destination.ID = source.ID + "@g.us"
+	if !strings.Contains(source.Id, "@") {
+		if source.Id == "status" {
+			destination.ID = source.Id + "@broadcast"
+		} else if strings.Contains(source.Id, "-") {
+			destination.ID = source.Id + "@g.us"
 		} else {
-			destination.ID = source.ID + "@s.whatsapp.net"
-			destination.UserName = "+" + source.ID
+			destination.ID = source.Id + "@s.whatsapp.net"
+			destination.UserName = "+" + source.Id
 		}
 	} else {
-		destination.ID = source.ID
+		destination.ID = source.Id
 	}
 
 	destination.Title = source.Title
@@ -234,7 +234,7 @@ func ToWhatsappMessage(destination string, text string, attach *whatsapp.Whatsap
 	msg.Type = whatsapp.TextMessageType
 	msg.Text = text
 
-	chat := whatsapp.WhatsappChat{ID: recipient}
+	chat := whatsapp.WhatsappChat{Id: recipient}
 	msg.Chat = chat
 
 	if attach != nil {

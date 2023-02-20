@@ -486,7 +486,7 @@ func (server *QPWhatsappServer) Delete() (err error) {
 
 // Default send message method
 func (server *QPWhatsappServer) SendMessage(msg *whatsapp.WhatsappMessage) (response whatsapp.IWhatsappSendResponse, err error) {
-	server.Log.Debugf("sending msg to: %v", msg.Chat.ID)
+	server.Log.Debugf("sending msg to: %v", msg.Chat.Id)
 
 	if msg.HasAttachment() {
 		if len(msg.Text) > 0 {
