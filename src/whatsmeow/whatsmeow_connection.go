@@ -173,6 +173,29 @@ func (conn *WhatsmeowConnection) Download(imsg whatsapp.IWhatsappMessage, cache 
 	return
 }
 
+func (conn *WhatsmeowConnection) Revoke(msg *whatsapp.WhatsappMessage) error {
+	jid, err := types.ParseJID(msg.GetChatId())
+	if err != nil {
+		conn.log.Infof("revoke error on get jid: %s", err)
+		return err
+	}
+
+	participantJid, err := types.ParseJID(msg.GetParticipantId())
+	if err != nil {
+		conn.log.Infof("revoke error on get jid: %s", err)
+		return err
+	}
+
+	newMessage := conn.Client.BuildRevoke(jid, participantJid, msg.Id)
+	_, err = conn.Client.SendMessage(context.Background(), jid, newMessage)
+	if err != nil {
+		conn.log.Infof("revoke error: %s", err)
+		return err
+	}
+
+	return nil
+}
+
 func (conn *WhatsmeowConnection) GetProfilePicture(wid string, knowingId string) (picture *whatsapp.WhatsappProfilePicture, err error) {
 	jid, err := types.ParseJID(wid)
 	if err != nil {
