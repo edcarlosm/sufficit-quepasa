@@ -122,7 +122,7 @@ func (server *QPWhatsappServer) Download(id string, cache bool) (att *whatsapp.W
 		return
 	}
 
-	server.Log.Infof("downloading msg %s, using cache: %s", id, cache)
+	server.Log.Infof("downloading msg %s, using cache: %v", id, cache)
 	att, err = server.connection.Download(&msg, cache)
 	if err != nil {
 		return
