@@ -917,6 +917,14 @@
               "value": "={{$json.id}}"
             },
             {
+              "name": "payload.template_params.quepasa.id",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "name": "payload.template_params.quepasa.inreply",
+              "value": "={{ $json.inreply }}"
+            },
+            {
               "name": "payload.attachment",
               "value": "={{$json.attachment}}"
             },
@@ -939,6 +947,10 @@
             {
               "name": "participant.title",
               "value": "={{$json.participant?.title}}"
+            },
+            {
+              "name": "payload.external_created_at",
+              "value": "={{ new Date($json.timestamp).getTime() / 1000 }}"
             }
           ],
           "boolean": [
@@ -2234,7 +2246,7 @@
     "callerPolicy": "workflowsFromSameOwner",
     "executionTimeout": 30
   },
-  "versionId": "5b188ddc-d1cb-4e83-9420-9cb4999fd493",
+  "versionId": "ec2d2131-74f5-432d-ac91-0302aef17f84",
   "id": "3",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

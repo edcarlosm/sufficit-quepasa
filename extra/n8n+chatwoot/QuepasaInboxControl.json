@@ -7,7 +7,7 @@
         "token": "={{$json[\"query\"][\"qptoken\"]}}",
         "resource": "webhook",
         "operation": "setup",
-        "url": "=https://{{$json[\"headers\"][\"host\"]}}/webhook/to-chatwoot",
+        "url": "={{ $json.query.n8nhost?.replace(/\\/+$/, '') ?? \"https://\" + $json.headers.host }}/webhook/to-chatwoot",
         "trackId": "chatwoot",
         "extraAttributes": {
           "attribute": [
@@ -1117,7 +1117,7 @@
   },
   "active": false,
   "settings": {},
-  "versionId": "2ca31568-0fa4-464a-999a-0ec70fe6b841",
+  "versionId": "c91d8f9d-30af-430b-890c-dbd3093ff462",
   "id": "1",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
