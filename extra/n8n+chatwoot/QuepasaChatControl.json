@@ -157,7 +157,7 @@
       },
       "id": "7a86d104-aba4-4be1-9a30-aba3c972c7c8",
       "name": "Quepasa",
-      "type": "@sufficit/n8n-nodes-quepasa.quepasa",
+      "type": "n8n-nodes-quepasa.quepasa",
       "typeVersion": 1,
       "position": [
         3620,
@@ -171,7 +171,7 @@
           "string": [
             {
               "name": "chatid",
-              "value": "={{ $json.chatid ?? $json.payload?.chatId }}"
+              "value": "={{ $json.chatid ?? $json.payload?.chatid }}"
             },
             {
               "name": "qphost",
@@ -204,7 +204,7 @@
       },
       "id": "c671bf38-e2fa-4aca-9bb9-5e954fa957e0",
       "name": "Quepasa Get Invite Link",
-      "type": "@sufficit/n8n-nodes-quepasa.quepasa",
+      "type": "n8n-nodes-quepasa.quepasa",
       "typeVersion": 1,
       "position": [
         2320,
@@ -396,7 +396,7 @@
   },
   "active": false,
   "settings": {},
-  "versionId": "42e47dc6-13d8-4d5f-833c-304f36267826",
+  "versionId": "4d61fcc5-66c0-47c4-9d92-cfb5d89ab7e0",
   "id": "6",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"

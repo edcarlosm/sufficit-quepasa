@@ -52,7 +52,7 @@
       },
       "id": "83349e50-7c9d-4ce0-bc43-8fb62f11fd07",
       "name": "QP - Webhook Update",
-      "type": "@sufficit/n8n-nodes-quepasa.quepasa",
+      "type": "n8n-nodes-quepasa.quepasa",
       "typeVersion": 1,
       "position": [
         840,
@@ -70,7 +70,7 @@
       },
       "id": "311356bd-972c-4dcc-966d-52d1af29e5e3",
       "name": "QP - Webhook Remove",
-      "type": "@sufficit/n8n-nodes-quepasa.quepasa",
+      "type": "n8n-nodes-quepasa.quepasa",
       "typeVersion": 1,
       "position": [
         840,
@@ -121,7 +121,7 @@
       },
       "id": "f55b9b39-4394-42aa-8399-93db19742571",
       "name": "ChatWoot",
-      "type": "@sufficit/n8n-nodes-chatwoot.chatwoot",
+      "type": "n8n-nodes-chatwoot.chatwoot",
       "typeVersion": 1,
       "position": [
         2780,
@@ -290,7 +290,7 @@
       },
       "id": "4914a861-0c0e-4bef-957e-21f86e503f17",
       "name": "QP - Info",
-      "type": "@sufficit/n8n-nodes-quepasa.quepasa",
+      "type": "n8n-nodes-quepasa.quepasa",
       "typeVersion": 1,
       "position": [
         480,
@@ -362,7 +362,7 @@
       },
       "id": "785cc913-db90-435d-a8ba-b8a701c4d3ce",
       "name": "QP - Webhook Clear",
-      "type": "@sufficit/n8n-nodes-quepasa.quepasa",
+      "type": "n8n-nodes-quepasa.quepasa",
       "typeVersion": 1,
       "position": [
         840,

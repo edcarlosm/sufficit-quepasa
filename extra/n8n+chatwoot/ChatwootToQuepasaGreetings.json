@@ -21,7 +21,7 @@
       },
       "id": "0b4bfe29-8392-4d28-ba08-54871d324190",
       "name": "Quepasa Send Welcome",
-      "type": "@sufficit/n8n-nodes-quepasa.quepasa",
+      "type": "n8n-nodes-quepasa.quepasa",
       "typeVersion": 1,
       "position": [
         2100,

@@ -213,7 +213,7 @@
       },
       "id": "a4b5f956-21c0-4928-80d7-3c34c4939f53",
       "name": "Quepasa Send Text",
-      "type": "@sufficit/n8n-nodes-quepasa.quepasa",
+      "type": "n8n-nodes-quepasa.quepasa",
       "typeVersion": 1,
       "position": [
         3140,
@@ -234,7 +234,7 @@
       },
       "id": "742ef2af-935e-4e9f-a037-4186cbc256fe",
       "name": "Quepasa Send Attach",
-      "type": "@sufficit/n8n-nodes-quepasa.quepasa",
+      "type": "n8n-nodes-quepasa.quepasa",
       "typeVersion": 1,
       "position": [
         3140,

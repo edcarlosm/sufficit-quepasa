@@ -71,7 +71,7 @@
       },
       "id": "6826fbfb-c9b5-41a0-aeb7-974777d5fbc0",
       "name": "Quepasa Download Incoming",
-      "type": "@sufficit/n8n-nodes-quepasa.quepasa",
+      "type": "n8n-nodes-quepasa.quepasa",
       "typeVersion": 1,
       "position": [
         940,
@@ -649,7 +649,7 @@
   },
   "active": false,
   "settings": {},
-  "versionId": "0804425e-5140-4b76-932c-4f90e307c824",
+  "versionId": "108ae037-718b-40b7-88ab-f5abc7ed22c7",
   "id": "7",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
