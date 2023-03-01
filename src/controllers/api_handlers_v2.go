@@ -27,7 +27,7 @@ func RegisterAPIV2Controllers(r chi.Router) {
 	r.Post(ControllerPrefixV2+"/attachment", AttachmentAPIHandlerV2)
 }
 
-// SendAPIHandler renders route "/v3/bot/{token}/sendtext"
+// SendAPIHandler renders route "/v2/bot/{token}/send"
 func SendAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 	response := &models.QpSendResponseV2{}
 
@@ -111,7 +111,7 @@ func ReceiveAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// append server to response
-	response.Bot = *models.ToQPBotV2(server.QpServer)
+	response.Bot = *models.ToQpServerV2(server.QpServer)
 
 	// Evitando tentativa de download de anexos sem o bot estar devidamente sincronizado
 	status := server.GetStatus()

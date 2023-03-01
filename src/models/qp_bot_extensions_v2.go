@@ -29,8 +29,8 @@ func GetMessagesFromBotV2(source QPBot, timestamp string) (messages []QpMessageV
 	return
 }
 
-func ToQPBotV2(source *QpServer) (destination *QPBotV2) {
-	destination = &QPBotV2{
+func ToQpServerV2(source *QpServer) (destination *QpServerV2) {
+	destination = &QpServerV2{
 		ID:              source.WId,
 		Verified:        source.Verified,
 		Token:           source.Token,
