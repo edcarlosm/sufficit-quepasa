@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/nbutton23/zxcvbn-go"
-	. "github.com/sufficit/sufficit-quepasa/library"
-	. "github.com/sufficit/sufficit-quepasa/models"
+	library "github.com/sufficit/sufficit-quepasa/library"
+	models "github.com/sufficit/sufficit-quepasa/models"
 )
 
 // LogoutHandler renders route GET "/logoout"
@@ -88,7 +88,7 @@ func SetupHandler(w http.ResponseWriter, r *http.Request) {
 
 	data.Email = email
 
-	if !IsValidEMail(email) {
+	if !library.IsValidEMail(email) {
 		data.ErrorMessage = "Email is invalid"
 		data.EmailInvalidError = true
 		renderSetupForm(w, data)
@@ -111,7 +111,7 @@ func SetupHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	exists, err := WhatsappService.DB.User.Exists(email)
+	exists, err := models.WhatsappService.DB.Users.Exists(email)
 	if err != nil {
 		data.ErrorMessage = err.Error()
 		renderSetupForm(w, data)
@@ -124,7 +124,7 @@ func SetupHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = WhatsappService.DB.User.Create(email, password)
+	_, err = models.WhatsappService.DB.Users.Create(email, password)
 	if err != nil {
 		data.ErrorMessage = err.Error()
 		renderSetupForm(w, data)

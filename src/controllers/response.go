@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	log "github.com/sirupsen/logrus"
-
 	models "github.com/sufficit/sufficit-quepasa/models"
 )
 
@@ -15,21 +14,18 @@ type errorResponse struct {
 }
 
 func RespondBadRequest(w http.ResponseWriter, err error) {
-	log.Println("!Request Bad Format: ", err)
-
+	log.Infof("Request Bad Format: %s", err.Error())
 	RespondErrorCode(w, err, http.StatusBadRequest)
 }
 
 func RespondUnauthorized(w http.ResponseWriter, err error) {
-	log.Println("!Request Unauthorized: ", err)
-
+	log.Debugf("Request Unauthorized: %s", err.Error())
 	RespondErrorCode(w, err, http.StatusUnauthorized)
 }
 
-func RespondNotFound(w http.ResponseWriter, err error) {
-	log.Println("!Request Not found: ", err)
-
-	RespondErrorCode(w, err, http.StatusNotFound)
+func RespondNoContent(w http.ResponseWriter, err error) {
+	log.Debugf("Request Not found: %s", err.Error())
+	RespondErrorCode(w, err, http.StatusNoContent)
 }
 
 /// Usado para avisar que o bot ainda não esta pronto
@@ -37,16 +33,16 @@ func RespondNotReady(w http.ResponseWriter, err error) {
 	RespondErrorCode(w, err, http.StatusServiceUnavailable)
 }
 
-func RespondServerError(server *models.QPWhatsappServer, w http.ResponseWriter, err error) {
+func RespondServerError(server *models.QpWhatsappServer, w http.ResponseWriter, err error) {
 	if strings.Contains(err.Error(), "invalid websocket") {
 
 		// Desconexão forçado é algum evento iniciado pelo whatsapp
-		log.Printf("(%s) Desconexão forçada por motivo de websocket inválido ou sem resposta", server.GetWid())
+		log.Errorf("(%s) Desconexão forçada por motivo de websocket inválido ou sem resposta", server.Token)
 		go server.Restart()
 
 	} else {
 		if models.ENV.DEBUGRequests() {
-			log.Printf("(%s) !Request Server error: %s", server.GetWid(), err)
+			log.Errorf("(%s) !Request Server error: %s", server.Token, err)
 		}
 	}
 	RespondErrorCode(w, err, http.StatusInternalServerError)
@@ -69,24 +65,22 @@ func RespondErrorCode(w http.ResponseWriter, err error, code int) {
 	Returns OK | Bad Request
 </summary>
 */
-func RespondInterfaceCode(w http.ResponseWriter, response interface{}, code int) {
+func RespondInterfaceCode(w http.ResponseWriter, response interface{}, code uint) {
 
 	// setting default reponse type as json
 	w.Header().Set("Content-Type", "application/json")
 
 	// Writing header code
-	if code != 0 {
-		w.WriteHeader(code)
-	} else {
+	if code == 0 {
+		code = http.StatusOK
 		if qpresponse, ok := response.(models.QpResponseBasicInterface); ok {
-			if qpresponse.IsSuccess() {
-				w.WriteHeader(http.StatusOK)
-			} else {
-				w.WriteHeader(http.StatusBadRequest)
+			if !qpresponse.IsSuccess() {
+				code = http.StatusBadRequest
 			}
 		}
 	}
 
+	w.WriteHeader(int(code))
 	json.NewEncoder(w).Encode(response)
 }
 

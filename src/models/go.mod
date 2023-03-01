@@ -9,6 +9,7 @@ require (
 require (
 	github.com/Rhymen/go-whatsapp v0.1.1 // indirect
 	github.com/golang/protobuf v1.5.0 // indirect
+	github.com/joncalhoun/migrate v0.0.2 // indirect
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/sufficit/sufficit-quepasa/library v0.0.0-00010101000000-000000000000 // indirect
 )
@@ -23,7 +24,7 @@ require (
 	github.com/jinzhu/copier v0.3.5
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/lib/pq v1.5.2
-	github.com/mattn/go-sqlite3 v1.14.15
+	github.com/mattn/go-sqlite3 v2.0.3+incompatible
 	github.com/sirupsen/logrus v1.8.1
 	github.com/skip2/go-qrcode v0.0.0-20191027152451-9434209cb086
 	github.com/stretchr/testify v1.4.0 // indirect

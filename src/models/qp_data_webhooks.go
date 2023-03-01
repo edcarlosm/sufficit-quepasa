@@ -8,14 +8,14 @@ import (
 )
 
 // Webhook model
-type QpServerWebhookCollection struct {
+type QpDataWebhooks struct {
 	Webhooks []*QpWebhook `json:"webhooks,omitempty"`
 	context  string
-	db       QpDataWebhookInterface
+	db       QpDataWebhooksInterface
 }
 
 // Fill start memory cache
-func (source *QpServerWebhookCollection) WebhookFill(context string, db QpDataWebhookInterface) (err error) {
+func (source *QpDataWebhooks) WebhookFill(context string, db QpDataWebhooksInterface) (err error) {
 	source.Webhooks = []*QpWebhook{}
 	source.context = context
 	source.db = db
@@ -33,7 +33,7 @@ func (source *QpServerWebhookCollection) WebhookFill(context string, db QpDataWe
 	return
 }
 
-func (source *QpServerWebhookCollection) WebhookAdd(webhook *QpWebhook) (affected uint, err error) {
+func (source *QpDataWebhooks) WebhookAdd(webhook *QpWebhook) (affected uint, err error) {
 
 	if webhook == nil || len(webhook.Url) == 0 {
 		err = fmt.Errorf("empty or nil webhook")
@@ -54,7 +54,7 @@ func (source *QpServerWebhookCollection) WebhookAdd(webhook *QpWebhook) (affecte
 			return
 		}
 	} else {
-		dbWebhook := &QpBotWebhook{
+		dbWebhook := &QpServerWebhook{
 			Context:   source.context,
 			QpWebhook: webhook,
 		}
@@ -82,7 +82,7 @@ func (source *QpServerWebhookCollection) WebhookAdd(webhook *QpWebhook) (affecte
 	return
 }
 
-func (source *QpServerWebhookCollection) WebhookRemove(url string) (affected uint, err error) {
+func (source *QpDataWebhooks) WebhookRemove(url string) (affected uint, err error) {
 	i := 0 // output index
 	for _, element := range source.Webhooks {
 		if len(url) == 0 || strings.Contains(element.Url, url) {
@@ -107,12 +107,12 @@ func (source *QpServerWebhookCollection) WebhookRemove(url string) (affected uin
 	return
 }
 
-func (source *QpServerWebhookCollection) WebhookClear() (err error) {
+func (source *QpDataWebhooks) WebhookClear() (err error) {
 	return source.db.Clear(source.context)
 }
 
 /*
-func (source *QpServerWebhookCollection) WebhookFailure(url string) {
+func (source *QpDataWebhooks) WebhookFailure(url string) {
 	log.Infof("failure on webhook from: %s", url)
 	for index, element := range source.Webhooks {
 		if element.Url == url {

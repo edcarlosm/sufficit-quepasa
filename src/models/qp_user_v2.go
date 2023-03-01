@@ -2,7 +2,7 @@ package models
 
 // Usuário no formato QuePasa (Telegram)
 // Not in use for now
-type QPUserV2 struct {
+type QpUserV2 struct {
 	ID                      string `json:"id"`
 	IsBot                   bool   `json:"is_bot,omitempty"`
 	FirstName               string `json:"first_name,omitempty"`

@@ -4,7 +4,6 @@ import (
 	"errors"
 	"net/http"
 	"net/url"
-	"regexp"
 	"strconv"
 	"strings"
 
@@ -14,47 +13,18 @@ import (
 
 // GetUser gets the user_id from the JWT and finds the
 // corresponding user in the database
-func GetUser(r *http.Request) (QPUser, error) {
-	var user QPUser
+func GetUser(r *http.Request) (*QpUser, error) {
 	_, claims, err := jwtauth.FromContext(r.Context())
 	if err != nil {
-		return user, err
+		return nil, err
 	}
 
-	userID, ok := claims["user_id"].(string)
+	user, ok := claims["user_id"].(string)
 	if !ok {
-		return user, errors.New("User ID missing")
+		return nil, errors.New("User ID missing")
 	}
 
-	return WhatsappService.DB.User.FindByID(userID)
-}
-
-// Usado também para identificar o número do bot
-// Meramente visual
-func GetPhoneByID(id string) (out string, err error) {
-
-	// removing whitespaces
-	out = strings.Replace(id, " ", "", -1)
-	if strings.Contains(out, "@") {
-		// capturando tudo antes do @
-		splited := strings.Split(out, "@")
-		out = splited[0]
-
-		if strings.Contains(out, ".") {
-			// capturando tudo antes do "."
-			splited = strings.Split(out, ".")
-			out = splited[0]
-
-			return
-		}
-	}
-
-	re, err := regexp.Compile(`\d*`)
-	matches := re.FindAllString(out, -1)
-	if len(matches) > 0 {
-		out = matches[0]
-	}
-	return out, err
+	return WhatsappService.DB.Users.Find(user)
 }
 
 /*
@@ -75,8 +45,13 @@ func GetRequestParameter(r *http.Request, parameter string) string {
 			result = QueryGetValue(r.URL, parameter)
 		} else {
 
-			// retrieve from header parameter
-			result = r.Header.Get("X-QUEPASA-" + strings.ToUpper(parameter))
+			if r.Form.Has(parameter) {
+				result = r.Form.Get(parameter)
+			} else {
+
+				// retrieve from header parameter
+				result = r.Header.Get("X-QUEPASA-" + strings.ToUpper(parameter))
+			}
 		}
 	}
 

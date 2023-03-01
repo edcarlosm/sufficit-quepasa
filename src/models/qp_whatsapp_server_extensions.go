@@ -9,7 +9,7 @@ import (
 )
 
 // Encaminha msg ao WebHook específicado
-func PostToWebHookFromServer(server *QPWhatsappServer, message *whatsapp.WhatsappMessage) (err error) {
+func PostToWebHookFromServer(server *QpWhatsappServer, message *whatsapp.WhatsappMessage) (err error) {
 	wid := server.GetWid()
 
 	// Ignorando certificado ao realizar o post
@@ -28,7 +28,7 @@ func PostToWebHookFromServer(server *QPWhatsappServer, message *whatsapp.Whatsap
 //region FIND|SEARCH WHATSAPP SERVER
 var ErrServerNotFound error = errors.New("the requested whatsapp server was not found")
 
-func GetServerFromID(source string) (server *QPWhatsappServer, err error) {
+func GetServerFromID(source string) (server *QpWhatsappServer, err error) {
 	server, ok := WhatsappService.Servers[source]
 	if !ok {
 		err = ErrServerNotFound
@@ -37,29 +37,31 @@ func GetServerFromID(source string) (server *QPWhatsappServer, err error) {
 	return
 }
 
-func GetServerFromBot(source QPBot) (server *QPWhatsappServer, err error) {
-	return GetServerFromID(source.ID)
+func GetServerFromBot(source QPBot) (server *QpWhatsappServer, err error) {
+	return GetServerFromID(source.WId)
 }
 
-func GetServerFromToken(token string) (server *QPWhatsappServer, err error) {
+func GetServerFromToken(token string) (server *QpWhatsappServer, err error) {
 	for _, item := range WhatsappService.Servers {
-		if item.Bot != nil && item.Bot.Token == token {
+		if item != nil && item.Token == token {
 			server = item
 			break
 		}
 	}
+
 	if server == nil {
 		err = ErrServerNotFound
 	}
+
 	return
 }
 
-func GetServersForUserID(userid string) (servers map[string]*QPWhatsappServer) {
-	return WhatsappService.GetServersForUser(userid)
+func GetServersForUserID(user string) (servers map[string]*QpWhatsappServer) {
+	return WhatsappService.GetServersForUser(user)
 }
 
-func GetServersForUser(user QPUser) (servers map[string]*QPWhatsappServer) {
-	return GetServersForUserID(user.ID)
+func GetServersForUser(user *QpUser) (servers map[string]*QpWhatsappServer) {
+	return GetServersForUserID(user.Username)
 }
 
 //endregion

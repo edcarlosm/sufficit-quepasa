@@ -91,13 +91,12 @@ func InformationControllerV3(w http.ResponseWriter, r *http.Request) {
 
 	server, err := GetServer(r)
 	if err != nil {
-		metrics.MessageSendErrors.Inc()
 		response.ParseError(err)
-		RespondInterface(w, response)
+		RespondInterfaceCode(w, response, http.StatusNoContent)
 		return
 	}
 
-	response.ParseSuccess(*server)
+	response.ParseSuccess(server)
 	RespondSuccess(w, response)
 }
 

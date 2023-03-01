@@ -2,8 +2,8 @@
 <script src="/assets/copytoclipboard.js"></script>
 <div class="container site-header">
   <h1 class="title is-1">QuePasa Bots</h1>
-    <p class="subtitle">Welcome {{ .User.Email }}</p>
-    <h2 class="title is-2">Your bots</h2>
+    <p class="subtitle">Welcome {{ .User.Username }}</p>
+    <h2 class="title is-2">({{ len .Servers }}) Your bots</h2>
     <a class="button is-primary" href="/form/verify?mode=md">Add or Update Bot</a>
     {{ if .ErrorMessage }}
     <div class="notification is-warning">
@@ -27,7 +27,7 @@
         {{ range .Servers }}   
           <tr>
             <td>
-              <span title="{{ .Version }}">{{ .GetNumber }}</span>
+              <span>{{ .GetNumber }}</span>
             </td>
             <td>
               <span class="button" disabled>
@@ -45,7 +45,7 @@
               <div class="field has-addons">
                 <p class="control">
                   <form class="" method="post" action="/form/cycle">
-                    <input name="botID" type="hidden" value="{{ .ID }}">
+                    <input name="token" type="hidden" value="{{ .Token }}">
                     <button class="button is-primary is-outlined" title="Reset the token">
                       <span class="icon is-small is-inline"><i class="fa fa-sync"></i></span>
                     </button>
@@ -55,7 +55,7 @@
                   {{ if .IsDevelopmentGlobal }}
                     <p class="control"> 
                       <form class="" method="post" action="/form/debug">
-                        <input name="botID" type="hidden" value="{{ .ID }}">
+                        <input name="token" type="hidden" value="{{ .Token }}">
                         <button class="button is-warning {{ if .Devel }}is-hovered{{ else }}is-outlined{{ end }}" title="Toggle Debug for this bot">
                           <span class="icon is-small is-inline"><i class="fa fa-bug"></i></span>
                         </button>
@@ -64,7 +64,7 @@
                   {{ end }}
                   <p class="control"> 
                     <form class="" method="post" action="/form/toggle">
-                      <input name="botID" type="hidden" value="{{ .ID }}">
+                      <input name="token" type="hidden" value="{{ .Token }}">
                       <button class="button is-danger {{ if not .GetWorking }}is-hovered{{ else }}is-outlined{{ end }}" title="Toggle Running state for this bot">
                         <span class="icon is-small is-inline"><i class="fa fa-{{ if not .GetWorking }}play{{ else }}stop{{ end }}-circle"></i></span>
                       </button>
@@ -73,7 +73,7 @@
                   <p>&nbsp;&nbsp;</p>
                   <p class="control"> 
                     <form class="" method="post" action="/form/togglebroadcast">
-                      <input name="botID" type="hidden" value="{{ .ID }}">
+                      <input name="token" type="hidden" value="{{ .Token }}">
                       <button class="button is-info {{ if .HandleBroadcast }}is-hovered{{ else }}is-outlined{{ end }}" title="Handle status messages">
                         <span class="icon is-small is-inline"><i class="fa fa-comment-dots"></i></span>
                       </button>
@@ -82,7 +82,7 @@
                   <p>&nbsp;</p>
                   <p class="control"> 
                     <form class="" method="post" action="/form/togglegroups">
-                      <input name="botID" type="hidden" value="{{ .ID }}">
+                      <input name="token" type="hidden" value="{{ .Token }}">
                       <button class="button is-info {{ if .HandleGroups }}is-hovered{{ else }}is-outlined{{ end }}" title="Handle group messages">
                         <span class="icon is-small is-inline"><i class="fa fa-comments"></i></span>
                       </button>
@@ -92,7 +92,7 @@
                 <p>&nbsp;&nbsp;</p>
                 <p class="control">
                   <form class="" method="post" action="/form/delete">
-                    <input name="botID" type="hidden" value="{{ .ID }}">
+                    <input name="token" type="hidden" value="{{ .Token }}">
                     <button class="button  is-danger is-outlined" title="Delete this bot">
                       <i class="fa fa-trash"></i>&nbsp;&nbsp;
                       Delete
@@ -105,13 +105,13 @@
               <div class="field has-addons">
                 {{ if eq .GetStatusString "Ready" }}               
                   <p class="control">
-                    <a href="/form/server/{{ .ID }}/send" class="button" title="Send a message as this bot">
+                    <a href="/form/server/{{ .Token }}/send" class="button" title="Send a message as this bot">
                       <i class="fa fa-paper-plane"></i>&nbsp;&nbsp;
                       Send
                     </a>
                   </p>
                   <p class="control">
-                    <a href="/form/server/{{ .ID }}/receive" class="button" title="Receive messages for this bot">
+                    <a href="/form/server/{{ .Token }}/receive" class="button" title="Receive messages for this bot">
                       <i class="fa fa-download"></i>&nbsp;&nbsp;
                       Receive
                     </a>

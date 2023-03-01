@@ -18,6 +18,7 @@ type QpWebhook struct {
 	Extra           interface{} `db:"extra" json:"extra,omitempty"`                     // extra info to append on payload
 	Failure         *time.Time  `json:"failure,omitempty"`                              // first failure timestamp
 	Success         *time.Time  `json:"success,omitempty"`                              // last success timestamp
+	Timestamp       *time.Time  `db:"timestamp" json:"timestamp,omitempty"`
 }
 
 // Payload to include extra content

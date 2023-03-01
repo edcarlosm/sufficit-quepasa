@@ -7,27 +7,27 @@ import (
 )
 
 // Webhook model
-type QpBotWebhook struct {
-	Context string `db:"context" json:"context"`
+type QpServerWebhook struct {
+	Context string                  `db:"context" json:"context"`
+	db      QpDataWebhooksInterface `json:"-"`
 
-	db QpDataWebhookInterface
 	*QpWebhook
 }
 
-func (source *QpBotWebhook) Find(context string, url string) (*QpBotWebhook, error) {
+func (source *QpServerWebhook) Find(context string, url string) (*QpServerWebhook, error) {
 	return source.db.Find(context, url)
 }
 
-func (source *QpBotWebhook) FindAll(context string) ([]*QpBotWebhook, error) {
+func (source *QpServerWebhook) FindAll(context string) ([]*QpServerWebhook, error) {
 	return source.db.FindAll(context)
 }
 
-func (source *QpBotWebhook) All() ([]*QpBotWebhook, error) {
+func (source *QpServerWebhook) All() ([]*QpServerWebhook, error) {
 	return source.db.All()
 }
 
 // passing extra info as json valid or default string
-func (source *QpBotWebhook) GetExtraText() string {
+func (source *QpServerWebhook) GetExtraText() string {
 	extraJson, err := json.Marshal(&source.Extra)
 	if err != nil {
 		return fmt.Sprintf("%v", source.Extra)
@@ -37,7 +37,7 @@ func (source *QpBotWebhook) GetExtraText() string {
 }
 
 // trying to get interface from json string or default string
-func (source *QpBotWebhook) ParseExtra() {
+func (source *QpServerWebhook) ParseExtra() {
 	extraText := fmt.Sprintf("%v", source.Extra)
 
 	var extraJson interface{}
@@ -49,24 +49,24 @@ func (source *QpBotWebhook) ParseExtra() {
 	}
 }
 
-func (source *QpBotWebhook) Add(element QpBotWebhook) error {
+func (source *QpServerWebhook) Add(element QpServerWebhook) error {
 	return source.db.Add(element)
 }
 
-func (source *QpBotWebhook) Remove(context string, url string) error {
+func (source *QpServerWebhook) Remove(context string, url string) error {
 	return source.db.Remove(context, url)
 }
 
-func (source *QpBotWebhook) Clear(context string) error {
+func (source *QpServerWebhook) Clear(context string) error {
 	return source.db.Clear(context)
 }
 
 // Implement QpWebhookInterface
 
-func (source *QpBotWebhook) GetUrl() string {
+func (source *QpServerWebhook) GetUrl() string {
 	return source.Url
 }
 
-func (source *QpBotWebhook) GetFailure() *time.Time {
+func (source *QpServerWebhook) GetFailure() *time.Time {
 	return source.Failure
 }

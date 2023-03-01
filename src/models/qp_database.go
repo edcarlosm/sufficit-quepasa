@@ -19,13 +19,12 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-type QPDatabase struct {
-	Config     QPDatabaseConfig
+type QpDatabase struct {
+	Config     QpDatabaseConfig
 	Connection *sqlx.DB
-	Store      IQPStore
-	User       IQPUser
-	Bot        IQPBot
-	Webhook    QpDataWebhookInterface
+	Users      QpDataUsersInterface
+	Servers    QpDataServersInterface
+	Webhooks   QpDataWebhooksInterface
 }
 
 var (
@@ -59,31 +58,23 @@ func GetDB() *sqlx.DB {
 	return Connection
 }
 
-func GetDatabase() *QPDatabase {
+func GetDatabase() *QpDatabase {
 	db := GetDB()
 	config := GetDBConfig()
-	var istore IQPStore
-	var iuser IQPUser
-	var ibot IQPBot
-	var iwebhook = QpBotWebhookSql{db}
+	var iusers = QpDataUserSql{db}
+	var iwebhooks = QpDataServerWebhookSql{db}
+	var iservers = QpDataServerSql{db}
 
-	if config.Driver == "postgres" {
-		istore = QPStorePostgres{db}
-		iuser = QPUserPostgres{db}
-		ibot = QPBotPostgres{db}
-	} else if config.Driver == "mysql" || config.Driver == "sqlite3" {
-		istore = QPStoreMysql{db}
-		iuser = QPUserMysql{db}
-		ibot = QPBotMysql{db}
-	} else {
-		log.Fatal("database driver not supported")
-	}
-
-	return &QPDatabase{config, db, istore, iuser, ibot, iwebhook}
+	return &QpDatabase{
+		config,
+		db,
+		iusers,
+		iservers,
+		iwebhooks}
 }
 
-func GetDBConfig() QPDatabaseConfig {
-	config := QPDatabaseConfig{}
+func GetDBConfig() QpDatabaseConfig {
+	config := QpDatabaseConfig{}
 
 	config.Driver = os.Getenv("DBDRIVER")
 	if len(config.Driver) == 0 {
@@ -118,7 +109,7 @@ func MigrateToLatest() (err error) {
 		fullPath = strMigrations
 	}
 
-	log.Println("Migrating database (if necessary)")
+	log.Info("Migrating database (if necessary)")
 	if boolMigrations {
 		workDir, err := os.Getwd()
 		if err != nil {
@@ -126,7 +117,7 @@ func MigrateToLatest() (err error) {
 		}
 
 		if runtime.GOOS == "windows" {
-			log.Println("Migrating database on Windows")
+			log.Debug("Migrating database on Windows")
 
 			// windows ===================
 			leadingWindowsUnit, _ := filepath.Rel("z:\\", workDir)
@@ -153,32 +144,35 @@ func MigrateToLatest() (err error) {
 		Migrations: Migrations(fullPath),
 	}
 
-	log.Println("Migrating ...")
+	log.Debug("Migrating ...")
 	err = migrator.Migrate(db, config.Driver)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	log.Debug("Migrating finished")
 	return nil
 }
 
 func Migrations(fullPath string) (migrations []migrate.SqlxMigration) {
-	log.Println("Migrating files from: ", fullPath)
+	log.Debugf("Migrating files from: %s", fullPath)
 	files, err := ioutil.ReadDir(fullPath)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	log.Println("Migrating creating array with definitions")
+	log.Debug("Migrating creating array with definitions")
 	confMap := make(map[string]*QPMigrationFile)
 
 	for _, file := range files {
 		info := file.Name()
-		extension := strings.Split(info, ".")[2]
+		dotSplitted := strings.Split(info, ".")      // file name splitted by dots
+		extension := dotSplitted[len(dotSplitted)-1] // file extension
 		if extension == "sql" {
 			id := strings.Split(info, "_")[0]
-			title := strings.TrimPrefix(strings.Split(info, ".")[0], id+"_")
-			status := strings.Split(info, ".")[1]
+
+			title := strings.TrimPrefix(dotSplitted[0], id+"_")
+			status := dotSplitted[1]
 			filepath := fullPath + "/" + info
 			if v, ok := confMap[id]; ok {
 				if status == "up" {

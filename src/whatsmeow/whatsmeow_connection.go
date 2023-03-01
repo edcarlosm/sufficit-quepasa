@@ -2,6 +2,7 @@ package whatsmeow
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 	"sync"
@@ -25,6 +26,7 @@ type WhatsmeowConnection struct {
 	logger      *log.Logger
 	log         *log.Entry
 	failedToken bool
+	paired      func(string)
 }
 
 //region IMPLEMENT INTERFACE WHATSAPP CONNECTION
@@ -62,24 +64,39 @@ func (conn *WhatsmeowConnection) IsValid() bool {
 	return false
 }
 
-func (conn *WhatsmeowConnection) GetStatus() (state whatsapp.WhatsappConnectionState) {
+func (conn *WhatsmeowConnection) IsConnected() bool {
 	if conn != nil {
-		state = whatsapp.Created
 		if conn.Client != nil {
 			if conn.Client.IsConnected() {
-				state = whatsapp.Connected
-				if conn.Client.IsLoggedIn() {
-					state = whatsapp.Ready
-				}
-			} else {
-				state = whatsapp.Disconnected
-				if conn.failedToken {
-					state = whatsapp.Failed
-				}
+				return true
 			}
 		}
 	}
-	return
+	return false
+}
+
+func (conn *WhatsmeowConnection) GetStatus() whatsapp.WhatsappConnectionState {
+	if conn != nil {
+		if conn.Client == nil {
+			return whatsapp.UnVerified
+		} else {
+			if conn.Client.IsConnected() {
+				if conn.Client.IsLoggedIn() {
+					return whatsapp.Ready
+				} else {
+					return whatsapp.Connected
+				}
+			} else {
+				if conn.failedToken {
+					return whatsapp.Failed
+				} else {
+					return whatsapp.Disconnected
+				}
+			}
+		}
+	} else {
+		return whatsapp.UnPrepared
+	}
 }
 
 // Retorna algum titulo válido apartir de um jid
@@ -107,19 +124,6 @@ func (conn *WhatsmeowConnection) Connect() (err error) {
 	// waits 2 seconds for loggedin
 	// not required
 	_ = conn.Client.WaitForConnection(time.Millisecond * 2000)
-
-	/*
-		// Makes no diference
-		// Whatsmeow will try to authenticate asyncronous after connected
-		// Maybe lookup this on qrcode reads, for now on inspection
-
-		if !conn.Client.IsLoggedIn() {
-			conn.failedToken = true
-			return &whatsapp.UnLoggedError{
-				Inner: fmt.Errorf("starting whatsmeow connection, connected but not logged"),
-			}
-		}
-	*/
 
 	conn.failedToken = false
 	return
@@ -320,13 +324,23 @@ func (conn *WhatsmeowConnection) GetInvite(groupId string) (link string, err err
 	return
 }
 
-func (conn *WhatsmeowConnection) GetWhatsAppQRChannel(result chan<- string) (err error) {
+func (conn *WhatsmeowConnection) GetWhatsAppQRCode() string {
+
+	var result string
 
 	// No ID stored, new login
-	qrChan, _ := conn.Client.GetQRChannel(context.Background())
-	err = conn.Client.Connect()
+	qrChan, err := conn.Client.GetQRChannel(context.Background())
 	if err != nil {
-		return
+		log.Errorf("error on getting whatsapp qrcode channel: %s", err.Error())
+		return ""
+	}
+
+	if !conn.Client.IsConnected() {
+		err = conn.Client.Connect()
+		if err != nil {
+			log.Errorf("error on connecting for getting whatsapp qrcode: %s", err.Error())
+			return ""
+		}
 	}
 
 	var wg sync.WaitGroup
@@ -334,15 +348,70 @@ func (conn *WhatsmeowConnection) GetWhatsAppQRChannel(result chan<- string) (err
 
 	for evt := range qrChan {
 		if evt.Event == "code" {
-			result <- evt.Code
+			result = evt.Code
+		}
+
+		wg.Done()
+		break
+	}
+
+	wg.Wait()
+	return result
+}
+
+func TryUpdateChannel(ch chan<- string, value string) (closed bool) {
+	defer func() {
+		if recover() != nil {
+			// the return result can be altered
+			// in a defer function call
+			closed = false
+		}
+	}()
+
+	ch <- value // panic if ch is closed
+	return true // <=> closed = false; return
+}
+
+func (conn *WhatsmeowConnection) GetWhatsAppQRChannel(ctx context.Context, out chan<- string) (err error) {
+	// No ID stored, new login
+	qrChan, err := conn.Client.GetQRChannel(ctx)
+	if err != nil {
+		log.Errorf("error on getting whatsapp qrcode channel: %s", err.Error())
+		return
+	}
+
+	if !conn.Client.IsConnected() {
+		err = conn.Client.Connect()
+		if err != nil {
+			log.Errorf("error on connecting for getting whatsapp qrcode: %s", err.Error())
+			return
+		}
+	}
+
+	var wg sync.WaitGroup
+	wg.Add(1)
+
+	for evt := range qrChan {
+		if evt.Event == "code" {
+			if !TryUpdateChannel(out, evt.Code) {
+				// expected error, means that websocket was closed
+				// probably user has gone out page
+				err = fmt.Errorf("cant write to output")
+				break
+			}
 		} else {
+			if evt.Event == "timeout" {
+				err = errors.New("timeout")
+			}
 			wg.Done()
 			break
 		}
 	}
 
 	wg.Wait()
-	close(result)
+
+	// not tested
+	conn.Client.Disconnect()
 	return
 }
 
@@ -352,6 +421,17 @@ func (conn *WhatsmeowConnection) UpdateLog(entry *log.Entry) {
 
 func (conn *WhatsmeowConnection) UpdateHandler(handlers whatsapp.IWhatsappHandlers) {
 	conn.Handlers.WAHandlers = handlers
+}
+
+func (conn *WhatsmeowConnection) UpdatePairedCallBack(callback func(string)) {
+	conn.paired = callback
+}
+
+func (conn *WhatsmeowConnection) PairedCallBack(jid types.JID, platform, businessName string) bool {
+	if conn.paired != nil {
+		go conn.paired(jid.String())
+	}
+	return true
 }
 
 //endregion
@@ -364,9 +444,9 @@ func (conn *WhatsmeowConnection) UpdateHandler(handlers whatsapp.IWhatsappHandle
 		Does not erase permanent data !
 	</summary>
 */
-func (conn *WhatsmeowConnection) Dispose() {
+func (conn *WhatsmeowConnection) Dispose(reason string) {
 	if conn.log != nil {
-		conn.log.Infof("disposing connection ...")
+		conn.log.Infof("disposing connection: %s", reason)
 		conn.log = nil
 	}
 
@@ -375,13 +455,13 @@ func (conn *WhatsmeowConnection) Dispose() {
 	}
 
 	if conn.Handlers != nil {
-		conn.Handlers.UnRegister()
+		go conn.Handlers.UnRegister()
 		conn.Handlers = nil
 	}
 
 	if conn.Client != nil {
 		if conn.Client.IsConnected() {
-			conn.Client.Disconnect()
+			go conn.Client.Disconnect()
 		}
 		conn.Client = nil
 	}
@@ -422,7 +502,7 @@ func (conn *WhatsmeowConnection) Delete() (err error) {
 		}
 	}
 
-	conn.Dispose()
+	conn.Dispose("Delete")
 	return
 }
 

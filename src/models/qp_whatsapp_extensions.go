@@ -1,6 +1,7 @@
 package models
 
 import (
+	"context"
 	"encoding/base64"
 	"fmt"
 	"strings"
@@ -11,11 +12,11 @@ import (
 	whatsapp "github.com/sufficit/sufficit-quepasa/whatsapp"
 )
 
-func NewEmptyConnection(multidevice bool) (whatsapp.IWhatsappConnection, error) {
-	return NewWhatsmeowEmptyConnection()
+func NewEmptyConnection(callback func(string)) (conn whatsapp.IWhatsappConnection, err error) {
+	return NewWhatsmeowEmptyConnection(callback)
 }
 
-func NewConnection(wid string, multidevice bool, serverLogger *log.Logger) (whatsapp.IWhatsappConnection, error) {
+func NewConnection(wid string, serverLogger *log.Logger) (whatsapp.IWhatsappConnection, error) {
 	return NewWhatsmeowConnection(wid, serverLogger)
 }
 
@@ -34,83 +35,67 @@ func TryUpdateHttpChannel(ch chan<- []byte, value []byte) (closed bool) {
 
 // Envia o QRCode para o usuário e aguarda pela resposta
 // Retorna um novo BOT
-func SignInWithQRCode(user QPUser, multidevice bool, out chan<- []byte) (err error) {
+func SignInWithQRCode(ctx context.Context, user *QpUser, out chan<- []byte) (err error) {
 
-	con, err := NewEmptyConnection(multidevice)
+	pairing := &QpWhatsappPairing{User: user}
+	con, err := pairing.GetConnection()
 	if err != nil {
 		return
 	}
 
-	log.Info("GetWhatsAppQRChannel ...")
 	qrChan := make(chan string)
+	defer close(qrChan)
 	go func() {
 		for qrBase64 := range qrChan {
 			var png []byte
 			png, err := qrcode.Encode(qrBase64, qrcode.Medium, 256)
 			if err != nil {
-				log.Printf("(ERR) Error on QrCode encode :: %v", err.Error())
+				log.Errorf("(qrcode) encode fail, %s", err.Error())
+				return
 			}
-			encodedPNG := base64.StdEncoding.EncodeToString(png)
 
+			encodedPNG := base64.StdEncoding.EncodeToString(png)
 			if !TryUpdateHttpChannel(out, []byte(encodedPNG)) {
-				log.Printf("(ERR) Cant write to output")
-				break
+				// expected error, means that websocket was closed
+				// probably user has gone out page
+				err = fmt.Errorf("(qrcode) cant write to output")
+				return
 			}
 		}
 	}()
 
-	err = con.GetWhatsAppQRChannel(qrChan)
-	if err != nil {
-		return
-	}
-
-	wid, err := con.GetWid()
-	if err != nil {
-		return
-	}
-
-	if len(wid) == 0 {
-		err = fmt.Errorf("invalid wid !")
-		return
-	}
-
-	err = EnsureServerOnCache(user.ID, wid, con)
-	return
+	log.Info("(qrcode) getting qrcode channel ...")
+	return con.GetWhatsAppQRChannel(ctx, qrChan)
 }
 
 func EnsureServerOnCache(currentUserID string, wid string, connection whatsapp.IWhatsappConnection) (err error) {
 	// Se chegou até aqui é pq o QRCode foi validado e sincronizado
 	server, err := WhatsappService.GetOrCreateServer(currentUserID, wid)
 	if err != nil {
-		log.Printf("(ERR) Error on get or create server after login :: %v\r", err.Error())
+		log.Errorf("getting or create server after login : %s", err.Error())
 		return
 	}
 
 	// updating verified state
 	server.MarkVerified(true)
 
-	// Updating connection version information
-	// Getting by current connection, ignoring old values
-	version := connection.GetVersion()
-	server.SetVersion(version)
-
 	// updating underlying connection
 	go server.UpdateConnection(connection)
 	return
 }
 
-func GetDownloadPrefixFromWid(wid string) (path string, err error) {
-	server, ok := WhatsappService.Servers[wid]
+func GetDownloadPrefixFromToken(token string) (path string, err error) {
+	server, ok := WhatsappService.Servers[token]
 	if !ok {
-		err = fmt.Errorf("server not found: %s", wid)
+		err = fmt.Errorf("server not found: %s", token)
 		return
 	}
 
-	prefix := fmt.Sprintf("/bot/%s/download", server.Bot.Token)
+	prefix := fmt.Sprintf("/bot/%s/download", server.Token)
 	return prefix, err
 }
 
-func ToQPAttachmentV1(source *whatsapp.WhatsappAttachment, id string, wid string) (attach *QPAttachmentV1) {
+func ToQPAttachmentV1(source *whatsapp.WhatsappAttachment, id string, token string) (attach *QPAttachmentV1) {
 
 	// Anexo que devolverá ao utilizador da api, cliente final
 	// com Url pública válida sem criptografia
@@ -119,7 +104,7 @@ func ToQPAttachmentV1(source *whatsapp.WhatsappAttachment, id string, wid string
 	attach.FileName = source.FileName
 	attach.Length = source.FileLength
 
-	url, err := GetDownloadPrefixFromWid(wid)
+	url, err := GetDownloadPrefixFromToken(token)
 	if err != nil {
 		return
 	}

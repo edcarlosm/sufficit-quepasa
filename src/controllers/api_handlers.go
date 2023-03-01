@@ -1,11 +1,12 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/skip2/go-qrcode"
 
-	metrics "github.com/sufficit/sufficit-quepasa/metrics"
 	models "github.com/sufficit/sufficit-quepasa/models"
 )
 
@@ -19,6 +20,7 @@ func RegisterAPIControllers(r chi.Router) {
 		// ----------------------------------------
 		r.Get(endpoint+"/info", InformationControllerV3)
 		r.Get(endpoint+"/scan", ScannerController)
+		r.Get(endpoint+"/command", CommandController)
 
 		// ----------------------------------------
 		// CONTROL METHODS ************************
@@ -90,16 +92,70 @@ func ScannerController(w http.ResponseWriter, r *http.Request) {
 	// setting default reponse type as json
 	w.Header().Set("Content-Type", "application/json")
 
-	response := &models.QpInfoResponse{}
+	response := &models.QpResponse{}
 
-	server, err := GetServer(r)
-	if err != nil {
-		metrics.MessageSendErrors.Inc()
-		response.ParseError(err)
-		RespondServerError(server, w, response)
+	token := GetToken(r)
+	if len(token) == 0 {
+		err := fmt.Errorf("token not found")
+		RespondBadRequest(w, err)
 		return
 	}
 
-	response.ParseSuccess(*server)
-	RespondSuccess(w, response)
+	pairing := &models.QpWhatsappPairing{Token: token}
+	con, err := pairing.GetConnection()
+	if err != nil {
+		response.ParseError(err)
+		RespondInterface(w, response)
+		return
+	}
+
+	result := con.GetWhatsAppQRCode()
+
+	var png []byte
+	png, err = qrcode.Encode(result, qrcode.Medium, 256)
+	if err != nil {
+		response.ParseError(err)
+		RespondInterface(w, response)
+		return
+	}
+
+	w.Header().Set("Content-Disposition", "attachment; filename=qrcode.png")
+	w.Header().Set("Content-Type", "image/png")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(png))
+}
+
+func CommandController(w http.ResponseWriter, r *http.Request) {
+	// setting default reponse type as json
+	w.Header().Set("Content-Type", "application/json")
+
+	response := &models.QpResponse{}
+
+	server, err := GetServer(r)
+	if err != nil {
+		response.ParseError(err)
+		RespondInterface(w, response)
+		return
+	}
+
+	action := models.GetRequestParameter(r, "action")
+	switch action {
+	case "start":
+		err = server.Start()
+	case "stop":
+		err = server.Stop("command")
+	case "restart":
+		err = server.Restart()
+	case "status":
+		status := server.GetStatus()
+		response.ParseSuccess(status.String())
+	default:
+		err = fmt.Errorf("invalid action: {%s}, try {start,stop,restart,status} !", action)
+	}
+
+	if err != nil {
+		response.ParseError(err)
+	}
+
+	RespondInterface(w, response)
 }

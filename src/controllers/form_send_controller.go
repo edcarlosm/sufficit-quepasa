@@ -22,23 +22,23 @@ func FormSendController(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Renders route GET "/bot/{botID}/send"
+// Renders route GET "/bot/{token}/send"
 func controllerHttpGet(w http.ResponseWriter, r *http.Request) {
 	data := QPFormSendData{PageTitle: "Send"}
 
-	bot, err := GetBotFromRequest(r)
+	server, err := GetServerFromRequest(r)
 	if err != nil {
 		data.ErrorMessage = err.Error()
 		renderSendForm(w, data)
 		return
 	} else {
-		data.Bot = bot
+		data.Server = server.QpServer
 	}
 
 	renderSendForm(w, data)
 }
 
-// Renders route POST "/bot/{botID}/send"
+// Renders route POST "/bot/{token}/send"
 // Vindo do formulário de testes
 func controllerHttpPost(w http.ResponseWriter, r *http.Request) {
 	data := QPFormSendData{PageTitle: "Send"}
@@ -49,7 +49,7 @@ func controllerHttpPost(w http.ResponseWriter, r *http.Request) {
 		renderSendForm(w, data)
 		return
 	} else {
-		data.Bot = *server.Bot
+		data.Server = server.QpServer
 	}
 
 	attachment, err := uploadFile(w, r)

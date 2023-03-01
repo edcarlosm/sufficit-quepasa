@@ -1,6 +1,7 @@
 package models
 
-type QPSendResponseV2 struct {
+type QpSendResponseV2 struct {
+	QpResponse
 	ID   string       `json:"message_id"`
 	Date int          `json:"date,omitempty"`
 	From QPEndpointV2 `json:"from,omitempty"`

@@ -9,7 +9,7 @@ import (
 	whatsapp "github.com/sufficit/sufficit-quepasa/whatsapp"
 )
 
-// FormReceiveController renders route GET "/bot/{botID}/receive"
+// FormReceiveController renders route GET "/bot/{token}/receive"
 func FormReceiveController(w http.ResponseWriter, r *http.Request) {
 	data := models.QPFormReceiveData{PageTitle: "Receive", FormAccountEndpoint: FormAccountEndpoint}
 
@@ -18,8 +18,8 @@ func FormReceiveController(w http.ResponseWriter, r *http.Request) {
 		data.ErrorMessage = err.Error()
 	} else {
 		data.Number = server.GetWid()
-		data.Token = server.Bot.Token
-		data.DownloadPrefix = GetDownloadPrefix(server.Bot.Token)
+		data.Token = server.Token
+		data.DownloadPrefix = GetDownloadPrefix(server.Token)
 	}
 
 	// Evitando tentativa de download de anexos sem o bot estar devidamente sincronizado

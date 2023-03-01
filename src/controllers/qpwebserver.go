@@ -36,7 +36,7 @@ func QPWebServerStart() {
 		Handler:      r,
 	}
 
-	log.Printf("Starting Web Server on Port: %s", webAPIPort)
+	log.Infof("Starting Web Server on Port: %s", webAPIPort)
 	err := server.ListenAndServe()
 	if err != nil {
 		log.Fatal(err)
@@ -94,6 +94,7 @@ func newRouter() chi.Router {
 
 func addAPIRoutes(r chi.Router) {
 	r.Group(RegisterAPIControllers)
+	r.Group(RegisterAPIV2Controllers)
 	r.Group(RegisterAPIV3Controllers)
 }
 

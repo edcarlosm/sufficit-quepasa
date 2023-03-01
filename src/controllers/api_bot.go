@@ -17,7 +17,7 @@ func ReceiveAPIHandler(w http.ResponseWriter, r *http.Request) {
 
 	server, err := GetServer(r)
 	if err != nil {
-		metrics.MessageSendErrors.Inc()
+		metrics.MessageReceiveErrors.Inc()
 		response.ParseError(err)
 		RespondInterface(w, response)
 		return
@@ -48,7 +48,7 @@ func ReceiveAPIHandler(w http.ResponseWriter, r *http.Request) {
 	messages := GetMessages(server, timestamp)
 	metrics.MessagesReceived.Add(float64(len(messages)))
 
-	response.Bot = *server.Bot
+	response.Server = server.QpServer
 	response.Messages = messages
 
 	if timestamp > 0 {
@@ -388,7 +388,7 @@ func SendDocumentFromUrl(w http.ResponseWriter, r *http.Request) {
 	SendDocument(server, response, &request.QpSendRequest, w)
 }
 
-func Send(server *models.QPWhatsappServer, response *models.QpSendResponse, request *models.QpSendRequest, w http.ResponseWriter, attach *whatsapp.WhatsappAttachment) {
+func Send(server *models.QpWhatsappServer, response *models.QpSendResponse, request *models.QpSendRequest, w http.ResponseWriter, attach *whatsapp.WhatsappAttachment) {
 	waMsg, err := request.ToWhatsappMessage()
 	if err != nil {
 		metrics.MessageSendErrors.Inc()
@@ -426,7 +426,7 @@ func Send(server *models.QPWhatsappServer, response *models.QpSendResponse, requ
 	RespondInterface(w, response)
 }
 
-func SendDocument(server *models.QPWhatsappServer, response *models.QpSendResponse, request *models.QpSendRequest, w http.ResponseWriter) {
+func SendDocument(server *models.QpWhatsappServer, response *models.QpSendResponse, request *models.QpSendRequest, w http.ResponseWriter) {
 	attach, err := request.ToWhatsappAttachment()
 	if err != nil {
 		metrics.MessageSendErrors.Inc()

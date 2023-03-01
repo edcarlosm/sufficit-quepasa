@@ -47,7 +47,7 @@ func FormatEndpoint(source string) (destination string, err error) {
 	if strings.ContainsAny(destination, "@") {
 		splited := strings.Split(destination, "@")
 		if !AllowedSuffix[splited[1]] {
-			err = fmt.Errorf("invalid complete @ recipient %s", destination)
+			err = fmt.Errorf("invalid suffix @ recipient %s", destination)
 			return
 		}
 	} else {

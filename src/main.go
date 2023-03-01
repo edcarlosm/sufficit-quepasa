@@ -46,8 +46,9 @@ func main() {
 	// De forma assíncrona
 	err = models.QPWhatsappStart()
 	if err != nil {
-		panic(err.Error())
+		log.Fatalf("Whatsapp service starting error: %s", err.Error())
 	}
 
 	controllers.QPWebServerStart()
+	log.Info("Ready !")
 }

@@ -13,8 +13,8 @@ func (source QPEndpointV1) GetQPEndPointV2() QPEndpointV2 {
 	return ob2
 }
 
-func (source QPEndpointV1) ToQPUserV2() QPUserV2 {
-	result := QPUserV2{
+func (source QPEndpointV1) ToQpUserV2() QpUserV2 {
+	result := QpUserV2{
 		ID: source.ID,
 	}
 	return result

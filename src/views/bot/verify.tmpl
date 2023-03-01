@@ -4,16 +4,24 @@
   {{ .ErrorMessage}}
 </div>
 {{ end }}
-
-<script>
+<div class="is-block is-large is-fullwidth container" style="text-align: center;">
+  <hr />
+  <label class="label">Scan this QR code in the next 20 seconds:</label>
+  <img id="qrcode" src="">
+  <hr />
+  <a href="/form/account">Back</a>
+</div>
+<script type="text/javascript" defer>
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const mode = urlParams.get('mode')
 
-  window.onload = getQRCode;
+  let Success = false;
+  const Image = document.querySelector('img#qrcode');
+
   var myWebSocket;
 
-  function getQRCode() {
+  function GetQRCode() {
     loadQrCode();
     if (myWebSocket === undefined || (myWebSocket && myWebSocket.readyState === 3)) {
       myWebSocket = new WebSocket("{{ .Protocol }}://{{ .Host }}/form/verify/ws");
@@ -21,21 +29,30 @@
       myWebSocket.onmessage = onWebSocketMessage;
       myWebSocket.onclose = onWebSocketClose;
       myWebSocket.onerror = onWebSocketError; 
-      
+            
+      window.MyWebSocket = myWebSocket;
       window.addEventListener("unload", function(){
         myWebSocket.close();
       });   
     }
   }
 
-  function loadQrCode(data)
-  {
-    var img = document.getElementById("qr-code");        
-    if(data){
-      img.style = "";
-      img.src = "data:image/png;base64, " + data;
+  function SetSuccess(status) {
+    Success = status;
+    if (Success) {
+      Image.style = "border: green 3px solid; filter: blur(5px);";
     } else {
-      img.style = "border: red 3px solid; filter: blur(4px);";
+      Image.style = "border: red 3px solid; filter: blur(4px);";
+    }
+  }
+
+  function loadQrCode(data)
+  {   
+    if(data){
+      Image.style = "";
+      Image.src = "data:image/png;base64, " + data;
+    } else {
+      SetSuccess(false);
     }
   }
 
@@ -47,7 +64,7 @@
   function onWebSocketOpen(event){
     if (event) {
       console.debug("sending start with mode: " + mode)
-      myWebSocket.send("start:" + mode);
+      myWebSocket.send("start");
     } else { formatDebug("no event passed"); }
   }
 
@@ -57,36 +74,44 @@
 
   function onWebSocketClose(event)
   {
+    if(Success){      
+      setTimeout(function() {
+        window.location.replace({{ .Destination }});
+      }, 2000);        
+      return;
+    }
+
     //console.debug(event);
     formatDebug("closed socket (" + event.reason + "): regenerating qr code and trying again");    
     setTimeout(function() {
-      getQRCode()();
+      GetQRCode();
     }, 1000);
   }
 
   function onWebSocketMessage(event){
     if (event) {
       if (event.data === "complete") {
-        window.location.replace({{ .Destination }});
+        console.debug("websocket complete");
+        SetSuccess(true);
+        myWebSocket.close();
+      } else if (event.data === "success") {
+        SetSuccess(true);
+        console.debug("websocket success");
       } else if (event.data === "echo") {
         //console.debug("websocket echo keep alive");
       } else if (event.data === "timeout") {
         console.debug("timeout: regenerating qr code and trying again");
-        myWebSocket.send("start:" + mode);
+        myWebSocket.send("start");
       } else if (event.data === "error") {
         console.debug("unknown error: regenerating qr code and trying again");
-        myWebSocket.send("start:" + mode);
+        myWebSocket.send("start");
       } else {
         loadQrCode(event.data);
       }
     } else { formatDebug("no event passed"); }
   }
+
+  window.onload = GetQRCode;
+  window.GetQRCode = GetQRCode;
 </script>
-<div class="is-block is-large is-fullwidth container" style="text-align: center;">
-  <hr />
-  <label class="label">Scan this QR code in the next 20 seconds:</label>
-  <img id="qr-code" src="">
-  <hr />
-  <a href="/form/account">Back</a>
-</div>
 {{ end }}

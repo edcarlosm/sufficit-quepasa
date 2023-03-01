@@ -2,7 +2,7 @@ package models
 
 // Mensagem no formato QuePasa
 // Utilizada na API do QuePasa para troca com outros sistemas
-type QPMessageV2 struct {
+type QpMessageV2 struct {
 	ID        string `json:"message_id"`
 	Timestamp uint64 `json:"timestamp"`
 
@@ -26,7 +26,7 @@ type QPMessageV2 struct {
 	Chat QPChatV2 `json:"chat"`
 }
 
-type ByTimestampV2 []QPMessageV2
+type ByTimestampV2 []QpMessageV2
 
 func (m ByTimestampV2) Len() int           { return len(m) }
 func (m ByTimestampV2) Less(i, j int) bool { return m[i].Timestamp > m[j].Timestamp }

@@ -9,7 +9,7 @@ type WhatsmeowStoreNotFoundException struct {
 }
 
 func (e *WhatsmeowStoreNotFoundException) Error() string {
-	return fmt.Sprintf("cant find a store for wid (%s)", e.Wid)
+	return fmt.Sprint("cant find a store")
 }
 
 func (e *WhatsmeowStoreNotFoundException) Unauthorized() bool {

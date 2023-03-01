@@ -6,12 +6,12 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-type QpBotWebhookSql struct {
+type QpDataServerWebhookSql struct {
 	db *sqlx.DB
 }
 
-func (source QpBotWebhookSql) Find(context string, url string) (response *QpBotWebhook, err error) {
-	var result []QpBotWebhook
+func (source QpDataServerWebhookSql) Find(context string, url string) (response *QpServerWebhook, err error) {
+	var result []QpServerWebhook
 	err = source.db.Select(&result, "SELECT * FROM webhooks WHERE context = ? AND url = ?", context, url)
 	if err != nil {
 		return
@@ -20,13 +20,15 @@ func (source QpBotWebhookSql) Find(context string, url string) (response *QpBotW
 	// adjust extra information
 	for _, element := range result {
 		element.ParseExtra()
+		response = &element
+		break
 	}
 
 	return
 }
 
-func (source QpBotWebhookSql) FindAll(context string) ([]*QpBotWebhook, error) {
-	result := []*QpBotWebhook{}
+func (source QpDataServerWebhookSql) FindAll(context string) ([]*QpServerWebhook, error) {
+	result := []*QpServerWebhook{}
 	err := source.db.Select(&result, "SELECT * FROM webhooks WHERE context = ?", context)
 
 	// adjust extra information
@@ -36,8 +38,8 @@ func (source QpBotWebhookSql) FindAll(context string) ([]*QpBotWebhook, error) {
 	return result, err
 }
 
-func (source QpBotWebhookSql) All() ([]*QpBotWebhook, error) {
-	result := []*QpBotWebhook{}
+func (source QpDataServerWebhookSql) All() ([]*QpServerWebhook, error) {
+	result := []*QpServerWebhook{}
 	err := source.db.Select(&result, "SELECT * FROM webhooks")
 
 	// adjust extra information
@@ -47,25 +49,25 @@ func (source QpBotWebhookSql) All() ([]*QpBotWebhook, error) {
 	return result, err
 }
 
-func (source QpBotWebhookSql) Add(element QpBotWebhook) error {
+func (source QpDataServerWebhookSql) Add(element QpServerWebhook) error {
 	query := `INSERT OR IGNORE INTO webhooks (context, url, forwardinternal, trackid, extra) VALUES (?, ?, ?, ?, ?)`
 	_, err := source.db.Exec(query, element.Context, element.Url, element.ForwardInternal, element.TrackId, element.GetExtraText())
 	return err
 }
 
-func (source QpBotWebhookSql) Update(element QpBotWebhook) error {
+func (source QpDataServerWebhookSql) Update(element QpServerWebhook) error {
 	query := `UPDATE webhooks SET forwardinternal = ?, trackid = ?, extra = ? WHERE context = ? AND url = ?`
 	_, err := source.db.Exec(query, element.ForwardInternal, element.TrackId, element.GetExtraText(), element.Context, element.Url)
 	return err
 }
 
-func (source QpBotWebhookSql) Remove(context string, url string) error {
+func (source QpDataServerWebhookSql) Remove(context string, url string) error {
 	query := `DELETE FROM webhooks WHERE context = ? AND url = ?`
 	_, err := source.db.Exec(query, context, url)
 	return err
 }
 
-func (source QpBotWebhookSql) Clear(context string) error {
+func (source QpDataServerWebhookSql) Clear(context string) error {
 	query := `DELETE FROM webhooks WHERE context = ?`
 	_, err := source.db.Exec(query, context)
 	return err

@@ -1,18 +1,13 @@
 package controllers
 
 import (
-	"fmt"
 	"html/template"
 	"net/http"
-	"os"
-	"os/signal"
 	"strings"
-	"time"
 
+	websocket "github.com/gorilla/websocket"
 	log "github.com/sirupsen/logrus"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/gorilla/websocket"
 	models "github.com/sufficit/sufficit-quepasa/models"
 )
 
@@ -77,10 +72,9 @@ func FormToggleController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := &models.QpResponse{}
-
 	err = server.Toggle()
 	if err != nil {
+		response := &models.QpResponse{}
 		response.ParseError(err)
 		RespondInterface(w, response)
 		return
@@ -142,110 +136,27 @@ func VerifyFormHandler(w http.ResponseWriter, r *http.Request) {
 	templates.ExecuteTemplate(w, "main", data)
 }
 
-var done chan interface{}
-var interrupt chan os.Signal
-var upgrader = websocket.Upgrader{}
-
 // VerifyHandler renders route GET "/bot/verify/ws"
 func VerifyHandler(w http.ResponseWriter, r *http.Request) {
 	user, err := models.GetUser(r)
 	if err != nil {
-		log.Print("Connection upgrade error (not logged): ", err)
+		log.Errorf("connection upgrade error (not logged): %s", err.Error())
 		RedirectToLogin(w, r)
 		return
 	}
 
-	done = make(chan interface{})          // Channel to indicate that the receiverHandler is done
-	interrupt = make(chan os.Signal)       // Channel to listen for interrupt signal to terminate gracefully
-	signal.Notify(interrupt, os.Interrupt) // Notify the interrupt channel for SIGINT
+	var upgrader = websocket.Upgrader{
+		ReadBufferSize:  1024,
+		WriteBufferSize: 1024,
+	}
 
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Print("Connection upgrade error: ", err)
+		log.Errorf("(websocket): service error: %s", err.Error())
 		return
 	}
 
-	defer conn.Close()
-	go receiveWebSocketHandler(user, conn)
-
-	// Our main loop for the client
-	// We send our relevant packets here
-	for {
-		select {
-		case <-time.After(time.Duration(1) * time.Millisecond * 1000):
-			// Send an echo packet every second
-			err := conn.WriteMessage(websocket.TextMessage, []byte("echo"))
-			if err != nil {
-				//log.Println("Error during writing to websocket:", err)
-				return
-			}
-
-		case <-interrupt:
-			// We received a SIGINT (Ctrl + C). Terminate gracefully...
-			log.Println("Received SIGINT interrupt signal. Closing all pending connections")
-
-			// Close our websocket connection
-			err := conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
-			if err != nil {
-				log.Println("Error during closing websocket:", err)
-				return
-			}
-
-			select {
-			case <-done:
-				log.Println("Receiver Channel Closed! Exiting....")
-			case <-time.After(time.Duration(1) * time.Second):
-				log.Println("Timeout in closing receiving channel. Exiting....")
-			}
-			return
-		}
-	}
-}
-
-func receiveWebSocketHandler(user models.QPUser, connection *websocket.Conn) {
-	defer close(done)
-	for {
-		mt, msg, err := connection.ReadMessage()
-		if err != nil {
-			log.Errorf("error in receive: %s", err.Error())
-			return
-		}
-
-		if strings.EqualFold(string(msg), "start:sd") || strings.EqualFold(string(msg), "start:md") {
-			out := make(chan []byte)
-			go func() {
-				defer close(out)
-				err = connection.WriteMessage(mt, <-out)
-				if err != nil {
-					log.Println("Write message error: ", err)
-				}
-			}()
-
-			multidevice := strings.EqualFold(string(msg), "start:md")
-
-			// Exibindo código QR
-			err := models.SignInWithQRCode(user, multidevice, out)
-			if err != nil {
-				if strings.Contains(err.Error(), "timed out") {
-					err = connection.WriteMessage(mt, []byte("timeout"))
-					if err != nil {
-						// log.Println("Write message error after timeout: ", err)
-						return
-					}
-				} else {
-					log.Println("SignInWithQRCode Unknown Error:", err)
-				}
-			} else {
-				err = connection.WriteMessage(websocket.TextMessage, []byte("complete"))
-				if err != nil {
-					log.Errorf("error on write complete message after qrcode verified: %s", err.Error())
-				}
-				return
-			}
-		} else {
-			log.Warnf("received unknown msg from websocket: %s", msg)
-		}
-	}
+	WebSocketStart(user, conn)
 }
 
 //
@@ -274,7 +185,7 @@ func FormDeleteController(w http.ResponseWriter, r *http.Request) {
 //
 
 // Facilitador que traz usuario e servidor para quem esta autenticado
-func GetUserAndServer(w http.ResponseWriter, r *http.Request) (user models.QPUser, server *models.QPWhatsappServer, err error) {
+func GetUserAndServer(w http.ResponseWriter, r *http.Request) (user *models.QpUser, server *models.QpWhatsappServer, err error) {
 	user, err = models.GetUser(r)
 	if err != nil {
 		RedirectToLogin(w, r)
@@ -282,41 +193,19 @@ func GetUserAndServer(w http.ResponseWriter, r *http.Request) (user models.QPUse
 	}
 
 	r.ParseForm()
-	server, err = GetServerFromAuthenticatedRequest(user, r)
+
+	token := GetToken(r)
+	server, err = models.WhatsappService.FindByToken(token)
 	if err != nil {
-		RespondServerError(server, w, err)
 		return
 	}
 
 	return
 }
 
-// Returns bot from http form request using E164 id
-func GetBotFromRequest(r *http.Request) (models.QPBot, error) {
-	var bot models.QPBot
-	user, err := models.GetUser(r)
-	if err != nil {
-		return bot, err
-	}
-
-	botID := chi.URLParam(r, "id")
-	return models.WhatsappService.DB.Bot.FindForUser(user.ID, botID)
-}
-
-// Returns bot from http form request using E164 id
-func GetServerFromRequest(r *http.Request) (*models.QPWhatsappServer, error) {
-	wid := chi.URLParam(r, "id")
-	return models.GetServerFromID(wid)
-}
-
-// Search for a server ID from an authenticated request
-func GetServerFromAuthenticatedRequest(user models.QPUser, r *http.Request) (server *models.QPWhatsappServer, err error) {
-	serverid := r.Form.Get("botID")
-	server, ok := models.GetServersForUser(user)[serverid]
-	if !ok {
-		err = fmt.Errorf("server not found")
-	}
-	return
+func GetServerFromRequest(r *http.Request) (server *models.QpWhatsappServer, err error) {
+	token := GetToken(r)
+	return models.WhatsappService.FindByToken(token)
 }
 
 func GetDownloadPrefix(token string) (path string) {

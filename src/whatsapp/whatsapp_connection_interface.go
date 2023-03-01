@@ -1,13 +1,12 @@
 package whatsapp
 
 import (
+	"context"
+
 	log "github.com/sirupsen/logrus"
 )
 
 type IWhatsappConnection interface {
-	// Returns Connection Version (beta|multi|single)
-	GetVersion() string
-
 	GetStatus() WhatsappConnectionState
 
 	// Retorna o ID do controlador whatsapp
@@ -17,7 +16,8 @@ type IWhatsappConnection interface {
 	Connect() error
 	Disconnect() error
 
-	GetWhatsAppQRChannel(chan<- string) error
+	GetWhatsAppQRChannel(context.Context, chan<- string) error
+	GetWhatsAppQRCode() string
 
 	// Get group invite link
 	GetInvite(groupId string) (string, error)
@@ -26,6 +26,7 @@ type IWhatsappConnection interface {
 	GetProfilePicture(wid string, knowingId string) (*WhatsappProfilePicture, error)
 
 	UpdateHandler(IWhatsappHandlers)
+	UpdatePairedCallBack(func(string))
 
 	// Download message attachment if exists
 	DownloadData(IWhatsappMessage) ([]byte, error)
@@ -49,7 +50,7 @@ type IWhatsappConnection interface {
 			Does not erase permanent data !
 		</summary>
 	*/
-	Dispose()
+	Dispose(string)
 
 	/*
 		<summary>
@@ -62,4 +63,6 @@ type IWhatsappConnection interface {
 
 	// Is connected and logged, valid verification
 	IsValid() bool
+
+	IsConnected() bool
 }

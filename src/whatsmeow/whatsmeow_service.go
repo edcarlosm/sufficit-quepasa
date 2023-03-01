@@ -21,10 +21,10 @@ var WhatsmeowService *WhatsmeowServiceModel
 
 func (service *WhatsmeowServiceModel) Start() {
 	if service == nil {
-		log.Trace("Starting Whatsmeow Service ....")
+		log.Info("Starting Whatsmeow Service ....")
 
 		dbLog := waLog.Stdout("whatsmeow/database", string(WarnLevel), true)
-		container, err := sqlstore.New("sqlite3", "file:whatsmeow.db?_foreign_keys=on", dbLog)
+		container, err := sqlstore.New("sqlite3", "file:whatsmeow.sqlite?_foreign_keys=on", dbLog)
 		if err != nil {
 			panic(err)
 		}
@@ -49,31 +49,8 @@ func (service *WhatsmeowServiceModel) Start() {
 func (service *WhatsmeowServiceModel) CreateEmptyConnection() (conn *WhatsmeowConnection, err error) {
 	logger := log.StandardLogger()
 	logger.SetLevel(log.DebugLevel)
-	loggerEntry := log.NewEntry(logger)
 
-	clientLog := waLog.Stdout("Whatsmeow/Client", log.DebugLevel.String(), true)
-	client, err := service.GetWhatsAppClient("", clientLog)
-	if err != nil {
-		return
-	}
-
-	handlers := &WhatsmeowHandlers{
-		Client: client,
-		log:    loggerEntry,
-	}
-	err = handlers.Register()
-	if err != nil {
-		return
-	}
-
-	conn = &WhatsmeowConnection{
-		Client:   client,
-		Handlers: handlers,
-		logger:   logger,
-		waLogger: clientLog,
-		log:      loggerEntry,
-	}
-	return
+	return service.CreateConnection("", logger)
 }
 
 func (service *WhatsmeowServiceModel) CreateConnection(wid string, logger *log.Logger) (conn *WhatsmeowConnection, err error) {
@@ -83,11 +60,18 @@ func (service *WhatsmeowServiceModel) CreateConnection(wid string, logger *log.L
 		return
 	}
 
-	loggerEntry := logger.WithField("wid", wid)
+	var loggerEntry *log.Entry
+	if len(wid) > 0 {
+		loggerEntry = logger.WithField("wid", wid)
+	} else {
+		loggerEntry = log.NewEntry(logger)
+	}
+
 	handlers := &WhatsmeowHandlers{
 		Client: client,
 		log:    loggerEntry,
 	}
+
 	err = handlers.Register()
 	if err != nil {
 		return
@@ -100,6 +84,8 @@ func (service *WhatsmeowServiceModel) CreateConnection(wid string, logger *log.L
 		waLogger: clientLog,
 		log:      loggerEntry,
 	}
+
+	client.PrePairCallback = conn.PairedCallBack
 	return
 }
 
@@ -113,7 +99,7 @@ func (service *WhatsmeowServiceModel) GetStoreFromWid(wid string) (str *store.De
 			return str, err
 		} else {
 			for _, element := range devices {
-				if element.ID.User == wid {
+				if element.ID.String() == wid {
 					str = element
 					break
 				}
@@ -134,6 +120,7 @@ func (service *WhatsmeowServiceModel) GetWhatsAppClient(wid string, logger waLog
 	if deviceStore != nil {
 		client = whatsmeow.NewClient(deviceStore, logger)
 		client.AutoTrustIdentity = true
+		client.EnableAutoReconnect = true
 	}
 	return
 }

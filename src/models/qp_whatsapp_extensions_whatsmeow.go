@@ -9,25 +9,31 @@ import (
 	whatsmeow "github.com/sufficit/sufficit-quepasa/whatsmeow"
 )
 
-func NewWhatsmeowEmptyConnection() (whatsapp.IWhatsappConnection, error) {
-	return whatsmeow.WhatsmeowService.CreateEmptyConnection()
+func NewWhatsmeowEmptyConnection(callback func(string)) (conn whatsapp.IWhatsappConnection, err error) {
+	conn, err = whatsmeow.WhatsmeowService.CreateEmptyConnection()
+	if err != nil {
+		return
+	}
+
+	conn.UpdatePairedCallBack(callback)
+	return
 }
 
 func NewWhatsmeowConnection(wid string, logger *log.Logger) (whatsapp.IWhatsappConnection, error) {
 	return whatsmeow.WhatsmeowService.CreateConnection(wid, logger)
 }
 
-func ToQPMessageV2(source whatsapp.WhatsappMessage, wid string) (message QPMessageV2) {
+func ToQpMessageV2(source whatsapp.WhatsappMessage, server *QpWhatsappServer) (message QpMessageV2) {
 	message.ID = source.Id
 	message.Timestamp = uint64(source.Timestamp.Unix())
 	message.Text = source.Text
 	message.FromMe = source.FromMe
 
 	message.Controller = QPEndpointV2{}
-	if !strings.Contains(wid, "@") {
-		message.Controller.ID = wid + "@c.us"
+	if !strings.Contains(server.WId, "@") {
+		message.Controller.ID = server.GetNumber() + "@c.us"
 	} else {
-		message.Controller.ID = wid
+		message.Controller.ID = server.GetNumber()
 	}
 
 	message.ReplyTo = ChatToQPEndPointV2(source.Chat)
@@ -38,7 +44,7 @@ func ToQPMessageV2(source whatsapp.WhatsappMessage, wid string) (message QPMessa
 	}
 
 	if source.HasAttachment() {
-		message.Attachment = ToQPAttachmentV1(source.Attachment, message.ID, wid)
+		message.Attachment = ToQPAttachmentV1(source.Attachment, message.ID, server.Token)
 	}
 
 	if len(source.InReply) > 0 {

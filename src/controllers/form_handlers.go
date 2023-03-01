@@ -39,22 +39,22 @@ func LoginFormHandler(w http.ResponseWriter, r *http.Request) {
 // LoginHandler renders route POST "/login"
 func LoginHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-	email := r.Form.Get("email")
+	username := r.Form.Get("email")
 	password := r.Form.Get("password")
 
-	if email == "" || password == "" {
+	if username == "" || password == "" {
 		RespondUnauthorized(w, errors.New("Missing username or password"))
 		return
 	}
 
-	user, err := models.WhatsappService.GetUser(email, password)
+	user, err := models.WhatsappService.GetUser(username, password)
 	if err != nil {
-		RespondUnauthorized(w, errors.New("Incorrect username or password"))
+		RespondUnauthorized(w, err)
 		return
 	}
 
 	tokenAuth := jwtauth.New("HS256", []byte(os.Getenv("SIGNING_SECRET")), nil)
-	claims := jwt.MapClaims{"user_id": user.ID}
+	claims := jwt.MapClaims{"user_id": user.Username}
 	jwtauth.SetIssuedNow(claims)
 	jwtauth.SetExpiryIn(claims, 24*time.Hour)
 	_, tokenString, err := tokenAuth.Encode(claims)

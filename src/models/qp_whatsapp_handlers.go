@@ -11,7 +11,7 @@ import (
 
 // Serviço que controla os servidores / bots individuais do whatsapp
 type QPWhatsappHandlers struct {
-	server *QPWhatsappServer
+	server *QpWhatsappServer
 
 	messages     map[string]whatsapp.WhatsappMessage
 	sync         *sync.Mutex // Objeto de sinaleiro para evitar chamadas simultâneas a este objeto
@@ -24,11 +24,11 @@ type QPWhatsappHandlers struct {
 }
 
 func (handler *QPWhatsappHandlers) HandleGroups() bool {
-	return handler.server.Bot.HandleGroups
+	return handler.server.HandleGroups
 }
 
 func (handler *QPWhatsappHandlers) HandleBroadcast() bool {
-	return handler.server.Bot.HandleBroadcast
+	return handler.server.HandleBroadcast
 }
 
 //#region EVENTS FROM WHATSAPP SERVICE

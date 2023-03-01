@@ -12,5 +12,5 @@ type ApiServerNotReadyException struct {
 }
 
 func (e *ApiServerNotReadyException) Error() string {
-	return fmt.Sprintf("bot (%s) not ready yet ! current status: %s.", e.Wid, e.Status.String())
+	return fmt.Sprintf("server (%s) not ready yet ! current status: %s.", e.Wid, e.Status.String())
 }

@@ -74,3 +74,33 @@ func EnsureMimesMapping() {
 	_ = mime.AddExtensionType(".webp", "image/webp")
 	_ = mime.AddExtensionType(".mp4", "video/mp4")
 }
+
+// Usado também para identificar o número do bot
+// Meramente visual
+func GetPhoneByWId(wid string) string {
+
+	// removing whitespaces
+	out := strings.Replace(wid, " ", "", -1)
+	if strings.Contains(out, "@") {
+		// capturando tudo antes do @
+		splited := strings.Split(out, "@")
+		out = splited[0]
+
+		if strings.Contains(out, ".") {
+			// capturando tudo antes do "."
+			splited = strings.Split(out, ".")
+			out = splited[0]
+
+			return out
+		}
+	}
+
+	re, err := regexp.Compile(`\d*`)
+	if err == nil {
+		matches := re.FindAllString(out, -1)
+		if len(matches) > 0 {
+			out = matches[0]
+		}
+	}
+	return out
+}

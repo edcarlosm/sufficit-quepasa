@@ -1,6 +1,6 @@
 package models
 
-type IQPWhatsappServer interface {
+type IQpWhatsappServer interface {
 
 	// Returns whatsapp controller id on E164
 	GetWid() string

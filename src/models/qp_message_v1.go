@@ -30,8 +30,8 @@ func (m ByTimestampV1) Len() int           { return len(m) }
 func (m ByTimestampV1) Less(i, j int) bool { return m[i].Timestamp > m[j].Timestamp }
 func (m ByTimestampV1) Swap(i, j int)      { m[i], m[j] = m[j], m[i] }
 
-func (source *QPMessageV1) ToV2() *QPMessageV2 {
-	message := &QPMessageV2{}
+func (source *QPMessageV1) ToV2() *QpMessageV2 {
+	message := &QpMessageV2{}
 	message.ID = source.ID
 	message.Timestamp = source.Timestamp
 	message.Controller = source.Controller.GetQPEndPointV2()

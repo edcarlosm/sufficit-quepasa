@@ -9,7 +9,7 @@ import (
 )
 
 type QPWebhookHandler struct {
-	Server *QPWhatsappServer
+	Server *QpWhatsappServer
 }
 
 func (w *QPWebhookHandler) Handle(payload *whatsapp.WhatsappMessage) {
@@ -18,7 +18,7 @@ func (w *QPWebhookHandler) Handle(payload *whatsapp.WhatsappMessage) {
 	}
 
 	if payload.Type == whatsapp.DiscardMessageType|whatsapp.UnknownMessageType {
-		log.Debugf("ignoring unknown message type on webhook request: %v", reflect.TypeOf(payload))
+		log.Debugf("ignoring unknown message type on webhook request: %v", reflect.TypeOf(&payload))
 		return
 	}
 
@@ -27,7 +27,7 @@ func (w *QPWebhookHandler) Handle(payload *whatsapp.WhatsappMessage) {
 		return
 	}
 
-	if payload.Chat.Id == "status@broadcast" && !w.Server.HandleBroadcast() {
+	if payload.Chat.Id == "status@broadcast" && !w.Server.HandleBroadcast {
 		log.Debug("ignoring broadcast message on webhook request: %v", payload.Id)
 		return
 	}

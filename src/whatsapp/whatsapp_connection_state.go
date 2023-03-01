@@ -6,8 +6,11 @@ const (
 	// Unknown, not treated state
 	Unknown WhatsappConnectionState = iota
 
-	// Instantiated
-	Created
+	// No connection attached
+	UnPrepared
+
+	// Not verified (not logged)
+	UnVerified
 
 	// Starting variables
 	Starting
@@ -52,7 +55,8 @@ func (s WhatsappConnectionState) EnumIndex() int {
 func (s WhatsappConnectionState) String() string {
 	return [...]string{
 		"Unknown",
-		"Created",
+		"UnPrepared",
+		"UnVerified",
 		"Starting",
 		"Connecting",
 		"Stopped",

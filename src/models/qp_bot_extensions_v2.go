@@ -4,14 +4,11 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/jinzhu/copier"
-	log "github.com/sirupsen/logrus"
 )
 
 // returning []QPMessageV1
 // bot.GetMessages(searchTime)
-func GetMessagesFromBotV2(source QPBot, timestamp string) (messages []QPMessageV2, err error) {
+func GetMessagesFromBotV2(source QPBot, timestamp string) (messages []QpMessageV2, err error) {
 
 	server, err := GetServerFromBot(source)
 	if err != nil {
@@ -32,11 +29,17 @@ func GetMessagesFromBotV2(source QPBot, timestamp string) (messages []QPMessageV
 	return
 }
 
-func ToQPBotV2(source *QPBot) (destination *QPBotV2) {
-	destination = &QPBotV2{}
-	err := copier.Copy(destination, source)
-	if err != nil {
-		log.Errorf("error on convert bot to version 1: %s", err.Error())
+func ToQPBotV2(source *QpServer) (destination *QPBotV2) {
+	destination = &QPBotV2{
+		ID:              source.WId,
+		Verified:        source.Verified,
+		Token:           source.Token,
+		UserID:          source.User,
+		Devel:           source.Devel,
+		HandleGroups:    source.HandleGroups,
+		HandleBroadcast: source.HandleBroadcast,
+		UpdatedAt:       source.Timestamp.String(),
+		Version:         "multi",
 	}
 
 	if !strings.Contains(destination.ID, "@") {

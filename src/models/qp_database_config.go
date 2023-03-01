@@ -3,11 +3,11 @@ package models
 import (
 	"fmt"
 	"os"
-	
+
 	log "github.com/sirupsen/logrus"
 )
 
-type QPDatabaseConfig struct {
+type QpDatabaseConfig struct {
 	Driver   string
 	Host     string
 	DataBase string
@@ -17,7 +17,7 @@ type QPDatabaseConfig struct {
 	SSL      string
 }
 
-func (config *QPDatabaseConfig) GetConnectionString() (connection string) {
+func (config *QpDatabaseConfig) GetConnectionString() (connection string) {
 	if config.Driver == "mysql" {
 		connection = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
 			config.User, config.Password, config.Host, config.Port, config.DataBase)

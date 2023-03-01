@@ -37,10 +37,10 @@ func RegisterFormAuthenticatedControllers(r chi.Router) {
 	r.Post(FormEndpointPrefix+"/togglegroups", FormToggleGroupsController)
 	r.Post(FormEndpointPrefix+"/togglebroadcast", FormToggleBroadcastController)
 
-	r.Get(FormEndpointPrefix+"/server/{id}", FormSendController)
-	r.Get(FormEndpointPrefix+"/server/{id}/send", FormSendController)
-	r.Post(FormEndpointPrefix+"/server/{id}/send", FormSendController)
-	r.Get(FormEndpointPrefix+"/server/{id}/receive", FormReceiveController)
+	r.Get(FormEndpointPrefix+"/server/{token}", FormSendController)
+	r.Get(FormEndpointPrefix+"/server/{token}/send", FormSendController)
+	r.Post(FormEndpointPrefix+"/server/{token}/send", FormSendController)
+	r.Get(FormEndpointPrefix+"/server/{token}/receive", FormReceiveController)
 }
 
 // Authentication manager on forms
@@ -71,7 +71,7 @@ func FormAccountController(w http.ResponseWriter, r *http.Request) {
 
 	data := models.QPFormAccountData{
 		PageTitle: "Account",
-		User:      user,
+		User:      *user,
 	}
 
 	data.Servers = models.GetServersForUser(user)

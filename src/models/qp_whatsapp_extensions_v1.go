@@ -20,7 +20,7 @@ func ToWhatsappAttachment(source *QPAttachmentV1) (attach *whatsapp.WhatsappAtta
 	return
 }
 
-func ToWhatsappMessageV1(source *QPSendRequestV1) (msg *whatsapp.WhatsappMessage, err error) {
+func ToWhatsappMessageV1(source *QpSendRequestV2) (msg *whatsapp.WhatsappMessage, err error) {
 	recipient, err := whatsapp.FormatEndpoint(source.Recipient)
 	if err != nil {
 		return
