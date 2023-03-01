@@ -42,7 +42,7 @@ func InformationHandlerV2(w http.ResponseWriter, r *http.Request) {
 
 	response.Id = server.Token
 	response.Number = server.GetNumber()
-	RespondInterface(w, response)
+	RespondSuccess(w, response)
 }
 
 // SendAPIHandler renders route "/{version}/bot/{token}/send"
@@ -82,7 +82,7 @@ func SendAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 
 	// setting source msg participant
 	if waMsg.FromGroup() && len(waMsg.Participant.Id) == 0 {
-		waMsg.Participant.Id = whatsapp.PhoneToWid(server.GetWid())
+		waMsg.Participant.Id = server.WId
 	}
 
 	// setting wa msg chat title
@@ -113,12 +113,12 @@ func SendAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 	}
 
 	metrics.MessagesSent.Inc()
-	RespondInterface(w, response)
+	RespondSuccess(w, response)
 }
 
 // Renders route GET "/{version}/bot/{token}/receive"
 func ReceiveAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
-	response := models.QpReceiveResponseV2{}
+	response := &models.QpReceiveResponseV2{}
 
 	server, err := GetServer(r)
 	if err != nil {
@@ -134,8 +134,8 @@ func ReceiveAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 	// Evitando tentativa de download de anexos sem o bot estar devidamente sincronizado
 	status := server.GetStatus()
 	if status != whatsapp.Ready {
-		err = &ApiServerNotReadyException{Wid: server.WId, Status: status}
 		metrics.MessageReceiveErrors.Inc()
+		err = &ApiServerNotReadyException{Wid: server.WId, Status: status}
 		response.ParseError(err)
 		RespondInterface(w, response)
 		return
@@ -157,7 +157,7 @@ func ReceiveAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 
 	// metrics
 	metrics.MessagesReceived.Add(float64(len(messages)))
-	RespondInterface(w, response)
+	RespondSuccess(w, response)
 }
 
 // NOT TESTED ----------------------------------
@@ -219,7 +219,7 @@ func SendDocumentAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := models.QpSendResponseV2{}
+	response := &models.QpSendResponseV2{}
 	response.Chat.ID = waMsg.Chat.Id
 	response.Chat.UserName = waMsg.Chat.Id
 	response.Chat.Title = server.GetTitle(waMsg.Chat.Id)

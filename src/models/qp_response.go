@@ -5,7 +5,7 @@ type QpResponse struct {
 	Status  string `json:"status,omitempty"`
 }
 
-func (source QpResponse) Error() (message string) {
+func (source *QpResponse) Error() (message string) {
 	if !source.Success {
 		message = source.Status
 	}

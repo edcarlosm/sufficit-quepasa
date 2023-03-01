@@ -56,7 +56,8 @@ func ReceiveAPIHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		response.ParseSuccess("getting without filter")
 	}
-	RespondInterface(w, response)
+
+	RespondSuccess(w, response)
 }
 
 // SendAPIHandler renders route "/v3/bot/{token}/send"
