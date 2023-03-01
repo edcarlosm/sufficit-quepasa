@@ -19,6 +19,7 @@ var ControllerPrefixV2 string = fmt.Sprintf("/%s/bot/{token}", APIVersion2)
 
 func RegisterAPIV2Controllers(r chi.Router) {
 
+	r.Get(ControllerPrefixV2, InformationHandlerV2)
 	r.Post(ControllerPrefixV2+"/send", SendAPIHandlerV2)
 	r.Get(ControllerPrefixV2+"/receive", ReceiveAPIHandlerV2)
 
@@ -27,7 +28,24 @@ func RegisterAPIV2Controllers(r chi.Router) {
 	r.Post(ControllerPrefixV2+"/attachment", AttachmentAPIHandlerV2)
 }
 
-// SendAPIHandler renders route "/v2/bot/{token}/send"
+// InformationController renders route GET "/{version}/bot/{token}"
+func InformationHandlerV2(w http.ResponseWriter, r *http.Request) {
+
+	response := &models.QpInfoResponseV2{}
+
+	server, err := GetServer(r)
+	if err != nil {
+		response.ParseError(err)
+		RespondInterface(w, response)
+		return
+	}
+
+	response.Id = server.Token
+	response.Number = server.GetNumber()
+	RespondInterface(w, response)
+}
+
+// SendAPIHandler renders route "/{version}/bot/{token}/send"
 func SendAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 	response := &models.QpSendResponseV2{}
 
