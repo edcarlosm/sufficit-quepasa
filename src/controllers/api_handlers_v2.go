@@ -47,6 +47,9 @@ func InformationHandlerV2(w http.ResponseWriter, r *http.Request) {
 
 	response.Id = server.Token
 	response.Number = server.GetNumber()
+	response.Username = server.User
+	response.FirstName = "John"
+	response.LastName = "Doe"
 	RespondSuccess(w, response)
 }
 
