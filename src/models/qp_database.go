@@ -1,9 +1,11 @@
 package models
 
 import (
+	"database/sql"
 	"fmt"
 	"io/ioutil"
 	"os"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -41,16 +43,13 @@ func GetDB() *sqlx.DB {
 		// Tenta realizar a conexão
 		dbconn, err := sqlx.Connect(config.Driver, config.GetConnectionString())
 		if err != nil {
-			log.Println(err)
+			log.Fatalf("fatal error at getting database connection")
+			return
 		}
 
 		dbconn.DB.SetMaxIdleConns(500)
 		dbconn.DB.SetMaxOpenConns(1000)
 		dbconn.DB.SetConnMaxLifetime(30 * time.Second)
-
-		if err != nil {
-			log.Println(err)
-		}
 
 		// Definindo uma única conexão para todo o sistema
 		Connection = dbconn
@@ -109,7 +108,7 @@ func MigrateToLatest() (err error) {
 		fullPath = strMigrations
 	}
 
-	log.Info("Migrating database (if necessary)")
+	log.Info("migrating database (if necessary)")
 	if boolMigrations {
 		workDir, err := os.Getwd()
 		if err != nil {
@@ -117,7 +116,7 @@ func MigrateToLatest() (err error) {
 		}
 
 		if runtime.GOOS == "windows" {
-			log.Debug("Migrating database on Windows")
+			log.Debug("migrating database on Windows")
 
 			// windows ===================
 			leadingWindowsUnit, _ := filepath.Rel("z:\\", workDir)
@@ -132,37 +131,28 @@ func MigrateToLatest() (err error) {
 
 	log.Debugf("fullpath database: %s", fullPath)
 
+	migrations := Migrations(fullPath)
 	config := GetDBConfig()
-	superDB := *GetDB()
-	db := superDB.DB
-
-	migrator := migrate.Sqlx{
-		Printf: func(format string, args ...interface{}) (int, error) {
-			log.Println(format, args)
-			return 0, nil
-		},
-		Migrations: Migrations(fullPath),
-	}
-
-	log.Debug("Migrating ...")
+	db := GetDB().DB
+	migrator := &QpMigrator{Migrations: migrations}
 	err = migrator.Migrate(db, config.Driver)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	log.Debug("Migrating finished")
+	log.Debug("migrating finished")
 	return nil
 }
 
 func Migrations(fullPath string) (migrations []migrate.SqlxMigration) {
-	log.Debugf("Migrating files from: %s", fullPath)
+	log.Debugf("migrating files from: %s", fullPath)
 	files, err := ioutil.ReadDir(fullPath)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	log.Debug("Migrating creating array with definitions")
-	confMap := make(map[string]*QPMigrationFile)
+	log.Debug("migrating creating array with definitions")
+	confMap := make(map[string]*QpMigration)
 
 	for _, file := range files {
 		info := file.Name()
@@ -182,17 +172,50 @@ func Migrations(fullPath string) (migrations []migrate.SqlxMigration) {
 				}
 			} else {
 				if status == "up" {
-					confMap[id] = &QPMigrationFile{id, title, filepath, ""}
+					confMap[id] = &QpMigration{Id: id, Title: title, FileUp: filepath}
 				} else if status == "down" {
-					confMap[id] = &QPMigrationFile{id, title, "", filepath}
+					confMap[id] = &QpMigration{Id: id, Title: title, FileDown: filepath}
 				}
 			}
 		}
 	}
 
 	for _, migration := range confMap {
-		migrations = append(migrations, migrate.SqlxFileMigration(migration.ID, migration.FileUp, migration.FileDown))
+		migrations = append(migrations, migration.ToSqlxMigration())
 	}
 
+	sort.SliceStable(migrations, func(i, j int) bool {
+		return migrations[i].ID < migrations[j].ID
+	})
+
 	return
+}
+
+type QpMigrator struct {
+	Migrations []migrate.SqlxMigration
+}
+
+func (source *QpMigrator) Printf(format string, args ...interface{}) (int, error) {
+	format = strings.ToLower(format)
+	format = strings.ReplaceAll(format, "\n", "")
+	log.Debugf(format, args)
+	return len([]byte(format)), nil
+}
+
+func (source *QpMigrator) Migrate(sqlDB *sql.DB, dialect string) error {
+	migrator := &migrate.Sqlx{
+		Printf:     source.Printf,
+		Migrations: source.Migrations,
+	}
+
+	err := migrator.Migrate(sqlDB, dialect)
+	if err != nil {
+		rbErr := migrator.Rollback(sqlDB, dialect)
+		if rbErr != nil {
+			return rbErr
+		}
+		return err
+	}
+
+	return nil
 }

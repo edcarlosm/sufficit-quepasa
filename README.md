@@ -19,6 +19,8 @@
 > A (micro) web-application to make web-based [WhatsApp][0] bots easy to write.
 
 [PostMan Shared Documentations](https://www.getpostman.com/collections/569a066d7a2798e8d293)
+[PostMan Public Workspace](https://elements.getpostman.com/redirect?entityId=5047984-bb51f975-8e79-43e8-b895-06f5081a6819&entityType=collection)
+
 
 **Features:**
   * Verify a number with a QR code

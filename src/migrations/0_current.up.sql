@@ -1,7 +1,3 @@
-/*
- AS SHOULD BE !
-*/
-
 CREATE TABLE IF NOT EXISTS `users` (
   `username` CHAR (255) PRIMARY KEY NOT NULL,
   `password` VARCHAR (255) NOT NULL,
@@ -28,3 +24,10 @@ CREATE TABLE IF NOT EXISTS `webhooks` (
   `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT `webhooks_pkey` PRIMARY KEY (`context`, `url`)
 );
+
+INSERT INTO migrations (id) VALUES 
+('1'),
+('202207131700'),
+('202209281840'),
+('202303011900')
+;
