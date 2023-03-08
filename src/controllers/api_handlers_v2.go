@@ -22,6 +22,7 @@ func RegisterAPIV2Controllers(r chi.Router) {
 
 	r.Get(ControllerPrefixV2, InformationHandlerV2)
 	r.Post(ControllerPrefixV2+"/send", SendAPIHandlerV2)
+	r.Post(ControllerPrefixV2+"/sendtext", SendAPIHandlerV2)
 	r.Get(ControllerPrefixV2+"/receive", ReceiveAPIHandlerV2)
 
 	// external for now
