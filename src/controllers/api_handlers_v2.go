@@ -28,6 +28,8 @@ func RegisterAPIV2Controllers(r chi.Router) {
 	r.Post(ControllerPrefixV2+"/senddocument", SendDocumentAPIHandlerV2)
 	r.Post(ControllerPrefixV2+"/attachment", AttachmentAPIHandlerV2)
 	r.Post(ControllerPrefixV2+"/webhook", WebHookAPIHandlerV2)
+	r.Get(ControllerPrefixV2+"/webhook", WebHookAPIHandlerV2)
+	r.Delete(ControllerPrefixV2+"/webhook", WebHookAPIHandlerV2)
 }
 
 // InformationController renders route GET "/{version}/bot/{token}"
