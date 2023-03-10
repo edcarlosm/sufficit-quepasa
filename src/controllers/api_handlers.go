@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 	log "github.com/sirupsen/logrus"
@@ -160,8 +161,14 @@ func CommandController(w http.ResponseWriter, r *http.Request) {
 	case "status":
 		status := server.GetStatus()
 		response.ParseSuccess(status.String())
+	case "groups":
+		err = server.ToggleGroups()
+		if err == nil {
+			message := "groups toggled: " + strconv.FormatBool(server.HandleGroups)
+			response.ParseSuccess(message)
+		}
 	default:
-		err = fmt.Errorf("invalid action: {%s}, try {start,stop,restart,status} !", action)
+		err = fmt.Errorf("invalid action: {%s}, try {start,stop,restart,status,groups} !", action)
 	}
 
 	if err != nil {
