@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	log "github.com/sirupsen/logrus"
 	"github.com/skip2/go-qrcode"
 
 	models "github.com/sufficit/sufficit-quepasa/models"
@@ -109,6 +110,7 @@ func ScannerController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	log.Infof("requesting qrcode for token %s", token)
 	result := con.GetWhatsAppQRCode()
 
 	var png []byte
