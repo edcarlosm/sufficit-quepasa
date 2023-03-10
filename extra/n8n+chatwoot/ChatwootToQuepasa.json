@@ -481,7 +481,7 @@
     {
       "parameters": {
         "requestMethod": "POST",
-        "url": "=http://127.0.0.1:3000/api/v1/accounts/{{$json.query.account_id}}/conversations/{{$json[\"body\"][\"id\"]}}/toggle_status",
+        "url": "={{$json.query.cwhost}} }}/api/v1/accounts/{{$json.query.account}}/conversations/{{$json.body.id}}/toggle_status",
         "allowUnauthorizedCerts": true,
         "options": {},
         "bodyParametersUi": {
@@ -1239,7 +1239,7 @@
   },
   "active": true,
   "settings": {},
-  "versionId": "618b2049-035e-4fc9-93bc-d5de25456131",
+  "versionId": "05b2da31-fda4-4223-9526-51575eeeb5dd",
   "id": "2",
   "meta": {
     "instanceId": "2b4ab318d4f8eba20155e50db9998481bc305e3588e42ee69176091736c9d07e"
