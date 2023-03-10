@@ -142,10 +142,19 @@ func CommandController(w http.ResponseWriter, r *http.Request) {
 	switch action {
 	case "start":
 		err = server.Start()
+		if err == nil {
+			response.ParseSuccess("started")
+		}
 	case "stop":
 		err = server.Stop("command")
+		if err == nil {
+			response.ParseSuccess("stopped")
+		}
 	case "restart":
 		err = server.Restart()
+		if err == nil {
+			response.ParseSuccess("restarted")
+		}
 	case "status":
 		status := server.GetStatus()
 		response.ParseSuccess(status.String())
