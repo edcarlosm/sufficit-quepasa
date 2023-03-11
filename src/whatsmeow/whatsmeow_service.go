@@ -6,6 +6,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	log "github.com/sirupsen/logrus"
 
+	"github.com/sufficit/sufficit-quepasa/library"
 	whatsapp "github.com/sufficit/sufficit-quepasa/whatsapp"
 	whatsmeow "go.mau.fi/whatsmeow"
 	"go.mau.fi/whatsmeow/store"
@@ -109,6 +110,30 @@ func (service *WhatsmeowServiceModel) GetStoreFromWid(wid string) (str *store.De
 				err = &WhatsmeowStoreNotFoundException{Wid: wid}
 				return str, err
 			}
+		}
+	}
+
+	return
+}
+
+// Temporaly
+func (service *WhatsmeowServiceModel) GetStoreForMigrated(phone string) (str *store.Device, err error) {
+
+	devices, err := service.Container.GetAllDevices()
+	if err != nil {
+		err = fmt.Errorf("(Whatsmeow)(EX001) error on getting store from phone (%s): %v", phone, err)
+		return str, err
+	} else {
+		for _, element := range devices {
+			if library.GetPhoneByWId(element.ID.String()) == phone {
+				str = element
+				break
+			}
+		}
+
+		if str == nil {
+			err = &WhatsmeowStoreNotFoundException{Wid: phone}
+			return str, err
 		}
 	}
 

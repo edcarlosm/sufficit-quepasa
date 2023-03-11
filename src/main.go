@@ -39,6 +39,13 @@ func main() {
 
 	whatsmeow.WhatsmeowService.Start()
 
+	// must execute after whatsmeow started
+	for _, element := range models.Running {
+		if handler, ok := models.MigrationHandlers[element]; ok {
+			handler(element)
+		}
+	}
+
 	// Inicializando serviço de controle do whatsapp
 	// De forma assíncrona
 	err = models.QPWhatsappStart()

@@ -12,6 +12,8 @@ import (
 
 	migrate "github.com/joncalhoun/migrate"
 	log "github.com/sirupsen/logrus"
+	library "github.com/sufficit/sufficit-quepasa/library"
+	"github.com/sufficit/sufficit-quepasa/whatsmeow"
 
 	"path/filepath"
 	"runtime"
@@ -200,6 +202,12 @@ func (source *QpMigrator) Printf(format string, args ...interface{}) (int, error
 	format = strings.ToLower(format)
 	format = strings.ReplaceAll(format, "\n", "")
 	log.Debugf(format, args)
+
+	if len(args) > 0 && strings.Contains(format, "running") {
+		str := fmt.Sprintf("%s", args[0])
+		Running = append(Running, str)
+	}
+
 	return len([]byte(format)), nil
 }
 
@@ -219,4 +227,33 @@ func (source *QpMigrator) Migrate(sqlDB *sql.DB, dialect string) error {
 	}
 
 	return nil
+}
+
+var Running []string
+
+var MigrationHandlers = map[string]func(string){
+	"202303011900": MigrationHandler_202303011900,
+}
+
+func MigrationHandler_202303011900(id string) {
+	log.Infof("running migration handler for: %s", id)
+	db := GetDatabase()
+	servers := db.Servers.FindAll()
+	for _, server := range servers {
+		if strings.HasSuffix(server.WId, "@migrated") {
+			phone := library.GetPhoneByWId(server.WId)
+			store, err := whatsmeow.WhatsmeowService.GetStoreForMigrated(phone)
+			if err != nil {
+				log.Fatalf("error at getting store: %s", err.Error())
+			}
+
+			server.WId = store.ID.String()
+			err = db.Servers.Update(server)
+			if err != nil {
+				log.Fatalf("error at update server: %s", err.Error())
+			}
+
+			log.Infof("wid updated with success: %s", server.Token)
+		}
+	}
 }
