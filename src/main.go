@@ -24,7 +24,6 @@ func main() {
 	} else {
 		log.SetLevel(log.InfoLevel)
 	}
-	log.SetLevel(log.TraceLevel)
 
 	// Verifica se é necessario realizar alguma migração de base de dados
 	err := models.MigrateToLatest()
