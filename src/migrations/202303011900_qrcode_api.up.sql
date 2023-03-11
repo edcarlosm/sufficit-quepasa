@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `servers` (
 );
 
 INSERT INTO `servers` (`token`, `wid`, `verified`, `devel`, `handlegroups`, `handlebroadcast`, `user`, `timestamp`)
-SELECT `token`, CONCAT(`id`,"@s.whatsapp.net"), `is_verified`, `devel`, `handlegroups`, `handlebroadcast`, `user_id`, `updated_at` FROM `bots`;
+SELECT `token`, `id` || "@s.whatsapp.net", `is_verified`, `devel`, `handlegroups`, `handlebroadcast`, `user_id`, `updated_at` FROM `bots`;
 DROP TABLE `bots`;
 
 CREATE TABLE IF NOT EXISTS `users_temp` (
