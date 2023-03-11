@@ -256,22 +256,19 @@ func MigrationHandler_202303011900(id string) {
 			}
 
 			log.Infof("wid updated with success: %s", server.Token)
-		}
 
-		webhooks, err := db.Webhooks.FindAll(oldWid)
-		if err != nil {
-			log.Fatalf("cant get webhook from database")
-		}
+			webhooks, err := db.Webhooks.FindAll(oldWid)
+			if err != nil {
+				log.Fatalf("cant get webhook from database")
+			}
 
-		for _, webhook := range webhooks {
-			if strings.HasSuffix(webhook.Context, "@migrated") {
-				webhook.Context = server.Token
-				err = db.Webhooks.Update(webhook)
+			for _, webhook := range webhooks {
+				err = db.Webhooks.UpdateContext(webhook, server.Token)
 				if err != nil {
 					log.Fatalf("cant update webhook from database")
 				}
 
-				log.Infof("webhook updated with success for: %s, url: %s", server.Token, webhook.Url)
+				log.Infof("webhook updated with success for: %s, url: %s", webhook.Context, webhook.Url)
 			}
 		}
 	}

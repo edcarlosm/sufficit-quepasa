@@ -61,6 +61,15 @@ func (source QpDataServerWebhookSql) Update(element *QpServerWebhook) error {
 	return err
 }
 
+func (source QpDataServerWebhookSql) UpdateContext(element *QpServerWebhook, context string) error {
+	query := `UPDATE webhooks SET context = ? WHERE context = ? AND url = ?`
+	_, err := source.db.Exec(query, context, element.Context, element.Url)
+	if err != nil {
+		element.Context = context
+	}
+	return err
+}
+
 func (source QpDataServerWebhookSql) Remove(context string, url string) error {
 	query := `DELETE FROM webhooks WHERE context = ? AND url = ?`
 	_, err := source.db.Exec(query, context, url)
