@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS `servers` (
 );
 
 INSERT INTO `servers` (`token`, `wid`, `verified`, `devel`, `handlegroups`, `handlebroadcast`, `user`, `timestamp`)
-SELECT `token`, `id` || "@migrated", `is_verified`, `devel`, `handlegroups`, `handlebroadcast`, `user_id`, `updated_at` FROM `bots`;
+SELECT `bots`.`token`, `bots`.`id` || "@migrated", `bots`.`is_verified`, `bots`.`devel`, `bots`.`handlegroups`, `bots`.`handlebroadcast`, `users`.`username`, `bots`.`updated_at` FROM `bots` LEFT JOIN `users` ON `bots`.`user_id` = `users`.`id`;
+
 DROP TABLE `bots`;
 
 CREATE TABLE IF NOT EXISTS `users_temp` (
