@@ -24,4 +24,6 @@ replace github.com/sufficit/sufficit-quepasa/whatsmeow => ./
 
 replace github.com/sufficit/sufficit-quepasa/whatsapp => ../whatsapp
 
+replace github.com/sufficit/sufficit-quepasa/library => ./library
+
 go 1.18

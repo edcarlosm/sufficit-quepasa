@@ -2,11 +2,12 @@ package whatsmeow
 
 import (
 	"fmt"
+	"os"
 
 	_ "github.com/mattn/go-sqlite3"
 	log "github.com/sirupsen/logrus"
 
-	"github.com/sufficit/sufficit-quepasa/library"
+	library "github.com/sufficit/sufficit-quepasa/library"
 	whatsapp "github.com/sufficit/sufficit-quepasa/whatsapp"
 	whatsmeow "go.mau.fi/whatsmeow"
 	"go.mau.fi/whatsmeow/store"
@@ -25,7 +26,17 @@ func (service *WhatsmeowServiceModel) Start() {
 		log.Info("Starting Whatsmeow Service ....")
 
 		dbLog := waLog.Stdout("whatsmeow/database", string(WarnLevel), true)
-		container, err := sqlstore.New("sqlite3", "file:whatsmeow.sqlite?_foreign_keys=on", dbLog)
+
+		// check if exists old whatsmeow.db
+		var cs string
+		if _, err := os.Stat("whatsmeow.db"); err == nil {
+			cs = "file:whatsmeow.db?_foreign_keys=on"
+		} else {
+			// using new quepasa.sqlite
+			cs = "file:whatsmeow.sqlite?_foreign_keys=on"
+		}
+
+		container, err := sqlstore.New("sqlite3", cs, dbLog)
 		if err != nil {
 			panic(err)
 		}

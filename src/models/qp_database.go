@@ -244,7 +244,8 @@ func MigrationHandler_202303011900(id string) {
 			phone := library.GetPhoneByWId(server.WId)
 			store, err := whatsmeow.WhatsmeowService.GetStoreForMigrated(phone)
 			if err != nil {
-				log.Warnf("error at getting store for phone: %s, cause: ", phone, err.Error())
+				log.Warnf("error at getting store for phone: %s, cause: %s", phone, err.Error())
+				continue
 			}
 
 			server.WId = store.ID.String()
