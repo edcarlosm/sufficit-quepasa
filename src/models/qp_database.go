@@ -184,6 +184,7 @@ func Migrations(fullPath string) (migrations []migrate.SqlxMigration) {
 		migrations = append(migrations, migration.ToSqlxMigration())
 	}
 
+	// ordering
 	sort.SliceStable(migrations, func(i, j int) bool {
 		return migrations[i].ID < migrations[j].ID
 	})

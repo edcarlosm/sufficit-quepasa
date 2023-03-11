@@ -25,8 +25,7 @@ CREATE TABLE IF NOT EXISTS `webhooks` (
   CONSTRAINT `webhooks_pkey` PRIMARY KEY (`context`, `url`)
 );
 
-INSERT OR REPLACE INTO migrations (id) VALUES 
-('1'),
+INSERT OR REPLACE INTO migrations (id) VALUES
 ('202207131700'),
 ('202209281840'),
 ('202303011900')
