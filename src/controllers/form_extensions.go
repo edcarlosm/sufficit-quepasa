@@ -55,7 +55,7 @@ func FormDebugController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = server.ToggleDevel()
+	_, err = server.ToggleDevel()
 	if err != nil {
 		RespondServerError(server, w, err)
 		return
@@ -91,7 +91,7 @@ func FormToggleBroadcastController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = server.ToggleBroadcast()
+	_, err = server.ToggleBroadcast()
 	if err != nil {
 		RespondServerError(server, w, err)
 		return
@@ -107,7 +107,7 @@ func FormToggleGroupsController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = server.ToggleGroups()
+	_, err = server.ToggleGroups()
 	if err != nil {
 		RespondServerError(server, w, err)
 		return

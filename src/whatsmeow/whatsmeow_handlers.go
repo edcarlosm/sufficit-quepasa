@@ -117,7 +117,7 @@ func (handler *WhatsmeowHandlers) EventsHandler(evt interface{}) {
 	}
 }
 
-//region EVENT MESSAGE
+//#region EVENT MESSAGE
 
 // Aqui se processar um evento de recebimento de uma mensagem genérica
 func (handler *WhatsmeowHandlers) Message(evt events.Message) {
@@ -159,15 +159,27 @@ func (handler *WhatsmeowHandlers) Message(evt events.Message) {
 		HandleUnknownMessage(handler.log, evt)
 	}
 
+	handler.Follow(message)
+}
+
+//#endregion
+
+/*
+	<summary>
+		Follow throw internal handlers
+	</summary>
+*/
+func (handler *WhatsmeowHandlers) Follow(message *whatsapp.WhatsappMessage) {
 	if handler.WAHandlers != nil {
 
 		// following to internal handlers
 		go handler.WAHandlers.Message(message)
+	} else {
+		handler.log.Warn("no internal handler registered")
 	}
 }
 
-//endregion
-//region EVENT CALL
+//#region EVENT CALL
 
 func (handler *WhatsmeowHandlers) CallMessage(evt types.BasicCallMeta) {
 	handler.log.Trace("event CallMessage !")
@@ -192,4 +204,4 @@ func (handler *WhatsmeowHandlers) CallMessage(evt types.BasicCallMeta) {
 	}
 }
 
-//endregion
+//#endregion

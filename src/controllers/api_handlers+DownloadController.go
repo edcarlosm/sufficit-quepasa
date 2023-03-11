@@ -67,8 +67,8 @@ func DownloadController(w http.ResponseWriter, r *http.Request) {
 
 	// If filename not setted
 	if len(att.FileName) == 0 {
-		exten, _ := library.TryGetExtensionFromMimeType(att.Mimetype)
-		if len(exten) > 0 {
+		exten, ok := library.TryGetExtensionFromMimeType(att.Mimetype)
+		if ok {
 
 			// Generate from mime type and message id
 			filename = fmt.Sprint("; filename=", messageid, exten)

@@ -13,6 +13,7 @@ import (
 )
 
 func HandleKnowingMessages(handler *WhatsmeowHandlers, out *whatsapp.WhatsappMessage, in *proto.Message) {
+	log.Tracef("handling knowing message: %v", in)
 	if in.ImageMessage != nil {
 		HandleImageMessage(handler.log, out, in.ImageMessage)
 	} else if in.StickerMessage != nil {
@@ -35,6 +36,8 @@ func HandleKnowingMessages(handler *WhatsmeowHandlers, out *whatsapp.WhatsappMes
 		out.Type = whatsapp.DiscardMessageType
 	} else if len(in.GetConversation()) > 0 {
 		HandleTextMessage(handler.log, out, in)
+	} else {
+		log.Warnf("message not threated: %v", in)
 	}
 }
 

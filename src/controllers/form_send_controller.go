@@ -84,7 +84,7 @@ func controllerHttpPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func uploadFile(w http.ResponseWriter, r *http.Request) (attach *WhatsappAttachment, err error) {
-	log.Trace("File Upload Endpoint Hit")
+	log.Trace("form post, checking for file")
 
 	// Parse our multipart form, 10 << 20 specifies a maximum
 	// upload of 10 MB files.

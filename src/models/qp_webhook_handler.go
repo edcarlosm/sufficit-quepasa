@@ -9,7 +9,7 @@ import (
 )
 
 type QPWebhookHandler struct {
-	Server *QpWhatsappServer
+	server *QpWhatsappServer
 }
 
 func (w *QPWebhookHandler) Handle(payload *whatsapp.WhatsappMessage) {
@@ -27,17 +27,17 @@ func (w *QPWebhookHandler) Handle(payload *whatsapp.WhatsappMessage) {
 		return
 	}
 
-	if payload.Chat.Id == "status@broadcast" && !w.Server.HandleBroadcast {
+	if payload.Chat.Id == "status@broadcast" && !w.server.HandleBroadcast {
 		log.Debug("ignoring broadcast message on webhook request: %v", payload.Id)
 		return
 	}
 
-	PostToWebHookFromServer(w.Server, payload)
+	PostToWebHookFromServer(w.server, payload)
 }
 
 func (w *QPWebhookHandler) HasWebhook() bool {
-	if w.Server != nil {
-		return len(w.Server.Webhooks) > 0
+	if w.server != nil {
+		return len(w.server.Webhooks) > 0
 	}
 	return false
 }

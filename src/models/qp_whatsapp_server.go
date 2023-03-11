@@ -21,6 +21,7 @@ type QpWhatsappServer struct {
 	Battery        *WhatsAppBateryStatus        `json:"battery,omitempty"`
 	StartTime      time.Time                    `json:"starttime,omitempty"`
 	Handler        *QPWhatsappHandlers          `json:"-"`
+	WebHook        *QPWebhookHandler            `json:"-"`
 
 	stopRequested bool                   `json:"-"`
 	logger        *log.Logger            `json:"-"`
@@ -45,6 +46,13 @@ func (server *QpWhatsappServer) HandlerEnsure() {
 		}
 
 		server.Handler = handler
+	}
+}
+
+// Ensure default webhook handler
+func (server *QpWhatsappServer) WebHookEnsure() {
+	if server.WebHook == nil {
+		server.WebHook = &QPWebhookHandler{server}
 	}
 }
 
@@ -147,7 +155,7 @@ func (server *QpWhatsappServer) UpdateConnection(connection whatsapp.IWhatsappCo
 	server.connection.UpdateHandler(server.Handler)
 
 	// Registrando webhook
-	webhookDispatcher := &QPWebhookHandler{Server: server}
+	webhookDispatcher := &QPWebhookHandler{server}
 	if !server.Handler.IsAttached() {
 		server.Handler.Register(webhookDispatcher)
 	}
@@ -206,8 +214,7 @@ func (server *QpWhatsappServer) Start() (err error) {
 	if !server.Handler.IsAttached() {
 
 		// Registrando webhook
-		webhookDispatcher := &QPWebhookHandler{Server: server}
-		server.Handler.Register(webhookDispatcher)
+		server.Handler.Register(server.WebHook)
 	}
 
 	// Atualizando manipuladores de eventos
@@ -248,8 +255,7 @@ func (server *QpWhatsappServer) EnsureReady() (err error) {
 	if !server.Handler.IsAttached() {
 
 		// Registrando webhook
-		webhookDispatcher := &QPWebhookHandler{Server: server}
-		server.Handler.Register(webhookDispatcher)
+		server.Handler.Register(server.WebHook)
 	}
 
 	// Atualizando manipuladores de eventos
@@ -479,17 +485,17 @@ func (server *QpWhatsappServer) MarkVerified(value bool) (err error) {
 	return nil
 }
 
-func (server *QpWhatsappServer) ToggleGroups() (err error) {
+func (server *QpWhatsappServer) ToggleGroups() (handle bool, err error) {
 	server.HandleGroups = !server.HandleGroups
-	return server.Save()
+	return server.HandleGroups, server.Save()
 }
 
-func (server *QpWhatsappServer) ToggleBroadcast() (err error) {
+func (server *QpWhatsappServer) ToggleBroadcast() (handle bool, err error) {
 	server.HandleBroadcast = !server.HandleBroadcast
-	return server.Save()
+	return server.HandleBroadcast, server.Save()
 }
 
-func (server *QpWhatsappServer) ToggleDevel() (err error) {
+func (server *QpWhatsappServer) ToggleDevel() (handle bool, err error) {
 	server.Devel = !server.Devel
 
 	if server.Devel {
@@ -498,7 +504,7 @@ func (server *QpWhatsappServer) ToggleDevel() (err error) {
 		server.logger.SetLevel(log.InfoLevel)
 	}
 
-	return server.Save()
+	return server.Devel, server.Save()
 }
 
 //endregion

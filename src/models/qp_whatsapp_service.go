@@ -143,6 +143,7 @@ func (service *QPWhatsappService) NewQpWhatsappServer(info *QpServer) (server *Q
 	}
 
 	server.HandlerEnsure()
+	server.WebHookEnsure()
 	server.WebhookFill(info.Token, service.DB.Webhooks)
 	return
 }

@@ -8,6 +8,8 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // Validate email string
@@ -58,21 +60,26 @@ func GenerateFileNameFromMimeType(mimeType string) string {
 }
 
 // Get the first discovered extension from a given mime type (with dot = {.ext})
-func TryGetExtensionFromMimeType(mimeType string) (exten string, err error) {
+func TryGetExtensionFromMimeType(mimeType string) (exten string, success bool) {
+	if exten, success = MIMEs[mimeType]; success {
+		return exten, true
+	}
+
 	extensions, err := mime.ExtensionsByType(mimeType)
+	if err != nil {
+		log.Errorf("error getting internal mime for: %s, %s", mimeType, err.Error())
+		return exten, false
+	}
+
 	if len(extensions) > 0 {
 		exten = extensions[0]
 		if !strings.HasPrefix(exten, ".") {
 			exten = "." + exten
 		}
+		return exten, true
+	} else {
+		return exten, false
 	}
-	return
-}
-
-// Force the recognition of some types of mime string
-func EnsureMimesMapping() {
-	_ = mime.AddExtensionType(".webp", "image/webp")
-	_ = mime.AddExtensionType(".mp4", "video/mp4")
 }
 
 // Usado também para identificar o número do bot
