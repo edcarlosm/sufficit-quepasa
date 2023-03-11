@@ -49,7 +49,7 @@ func (source *QpServerWebhook) ParseExtra() {
 	}
 }
 
-func (source *QpServerWebhook) Add(element QpServerWebhook) error {
+func (source *QpServerWebhook) Add(element *QpServerWebhook) error {
 	return source.db.Add(element)
 }
 

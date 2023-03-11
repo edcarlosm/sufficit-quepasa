@@ -49,7 +49,7 @@ func (source *QpDataWebhooks) WebhookAdd(webhook *QpWebhook) (affected uint, err
 		botWHook.ForwardInternal = webhook.ForwardInternal
 		botWHook.TrackId = webhook.TrackId
 		botWHook.Extra = webhook.Extra
-		err = source.db.Update(*botWHook)
+		err = source.db.Update(botWHook)
 		if err != nil {
 			return
 		}
@@ -58,7 +58,7 @@ func (source *QpDataWebhooks) WebhookAdd(webhook *QpWebhook) (affected uint, err
 			Context:   source.context,
 			QpWebhook: webhook,
 		}
-		err = source.db.Add(*dbWebhook)
+		err = source.db.Add(dbWebhook)
 		if err != nil {
 			return
 		}

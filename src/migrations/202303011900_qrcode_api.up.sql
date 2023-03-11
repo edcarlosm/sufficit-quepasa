@@ -36,6 +36,6 @@ CREATE TABLE IF NOT EXISTS `webhooks_temp` (
 );
 
 INSERT INTO `webhooks_temp` (`context`, `url`,`forwardinternal`,`trackid`,`extra`)
-SELECT `context`, `url`, `forwardinternal`,`trackid`,`extra` FROM `webhooks`;
+SELECT `context` || "@migrated", `url`, `forwardinternal`,`trackid`,`extra` FROM `webhooks`;
 DROP TABLE `webhooks`;
 ALTER TABLE `webhooks_temp` RENAME TO `webhooks`;

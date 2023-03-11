@@ -240,8 +240,9 @@ func MigrationHandler_202303011900(id string) {
 	db := GetDatabase()
 	servers := db.Servers.FindAll()
 	for _, server := range servers {
-		if strings.HasSuffix(server.WId, "@migrated") {
-			phone := library.GetPhoneByWId(server.WId)
+		oldWid := server.WId
+		if strings.HasSuffix(oldWid, "@migrated") {
+			phone := library.GetPhoneByWId(oldWid)
 			store, err := whatsmeow.WhatsmeowService.GetStoreForMigrated(phone)
 			if err != nil {
 				log.Warnf("error at getting store for phone: %s, cause: %s", phone, err.Error())
@@ -255,6 +256,23 @@ func MigrationHandler_202303011900(id string) {
 			}
 
 			log.Infof("wid updated with success: %s", server.Token)
+		}
+
+		webhooks, err := db.Webhooks.FindAll(oldWid)
+		if err != nil {
+			log.Fatalf("cant get webhook from database")
+		}
+
+		for _, webhook := range webhooks {
+			if strings.HasSuffix(webhook.Context, "@migrated") {
+				webhook.Context = server.Token
+				err = db.Webhooks.Update(webhook)
+				if err != nil {
+					log.Fatalf("cant update webhook from database")
+				}
+
+				log.Infof("webhook updated with success for: %s, url: %s", server.Token, webhook.Url)
+			}
 		}
 	}
 }

@@ -49,13 +49,13 @@ func (source QpDataServerWebhookSql) All() ([]*QpServerWebhook, error) {
 	return result, err
 }
 
-func (source QpDataServerWebhookSql) Add(element QpServerWebhook) error {
+func (source QpDataServerWebhookSql) Add(element *QpServerWebhook) error {
 	query := `INSERT OR IGNORE INTO webhooks (context, url, forwardinternal, trackid, extra) VALUES (?, ?, ?, ?, ?)`
 	_, err := source.db.Exec(query, element.Context, element.Url, element.ForwardInternal, element.TrackId, element.GetExtraText())
 	return err
 }
 
-func (source QpDataServerWebhookSql) Update(element QpServerWebhook) error {
+func (source QpDataServerWebhookSql) Update(element *QpServerWebhook) error {
 	query := `UPDATE webhooks SET forwardinternal = ?, trackid = ?, extra = ? WHERE context = ? AND url = ?`
 	_, err := source.db.Exec(query, element.ForwardInternal, element.TrackId, element.GetExtraText(), element.Context, element.Url)
 	return err
