@@ -1,3 +1,5 @@
+[![Go Build](https://github.com/sufficit/sufficit-quepasa/actions/workflows/go.yml/badge.svg)](https://github.com/sufficit/sufficit-quepasa/actions/workflows/go.yml)
+
 <p align="center">
 	<img src="https://github.com/sufficit/sufficit-quepasa/raw/main/src/assets/favicon.png" alt="Quepasa-logo" width="100" />	
 	<p align="center">Quepasa is a Open-source, all free license software to exchange messages with Whatsapp Platform</p>
