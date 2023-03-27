@@ -10,10 +10,10 @@ services:
 
   quepasa:
     image: quepasa
-    container_name: "sufficit-quepasa-novo"
+    container_name: "sufficit-quepasa"
     mem_limit: 4096M
     env_file:
-      - ./.env
+      - ../helpers/.env
     ports:
       - 31000:31000
     extra_hosts:
@@ -22,12 +22,12 @@ services:
       context: ./
       dockerfile: ./Dockerfile
     volumes:
-      - ../src:/app
+      - ../src:/opt/quepasa
     restart: always
     stdin_open: true
     tty: true
     networks:
-      - quepasa_network_novo
+      - quepasa_network
   
 networks:
-  quepasa_network_novo:
+  quepasa_network:
