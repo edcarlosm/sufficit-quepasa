@@ -121,7 +121,7 @@ func (handler *WhatsmeowHandlers) EventsHandler(evt interface{}) {
 
 // Aqui se processar um evento de recebimento de uma mensagem genérica
 func (handler *WhatsmeowHandlers) Message(evt events.Message) {
-	handler.log.Trace("event Message !")
+	handler.log.Trace("event message received")
 	if evt.Message == nil {
 		handler.log.Error("nil message on receiving whatsmeow events | try use rawMessage !")
 		return
@@ -137,20 +137,14 @@ func (handler *WhatsmeowHandlers) Message(evt events.Message) {
 	message.Chat = whatsapp.WhatsappChat{}
 	chatID := fmt.Sprint(evt.Info.Chat.User, "@", evt.Info.Chat.Server)
 	message.Chat.Id = chatID
+	message.Chat.Title = handler.GetChatTitle(evt)
 
 	if evt.Info.IsGroup {
-		gInfo, _ := handler.Client.GetGroupInfo(evt.Info.Chat)
-		if gInfo != nil {
-			message.Chat.Title = gInfo.Name
-		}
-
 		message.Participant = &whatsapp.WhatsappChat{}
 
 		participantID := fmt.Sprint(evt.Info.Sender.User, "@", evt.Info.Sender.Server)
 		message.Participant.Id = participantID
 		message.Participant.Title = evt.Info.PushName
-	} else if !message.FromMe {
-		message.Chat.Title = evt.Info.PushName
 	}
 
 	// Process diferent message types
@@ -160,6 +154,29 @@ func (handler *WhatsmeowHandlers) Message(evt events.Message) {
 	}
 
 	handler.Follow(message)
+}
+
+func (handler *WhatsmeowHandlers) GetChatTitle(evt events.Message) string {
+	if evt.Info.IsGroup {
+		gInfo, _ := handler.Client.GetGroupInfo(evt.Info.Chat)
+		if gInfo != nil {
+			return gInfo.Name
+		}
+	} else if !evt.Info.IsFromMe {
+		cInfo, _ := handler.Client.Store.Contacts.GetContact(evt.Info.Sender)
+		if cInfo.Found {
+			if len(cInfo.BusinessName) > 0 {
+				return cInfo.BusinessName
+			} else if len(cInfo.FullName) > 0 {
+				return cInfo.FullName
+			} else {
+				return cInfo.PushName
+			}
+		}
+		return evt.Info.PushName
+	}
+
+	return ""
 }
 
 //#endregion

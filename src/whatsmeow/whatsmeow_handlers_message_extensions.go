@@ -62,9 +62,7 @@ func HandleExtendedTextMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in
 	log.Debug("Received a text|extended message !")
 	out.Type = whatsapp.TextMessageType
 
-	if in.Text != nil {
-		out.Text = *in.Text
-	}
+	out.Text = in.GetText()
 
 	info := in.ContextInfo
 	if info != nil {
