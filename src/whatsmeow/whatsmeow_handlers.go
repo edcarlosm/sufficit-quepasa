@@ -162,8 +162,8 @@ func (handler *WhatsmeowHandlers) GetChatTitle(evt events.Message) string {
 		if gInfo != nil {
 			return gInfo.Name
 		}
-	} else if !evt.Info.IsFromMe {
-		cInfo, _ := handler.Client.Store.Contacts.GetContact(evt.Info.Sender)
+	} else {
+		cInfo, _ := handler.Client.Store.Contacts.GetContact(evt.Info.Chat)
 		if cInfo.Found {
 			if len(cInfo.BusinessName) > 0 {
 				return cInfo.BusinessName
