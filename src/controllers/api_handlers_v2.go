@@ -95,7 +95,7 @@ func SendAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 
 	// setting wa msg chat title
 	if len(waMsg.Chat.Title) == 0 {
-		waMsg.Chat.Title = server.GetTitle(waMsg.Chat.Id)
+		waMsg.Chat.Title = server.GetChatTitle(waMsg.Chat.Id)
 	}
 
 	sendResponse, err := server.SendMessage(waMsg)
@@ -230,7 +230,7 @@ func SendDocumentAPIHandlerV2(w http.ResponseWriter, r *http.Request) {
 	response := &models.QpSendResponseV2{}
 	response.Chat.ID = waMsg.Chat.Id
 	response.Chat.UserName = waMsg.Chat.Id
-	response.Chat.Title = server.GetTitle(waMsg.Chat.Id)
+	response.Chat.Title = server.GetChatTitle(waMsg.Chat.Id)
 	response.From.ID = server.WId
 	response.From.UserName = server.GetNumber()
 	response.ID = sendResponse.GetId()

@@ -332,8 +332,8 @@ func (server *QpWhatsappServer) Disconnect(cause string) {
 }
 
 // Retorna o titulo em cache (se houver) do id passado em parametro
-func (server *QpWhatsappServer) GetTitle(Wid string) string {
-	return server.connection.GetTitle(Wid)
+func (server *QpWhatsappServer) GetChatTitle(wid string) string {
+	return server.connection.GetChatTitle(wid)
 }
 
 // Usado para exibir os servidores/bots de cada usuario em suas respectivas telas

@@ -100,15 +100,20 @@ func (conn *WhatsmeowConnection) GetStatus() whatsapp.WhatsappConnectionState {
 }
 
 // Retorna algum titulo válido apartir de um jid
-func (conn *WhatsmeowConnection) GetTitle(Wid string) string {
-	jid := types.NewJID(Wid, "")
-	var result string
-	contact, err := conn.Client.Store.Contacts.GetContact(jid)
-	if err == nil {
-		result = contact.PushName
+func (conn *WhatsmeowConnection) GetChatTitle(wid string) string {
+	jid := types.NewJID(wid, "")
+	cInfo, _ := conn.Client.Store.Contacts.GetContact(jid)
+	if cInfo.Found {
+		if len(cInfo.BusinessName) > 0 {
+			return cInfo.BusinessName
+		} else if len(cInfo.FullName) > 0 {
+			return cInfo.FullName
+		} else {
+			return cInfo.PushName
+		}
 	}
 
-	return result
+	return ""
 }
 
 // Connect to websocket only, dot not authenticate yet, errors come after

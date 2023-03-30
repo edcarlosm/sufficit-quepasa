@@ -45,6 +45,10 @@ func (handler *QPWhatsappHandlers) Message(msg *whatsapp.WhatsappMessage) {
 		return
 	}
 
+	if len(msg.Chat.Title) == 0 {
+		msg.Chat.Title = handler.server.GetChatTitle(msg.Chat.Id)
+	}
+
 	handler.server.Log.Trace("msg recebida/(enviada por outro meio) em models: %s", msg.Id)
 	handler.appendMsgToCache(msg)
 }

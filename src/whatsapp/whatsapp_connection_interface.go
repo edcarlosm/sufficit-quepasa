@@ -11,7 +11,7 @@ type IWhatsappConnection interface {
 
 	// Retorna o ID do controlador whatsapp
 	GetWid() (string, error)
-	GetTitle(Wid string) string
+	GetChatTitle(string) string
 
 	Connect() error
 	Disconnect() error
