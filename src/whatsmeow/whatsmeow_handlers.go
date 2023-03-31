@@ -137,14 +137,21 @@ func (handler *WhatsmeowHandlers) Message(evt events.Message) {
 	message.Chat = whatsapp.WhatsappChat{}
 	chatID := fmt.Sprint(evt.Info.Chat.User, "@", evt.Info.Chat.Server)
 	message.Chat.Id = chatID
-	message.Chat.Title = handler.GetChatTitle(evt)
+	message.Chat.Title = GetChatTitle(handler.Client, evt.Info.Chat)
 
 	if evt.Info.IsGroup {
 		message.Participant = &whatsapp.WhatsappChat{}
 
 		participantID := fmt.Sprint(evt.Info.Sender.User, "@", evt.Info.Sender.Server)
 		message.Participant.Id = participantID
-		message.Participant.Title = evt.Info.PushName
+		message.Participant.Title = GetChatTitle(handler.Client, evt.Info.Sender)
+		if len(message.Participant.Title) == 0 && message.FromMe {
+			message.Participant.Title = evt.Info.PushName
+		}
+	} else {
+		if len(message.Chat.Title) == 0 && message.FromMe {
+			message.Chat.Title = evt.Info.PushName
+		}
 	}
 
 	// Process diferent message types
@@ -154,29 +161,6 @@ func (handler *WhatsmeowHandlers) Message(evt events.Message) {
 	}
 
 	handler.Follow(message)
-}
-
-func (handler *WhatsmeowHandlers) GetChatTitle(evt events.Message) string {
-	if evt.Info.IsGroup {
-		gInfo, _ := handler.Client.GetGroupInfo(evt.Info.Chat)
-		if gInfo != nil {
-			return gInfo.Name
-		}
-	} else {
-		cInfo, _ := handler.Client.Store.Contacts.GetContact(evt.Info.Chat)
-		if cInfo.Found {
-			if len(cInfo.BusinessName) > 0 {
-				return cInfo.BusinessName
-			} else if len(cInfo.FullName) > 0 {
-				return cInfo.FullName
-			} else {
-				return cInfo.PushName
-			}
-		}
-		return evt.Info.PushName
-	}
-
-	return ""
 }
 
 //#endregion

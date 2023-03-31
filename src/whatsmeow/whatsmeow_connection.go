@@ -99,20 +99,11 @@ func (conn *WhatsmeowConnection) GetStatus() whatsapp.WhatsappConnectionState {
 	}
 }
 
-// Retorna algum titulo válido apartir de um jid
+// returns a valid chat title from local memory store
 func (conn *WhatsmeowConnection) GetChatTitle(wid string) string {
 	jid, err := types.ParseJID(wid)
 	if err == nil {
-		cInfo, _ := conn.Client.Store.Contacts.GetContact(jid)
-		if cInfo.Found {
-			if len(cInfo.BusinessName) > 0 {
-				return cInfo.BusinessName
-			} else if len(cInfo.FullName) > 0 {
-				return cInfo.FullName
-			} else {
-				return cInfo.PushName
-			}
-		}
+		return GetChatTitle(conn.Client, jid)
 	}
 
 	return ""

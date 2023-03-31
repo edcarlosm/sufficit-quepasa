@@ -10,6 +10,7 @@ import (
 	whatsapp "github.com/sufficit/sufficit-quepasa/whatsapp"
 	whatsmeow "go.mau.fi/whatsmeow"
 	waProto "go.mau.fi/whatsmeow/binary/proto"
+	types "go.mau.fi/whatsmeow/types"
 )
 
 type WhatsmeowLogLevel string
@@ -123,5 +124,28 @@ func GetStringFromBytes(bytes []byte) string {
 	if bytes != nil {
 		return base64.StdEncoding.EncodeToString(bytes)
 	}
+	return ""
+}
+
+// returns a valid chat title from local memory store
+func GetChatTitle(client *whatsmeow.Client, jid types.JID) string {
+	if jid.Server == "g.us" {
+		gInfo, _ := client.GetGroupInfo(jid)
+		if gInfo != nil {
+			return gInfo.Name
+		}
+	} else {
+		cInfo, _ := client.Store.Contacts.GetContact(jid)
+		if cInfo.Found {
+			if len(cInfo.BusinessName) > 0 {
+				return cInfo.BusinessName
+			} else if len(cInfo.FullName) > 0 {
+				return cInfo.FullName
+			} else {
+				return cInfo.PushName
+			}
+		}
+	}
+
 	return ""
 }
