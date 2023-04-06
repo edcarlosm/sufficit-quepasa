@@ -106,12 +106,12 @@ func MigrateToLatest() (err error) {
 		}
 
 		if runtime.GOOS == "windows" {
-			log.Info("migrating database on windows operational system")
+			log.Debug("migrating database on windows operational system")
 
 			// windows ===================
 			leadingWindowsUnit, _ := filepath.Rel("z:\\", workDir)
 			migrationsDir := filepath.Join(leadingWindowsUnit, "migrations")
-			fullPath = fmt.Sprintf("%s", strings.ReplaceAll(migrationsDir, "\\", "/"))
+			fullPath = fmt.Sprintf("/%s", strings.ReplaceAll(migrationsDir, "\\", "/"))
 		} else {
 			// linux ===================
 			migrationsDir := filepath.Join(workDir, "migrations")
