@@ -51,17 +51,17 @@
                     </button>
                   </form>
                 </p>
-                {{ if .Verified }}
-                  {{ if .IsDevelopmentGlobal }}
-                    <p class="control"> 
-                      <form class="" method="post" action="/form/debug">
-                        <input name="token" type="hidden" value="{{ .Token }}">
-                        <button class="button is-warning {{ if .Devel }}is-hovered{{ else }}is-outlined{{ end }}" title="Toggle Debug for this bot">
-                          <span class="icon is-small is-inline"><i class="fa fa-bug"></i></span>
-                        </button>
-                      </form>
-                    </p>
-                  {{ end }}
+                {{ if .IsDevelopmentGlobal }}
+                  <p class="control"> 
+                    <form class="" method="post" action="/form/debug">
+                      <input name="token" type="hidden" value="{{ .Token }}">
+                      <button class="button is-warning {{ if .Devel }}is-hovered{{ else }}is-outlined{{ end }}" title="Toggle Debug for this bot">
+                        <span class="icon is-small is-inline"><i class="fa fa-bug"></i></span>
+                      </button>
+                    </form>
+                  </p>
+                {{ end }}
+                {{ if .Verified }}                  
                   <p class="control"> 
                     <form class="" method="post" action="/form/toggle">
                       <input name="token" type="hidden" value="{{ .Token }}">

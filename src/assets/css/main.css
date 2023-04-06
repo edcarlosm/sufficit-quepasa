@@ -4220,6 +4220,11 @@ fieldset[disabled] .select select:hover {
   flex-grow: 1;
 }
 
+p.control {
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
 .field.has-addons.has-addons-centered {
   justify-content: center;
 }
