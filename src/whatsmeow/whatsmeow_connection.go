@@ -23,7 +23,6 @@ type WhatsmeowConnection struct {
 	Client      *whatsmeow.Client
 	Handlers    *WhatsmeowHandlers
 	waLogger    waLog.Logger
-	logger      *log.Logger
 	log         *log.Entry
 	failedToken bool
 	paired      func(string)
@@ -407,9 +406,6 @@ func (conn *WhatsmeowConnection) GetWhatsAppQRChannel(ctx context.Context, out c
 	}
 
 	wg.Wait()
-
-	// not tested
-	conn.Client.Disconnect()
 	return
 }
 
@@ -435,12 +431,14 @@ func (conn *WhatsmeowConnection) PairedCallBack(jid types.JID, platform, busines
 //endregion
 
 /*
-	<summary>
-		Disconnect if connected
-		Cleanup Handlers
-		Dispose resources
-		Does not erase permanent data !
-	</summary>
+<summary>
+
+	Disconnect if connected
+	Cleanup Handlers
+	Dispose resources
+	Does not erase permanent data !
+
+</summary>
 */
 func (conn *WhatsmeowConnection) Dispose(reason string) {
 	if conn.log != nil {
@@ -448,8 +446,8 @@ func (conn *WhatsmeowConnection) Dispose(reason string) {
 		conn.log = nil
 	}
 
-	if conn.logger != nil {
-		conn.logger = nil
+	if conn.log != nil {
+		conn.log = nil
 	}
 
 	if conn.Handlers != nil {
@@ -468,9 +466,11 @@ func (conn *WhatsmeowConnection) Dispose(reason string) {
 }
 
 /*
-	<summary>
-		Erase permanent data + Dispose !
-	</summary>
+<summary>
+
+	Erase permanent data + Dispose !
+
+</summary>
 */
 func (conn *WhatsmeowConnection) Delete() (err error) {
 	if conn != nil {
