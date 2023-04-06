@@ -9,6 +9,7 @@ import (
 
 const (
 	ENVIRONMENT         = "APP_ENV"
+	MIGRATIONS          = "MIGRATIONS"
 	TITLE               = "APP_TITLE"
 	DEBUG_REQUESTS      = "DEBUGREQUESTS"
 	DEBUG_JSON_MESSAGES = "DEBUGJSONMESSAGES"
@@ -24,6 +25,28 @@ func (_ *Environment) IsDevelopment() bool {
 		return true
 	} else {
 		return false
+	}
+}
+
+// MIGRATIONS => Path to database migrations folder
+func (_ *Environment) Migrate() bool {
+	migrations, _ := GetEnvStr(MIGRATIONS)
+	boolMigrations, err := strconv.ParseBool(migrations)
+	if err == nil {
+		return boolMigrations
+	} else {
+		return true
+	}
+}
+
+// MIGRATIONS => Path to database migrations folder
+func (_ *Environment) MigrationPath() string {
+	migrations, _ := GetEnvStr(MIGRATIONS)
+	_, err := strconv.ParseBool(migrations)
+	if err != nil {
+		return migrations
+	} else {
+		return "" // indicates that should use default path
 	}
 }
 

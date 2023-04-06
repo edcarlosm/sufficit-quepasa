@@ -17,7 +17,6 @@ import (
 
 	"path/filepath"
 	"runtime"
-	"strconv"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3"
@@ -93,37 +92,26 @@ func GetDBConfig() QpDatabaseConfig {
 
 // MigrateToLatest updates the database to the latest schema
 func MigrateToLatest() (err error) {
-	strMigrations := os.Getenv("MIGRATIONS")
-	if len(strMigrations) == 0 {
+	if !ENV.Migrate() {
 		return
 	}
 
-	var fullPath string
-	boolMigrations, err := strconv.ParseBool(strMigrations)
-	if err == nil {
-		// Caso false, migrações não habilitadas
-		// Retorna sem problemas
-		if !boolMigrations {
-			return
-		}
-	} else {
-		fullPath = strMigrations
-	}
+	fullPath := ENV.MigrationPath()
 
 	log.Info("migrating database (if necessary)")
-	if boolMigrations {
+	if len(fullPath) == 0 {
 		workDir, err := os.Getwd()
 		if err != nil {
 			return err
 		}
 
 		if runtime.GOOS == "windows" {
-			log.Debug("migrating database on Windows")
+			log.Info("migrating database on windows operational system")
 
 			// windows ===================
 			leadingWindowsUnit, _ := filepath.Rel("z:\\", workDir)
 			migrationsDir := filepath.Join(leadingWindowsUnit, "migrations")
-			fullPath = fmt.Sprintf("/%s", strings.ReplaceAll(migrationsDir, "\\", "/"))
+			fullPath = fmt.Sprintf("%s", strings.ReplaceAll(migrationsDir, "\\", "/"))
 		} else {
 			// linux ===================
 			migrationsDir := filepath.Join(workDir, "migrations")
