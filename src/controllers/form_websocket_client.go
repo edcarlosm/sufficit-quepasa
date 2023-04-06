@@ -55,7 +55,7 @@ type Client struct {
 func (c *Client) readPump(user *models.QpUser) {
 	defer func() {
 		c.hub.unregister <- c
-		c.conn.Close()
+		// c.conn.Close() // issue on form sincronize qrcode
 	}()
 
 	c.conn.SetReadLimit(maxMessageSize)
@@ -65,8 +65,11 @@ func (c *Client) readPump(user *models.QpUser) {
 	for {
 		_, message, err := c.conn.ReadMessage()
 		if err != nil {
-			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				log.Infof("(websocket): %s", err.Error())
+			if websocket.IsUnexpectedCloseError(err,
+				websocket.CloseNoStatusReceived,
+				websocket.CloseGoingAway,
+				websocket.CloseAbnormalClosure) {
+				log.Errorf("(websocket): unexpected, %s", err.Error())
 			}
 			return
 		}
