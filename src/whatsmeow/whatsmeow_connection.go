@@ -239,8 +239,22 @@ func (conn *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp.I
 
 	var newMessage *waProto.Message
 	if !msg.HasAttachment() {
-		internal := &waProto.ExtendedTextMessage{Text: &messageText}
-		newMessage = &waProto.Message{ExtendedTextMessage: internal}
+		if strings.Contains(messageText, "#button") {
+			buttonOKText := "uiuiui"
+			buttonOK := &waProto.ButtonsMessage_Button_ButtonText{DisplayText: &buttonOKText}
+			buttonType := waProto.ButtonsMessage_Button_NATIVE_FLOW
+
+			flowinfoname := "teste"
+			flowinfo := &waProto.ButtonsMessage_Button_NativeFlowInfo{Name: &flowinfoname}
+
+			var buttons []*waProto.ButtonsMessage_Button
+			buttons = append(buttons, &waProto.ButtonsMessage_Button{ButtonText: buttonOK, ButtonId: &buttonOKText, Type: &buttonType, NativeFlowInfo: flowinfo})
+			msgbutton := &waProto.ButtonsMessage{ContentText: &messageText, Buttons: buttons}
+			newMessage = &waProto.Message{ButtonsMessage: msgbutton}
+		} else {
+			internal := &waProto.ExtendedTextMessage{Text: &messageText}
+			newMessage = &waProto.Message{ExtendedTextMessage: internal}
+		}
 	} else {
 		newMessage, err = conn.UploadAttachment(*msg)
 		if err != nil {
