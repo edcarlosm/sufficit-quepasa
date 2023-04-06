@@ -239,18 +239,9 @@ func (conn *WhatsmeowConnection) Send(msg *whatsapp.WhatsappMessage) (whatsapp.I
 
 	var newMessage *waProto.Message
 	if !msg.HasAttachment() {
-		if strings.Contains(messageText, "#button") {
-			buttonOKText := "uiuiui"
-			buttonOK := &waProto.ButtonsMessage_Button_ButtonText{DisplayText: &buttonOKText}
-			buttonType := waProto.ButtonsMessage_Button_NATIVE_FLOW
-
-			flowinfoname := "teste"
-			flowinfo := &waProto.ButtonsMessage_Button_NativeFlowInfo{Name: &flowinfoname}
-
-			var buttons []*waProto.ButtonsMessage_Button
-			buttons = append(buttons, &waProto.ButtonsMessage_Button{ButtonText: buttonOK, ButtonId: &buttonOKText, Type: &buttonType, NativeFlowInfo: flowinfo})
-			msgbutton := &waProto.ButtonsMessage{ContentText: &messageText, Buttons: buttons}
-			newMessage = &waProto.Message{ButtonsMessage: msgbutton}
+		if IsValidForButtons(messageText) {
+			internal := GenerateButtonsMessage(messageText)
+			newMessage = &waProto.Message{ButtonsMessage: internal}
 		} else {
 			internal := &waProto.ExtendedTextMessage{Text: &messageText}
 			newMessage = &waProto.Message{ExtendedTextMessage: internal}

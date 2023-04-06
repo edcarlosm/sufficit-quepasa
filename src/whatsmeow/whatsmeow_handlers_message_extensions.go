@@ -26,6 +26,8 @@ func HandleKnowingMessages(handler *WhatsmeowHandlers, out *whatsapp.WhatsappMes
 		HandleVideoMessage(handler.log, out, in.VideoMessage)
 	} else if in.ExtendedTextMessage != nil {
 		HandleExtendedTextMessage(handler.log, out, in.ExtendedTextMessage)
+	} else if in.ButtonsResponseMessage != nil {
+		HandleButtonsResponseMessage(handler.log, out, in.ButtonsResponseMessage)
 	} else if in.LocationMessage != nil {
 		HandleLocationMessage(handler.log, out, in.LocationMessage)
 	} else if in.LiveLocationMessage != nil {
@@ -63,6 +65,34 @@ func HandleExtendedTextMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in
 	out.Type = whatsapp.TextMessageType
 
 	out.Text = in.GetText()
+
+	info := in.ContextInfo
+	if info != nil {
+		if info.ForwardingScore != nil {
+			out.ForwardingScore = *info.ForwardingScore
+		}
+
+		if info.StanzaId != nil {
+			out.InReply = *info.StanzaId
+		}
+	}
+}
+
+// Msg em resposta a outra
+func HandleButtonsResponseMessage(log *log.Entry, out *whatsapp.WhatsappMessage, in *proto.ButtonsResponseMessage) {
+	log.Debug("Received a buttons response message !")
+	out.Type = whatsapp.TextMessageType
+
+	/*
+		b, err := json.Marshal(in)
+		if err != nil {
+			log.Error(err)
+			return
+		}
+		log.Debug(string(b))
+	*/
+
+	out.Text = in.GetSelectedButtonId()
 
 	info := in.ContextInfo
 	if info != nil {
