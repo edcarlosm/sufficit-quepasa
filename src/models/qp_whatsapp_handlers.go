@@ -56,11 +56,13 @@ func (handler *QPWhatsappHandlers) Message(msg *whatsapp.WhatsappMessage) {
 
 /*
 <summary>
+
 	Event on:
 		* User Logged Out from whatsapp app
 		* Maximum numbers of devices reached
 		* Banned
 		* Token Expired
+
 </summary>
 */
 func (handler *QPWhatsappHandlers) LoggedOut(reason string) {

@@ -1,6 +1,7 @@
 package whatsmeow
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -62,21 +63,18 @@ func (service *WhatsmeowServiceModel) CreateEmptyConnection() (conn *WhatsmeowCo
 	logger := log.StandardLogger()
 	logger.SetLevel(log.DebugLevel)
 
-	return service.CreateConnection("", logger)
+	return service.CreateConnection("", logger.WithContext(context.Background()))
 }
 
-func (service *WhatsmeowServiceModel) CreateConnection(wid string, logger *log.Logger) (conn *WhatsmeowConnection, err error) {
-	clientLog := waLog.Stdout("Whatsmeow/Client", logger.Level.String(), true)
+func (service *WhatsmeowServiceModel) CreateConnection(wid string, loggerEntry *log.Entry) (conn *WhatsmeowConnection, err error) {
+	clientLog := waLog.Stdout("Whatsmeow/Client", loggerEntry.Level.String(), true)
 	client, err := service.GetWhatsAppClient(wid, clientLog)
 	if err != nil {
 		return
 	}
 
-	var loggerEntry *log.Entry
 	if len(wid) > 0 {
-		loggerEntry = logger.WithField("wid", wid)
-	} else {
-		loggerEntry = log.NewEntry(logger)
+		loggerEntry = loggerEntry.WithField("wid", wid)
 	}
 
 	handlers := &WhatsmeowHandlers{
@@ -92,7 +90,6 @@ func (service *WhatsmeowServiceModel) CreateConnection(wid string, logger *log.L
 	conn = &WhatsmeowConnection{
 		Client:   client,
 		Handlers: handlers,
-		logger:   logger,
 		waLogger: clientLog,
 		log:      loggerEntry,
 	}

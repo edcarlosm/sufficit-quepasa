@@ -201,6 +201,7 @@ func SendText(w http.ResponseWriter, r *http.Request) {
 
 /*
 <summary>
+
 	Renders route POST "/{version}/bot/{token}/sendbinary/{chatid}/{filename}/{text}"
 
 	Any of then, at this order of priority
@@ -213,6 +214,7 @@ func SendText(w http.ResponseWriter, r *http.Request) {
 	Header parameters: X-QUEPASA-CHATID = {chatid}
 	Header parameters: X-QUEPASA-FILENAME = {filename}
 	Header parameters: X-QUEPASA-TEXT = {text} only images
+
 </summary>
 */
 func SendDocumentFromBinary(w http.ResponseWriter, r *http.Request) {
@@ -270,12 +272,14 @@ func SendDocumentFromBinary(w http.ResponseWriter, r *http.Request) {
 
 /*
 <summary>
+
 	Renders route POST "/{version}/bot/{token}/sendencoded"
 
 	Body parameter: {chatid}
 	Body parameter: {filename}
 	Body parameter: {text} only images
 	Body parameter: {content}
+
 </summary>
 */
 func SendDocumentFromEncoded(w http.ResponseWriter, r *http.Request) {
@@ -330,12 +334,14 @@ func SendDocumentFromEncoded(w http.ResponseWriter, r *http.Request) {
 
 /*
 <summary>
+
 	Renders route POST "/{version}/bot/{token}/sendurl"
 
 	Body parameter: {url}
 	Body parameter: {chatid}
 	Body parameter: {filename}
 	Body parameter: {text} only images
+
 </summary>
 */
 func SendDocumentFromUrl(w http.ResponseWriter, r *http.Request) {
@@ -403,6 +409,7 @@ func Send(server *models.QpWhatsappServer, response *models.QpSendResponse, requ
 		waMsg.Type = whatsapp.GetMessageType(attach.Mimetype)
 		server.Log.Debugf("send attachment of type: %v and mime: %s and length: %v and filename: %s", waMsg.Type, attach.Mimetype, attach.FileLength, attach.FileName)
 	} else {
+		// test for poll
 		waMsg.Type = whatsapp.TextMessageType
 	}
 

@@ -19,7 +19,7 @@ func NewWhatsmeowEmptyConnection(callback func(string)) (conn whatsapp.IWhatsapp
 	return
 }
 
-func NewWhatsmeowConnection(wid string, logger *log.Logger) (whatsapp.IWhatsappConnection, error) {
+func NewWhatsmeowConnection(wid string, logger *log.Entry) (whatsapp.IWhatsappConnection, error) {
 	return whatsmeow.WhatsmeowService.CreateConnection(wid, logger)
 }
 
@@ -75,7 +75,6 @@ func ToQPMessageV1(source whatsapp.WhatsappMessage, wid string) (message QPMessa
 
 	if source.Participant != nil {
 		message.Participant = ChatToQPEndPointV1(*source.Participant)
-		//message.Participant = ToQPEndPointV1(source.Participant)
 	}
 
 	if source.HasAttachment() {

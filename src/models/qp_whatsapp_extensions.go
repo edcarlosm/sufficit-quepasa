@@ -16,7 +16,7 @@ func NewEmptyConnection(callback func(string)) (conn whatsapp.IWhatsappConnectio
 	return NewWhatsmeowEmptyConnection(callback)
 }
 
-func NewConnection(wid string, serverLogger *log.Logger) (whatsapp.IWhatsappConnection, error) {
+func NewConnection(wid string, serverLogger *log.Entry) (whatsapp.IWhatsappConnection, error) {
 	return NewWhatsmeowConnection(wid, serverLogger)
 }
 

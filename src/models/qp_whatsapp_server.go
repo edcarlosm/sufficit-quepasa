@@ -24,7 +24,6 @@ type QpWhatsappServer struct {
 	WebHook        *QPWebhookHandler            `json:"-"`
 
 	stopRequested bool                   `json:"-"`
-	logger        *log.Logger            `json:"-"`
 	Log           *log.Entry             `json:"-"`
 	db            QpDataServersInterface `json:"-"`
 }
@@ -100,7 +99,9 @@ func (server *QpWhatsappServer) DownloadData(id string) ([]byte, error) {
 
 /*
 <summary>
+
 	Download attachment from msg id, optional use cached data or not
+
 </summary>
 */
 func (server *QpWhatsappServer) Download(id string, cache bool) (att *whatsapp.WhatsappAttachment, err error) {
@@ -149,7 +150,7 @@ func (server *QpWhatsappServer) UpdateConnection(connection whatsapp.IWhatsappCo
 	server.connection = connection
 	server.connection.UpdateLog(server.Log)
 	if server.Handler == nil {
-		server.logger.Info("creating handlers ?!")
+		server.Log.Info("creating handlers ?!")
 	}
 
 	server.connection.UpdateHandler(server.Handler)
@@ -175,7 +176,7 @@ func (server *QpWhatsappServer) EnsureUnderlying() (err error) {
 	if server.connection == nil {
 
 		server.Log.Infof("trying to create new whatsapp connection ...")
-		connection, err := NewConnection(server.WId, server.logger)
+		connection, err := NewConnection(server.WId, server.Log)
 		if err != nil {
 			waError, ok := err.(whatsapp.WhatsappError)
 			if ok {
@@ -227,7 +228,7 @@ func (server *QpWhatsappServer) Start() (err error) {
 	}
 
 	if !server.connection.IsConnected() {
-		server.Log.Infof("requesting connection ...")
+		server.Log.Infof("requesting connection again ...")
 		err = server.connection.Connect()
 		if err != nil {
 			return server.StartConnectionError(err)
@@ -246,6 +247,7 @@ func (server *QpWhatsappServer) EnsureReady() (err error) {
 	server.Log.Info("ensuring that whatsapp server is ready")
 	err = server.EnsureUnderlying()
 	if err != nil {
+		server.Log.Errorf("error on ensure underlaying connection: %s", err.Error())
 		return
 	}
 
@@ -253,20 +255,25 @@ func (server *QpWhatsappServer) EnsureReady() (err error) {
 	server.stopRequested = false
 
 	if !server.Handler.IsAttached() {
+		server.Log.Info("attaching handlers")
 
 		// Registrando webhook
 		server.Handler.Register(server.WebHook)
+	} else {
+		server.Log.Debug("handlers already attached")
 	}
 
 	// Atualizando manipuladores de eventos
 	server.connection.UpdateHandler(server.Handler)
 
 	if !server.connection.IsConnected() {
-		server.Log.Infof("requesting connection ...")
+		server.Log.Info("requesting connection ...")
 		err = server.connection.Connect()
 		if err != nil {
 			return server.StartConnectionError(err)
 		}
+	} else {
+		server.Log.Debug("already connected")
 	}
 
 	// If at this moment the connect is already logged, ensure a valid mark
@@ -317,6 +324,7 @@ func (server *QpWhatsappServer) Restart() (err error) {
 	// wait 1 second before continue
 	time.Sleep(1 * time.Second)
 
+	server.Log.Info("re-initializing whatsapp server ...")
 	return server.Start()
 }
 
@@ -415,7 +423,9 @@ func (server *QpWhatsappServer) IsDevelopmentGlobal() bool {
 
 /*
 <summary>
+
 	Set a new random Guid token for whatsapp server bot
+
 </summary>
 */
 func (server *QpWhatsappServer) CycleToken() (err error) {
@@ -425,7 +435,9 @@ func (server *QpWhatsappServer) CycleToken() (err error) {
 
 /*
 <summary>
+
 	Set a specific not empty token for whatsapp server bot
+
 </summary>
 */
 func (server *QpWhatsappServer) UpdateToken(value string) (err error) {
@@ -445,7 +457,9 @@ func (server *QpWhatsappServer) UpdateToken(value string) (err error) {
 
 /*
 <summary>
+
 	Get current token for whatsapp server bot
+
 </summary>
 */
 func (server *QpWhatsappServer) GetToken() string {
@@ -454,7 +468,9 @@ func (server *QpWhatsappServer) GetToken() string {
 
 /*
 <summary>
+
 	Save changes on database
+
 </summary>
 */
 func (server *QpWhatsappServer) Save() (err error) {
@@ -499,9 +515,9 @@ func (server *QpWhatsappServer) ToggleDevel() (handle bool, err error) {
 	server.Devel = !server.Devel
 
 	if server.Devel {
-		server.logger.SetLevel(log.DebugLevel)
+		server.Log.Logger.SetLevel(log.DebugLevel)
 	} else {
-		server.logger.SetLevel(log.InfoLevel)
+		server.Log.Logger.SetLevel(log.InfoLevel)
 	}
 
 	return server.Devel, server.Save()
