@@ -106,7 +106,7 @@ func MigrateToLatest() (err error) {
 		}
 
 		if runtime.GOOS == "windows" {
-			log.Debug("migrating database on windows operational system")
+			log.Info("migrating database on windows operational system")
 
 			// windows ===================
 			leadingWindowsUnit, _ := filepath.Rel("z:\\", workDir)

@@ -13,7 +13,7 @@ type indexData struct {
 
 // IndexHandler renders route GET "/"
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
-	_, err := models.GetUser(r)
+	_, err := models.GetFormUser(r)
 	if err != nil {
 		RedirectToLogin(w, r)
 		return

@@ -65,6 +65,22 @@ func GetToken(r *http.Request) string {
 
 /*
 <summary>
+	Get User From Http Request
+	Getting from PATH => QUERY => HEADER
+	If setted look after database, and throw errors
+	If not setted does not throw erros and returns nil pointer
+</summary>
+*/
+func GetUser(r *http.Request) (*models.QpUser, error) {
+	user := models.GetRequestParameter(r, "user")
+	if len(user) > 0 {
+		return models.WhatsappService.DB.Users.Find(user)
+	}
+	return nil, nil
+}
+
+/*
+<summary>
 	Get Message Id From Http Request
 	Getting from PATH => QUERY => HEADER
 </summary>

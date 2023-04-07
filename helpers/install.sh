@@ -1,6 +1,4 @@
 #!/bin/bash
-
-
 # tested on fresh ubuntu 20.04
 
 echo INSTALL GCC
@@ -11,13 +9,13 @@ wget https://go.dev/dl/go1.20.linux-amd64.tar.gz
 rm -rf /usr/local/go && tar -C /usr/local -xzf go1.20.linux-amd64.tar.gz
 GOPATH=/usr/local/go
 PATH=$PATH:$GOPATH/bin
-ln -s ${GOPATH}/bin/go /usr/sbin/go
+ln -sf ${GOPATH}/bin/go /usr/sbin/go
 sed -nir '/^export GOPATH=/!p;$a export GOPATH='${GOPATH} ~/.bashrc
 sed -nir '/^export PATH=/!p;$a export PATH='$PATH:$GOPATH/bin ~/.bashrc
 go version
 
 echo UPDATING QUEPASA LINK
-ln -s /opt/quepasa-source/src/ /opt/quepasa
+ln -s /opt/quepasa /opt/quepasa-source/src
 
 echo UPDATING LOGGING
 ln -sf /opt/quepasa-source/helpers/syslog.conf /etc/rsyslog.d/10-quepasa.conf
@@ -36,20 +34,15 @@ echo UPDATING SYSTEMD SERVICE
 ln -sf /opt/quepasa-source/helpers/quepasa.service /etc/systemd/system/quepasa.service
 systemctl daemon-reload
 
-adduser --disabled-password --gecos "" -home /opt/quepasa quepasa
+adduser --disabled-password --gecos "" --home /opt/quepasa quepasa
 chown -R quepasa /opt/quepasa-source
-
-
 
 cp /opt/quepasa-source/helpers/.env /opt/quepasa/.env
 
 systemctl enable quepasa.service
 systemctl start quepasa
 
-
-
 # Hint: Setup Quepasa user
 echo "Setup Quepasa user >>>  http://<your-ip>:31000/setup"
-
 
 exit 0

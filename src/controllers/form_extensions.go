@@ -138,7 +138,7 @@ func VerifyFormHandler(w http.ResponseWriter, r *http.Request) {
 
 // VerifyHandler renders route GET "/bot/verify/ws"
 func VerifyHandler(w http.ResponseWriter, r *http.Request) {
-	user, err := models.GetUser(r)
+	user, err := models.GetFormUser(r)
 	if err != nil {
 		log.Errorf("connection upgrade error (not logged): %s", err.Error())
 		RedirectToLogin(w, r)
@@ -186,7 +186,7 @@ func FormDeleteController(w http.ResponseWriter, r *http.Request) {
 
 // Facilitador que traz usuario e servidor para quem esta autenticado
 func GetUserAndServer(w http.ResponseWriter, r *http.Request) (user *models.QpUser, server *models.QpWhatsappServer, err error) {
-	user, err = models.GetUser(r)
+	user, err = models.GetFormUser(r)
 	if err != nil {
 		RedirectToLogin(w, r)
 		return

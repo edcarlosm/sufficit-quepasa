@@ -64,7 +64,7 @@ func HttpAuthenticatorHandler(next http.Handler) http.Handler {
 
 // Rrenders route GET "/{prefix}/account"
 func FormAccountController(w http.ResponseWriter, r *http.Request) {
-	user, err := models.GetUser(r)
+	user, err := models.GetFormUser(r)
 	if err != nil {
 		RedirectToLogin(w, r)
 	}

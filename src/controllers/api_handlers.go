@@ -23,6 +23,7 @@ func RegisterAPIControllers(r chi.Router) {
 		r.Get(endpoint+"/info", InformationControllerV3)
 		r.Get(endpoint+"/scan", ScannerController)
 		r.Get(endpoint+"/command", CommandController)
+		r.Post(endpoint+"/user", UserController)
 
 		// ----------------------------------------
 		// CONTROL METHODS ************************
@@ -103,7 +104,14 @@ func ScannerController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	pairing := &models.QpWhatsappPairing{Token: token}
+	user, err := GetUser(r)
+	if err != nil {
+		response.ParseError(err)
+		RespondInterface(w, response)
+		return
+	}
+
+	pairing := &models.QpWhatsappPairing{Token: token, User: user}
 	con, err := pairing.GetConnection()
 	if err != nil {
 		response.ParseError(err)
