@@ -30,7 +30,7 @@ func (_ *Environment) IsDevelopment() bool {
 }
 
 // WEBSOCKETSSL => default false
-func (_ *Environment) UseSslForWebSocket() bool {
+func (_ *Environment) UseSSLForWebSocket() bool {
 	migrations, _ := GetEnvStr(WEBSOCKETSSL)
 	boolMigrations, err := strconv.ParseBool(migrations)
 	if err == nil {
