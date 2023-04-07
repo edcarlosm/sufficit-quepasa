@@ -13,7 +13,7 @@ import (
 
 // GetUser gets the user_id from the JWT and finds the
 // corresponding user in the database
-func GetUser(r *http.Request) (*QpUser, error) {
+func GetFormUser(r *http.Request) (*QpUser, error) {
 	_, claims, err := jwtauth.FromContext(r.Context())
 	if err != nil {
 		return nil, err
