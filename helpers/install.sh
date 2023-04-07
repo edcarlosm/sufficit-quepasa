@@ -15,7 +15,7 @@ sed -nir '/^export PATH=/!p;$a export PATH='$PATH:$GOPATH/bin ~/.bashrc
 go version
 
 echo UPDATING QUEPASA LINK
-ln -s /opt/quepasa /opt/quepasa-source/src
+ln -sf /opt/quepasa-source/src /opt/quepasa 
 
 echo UPDATING LOGGING
 ln -sf /opt/quepasa-source/helpers/syslog.conf /etc/rsyslog.d/10-quepasa.conf
