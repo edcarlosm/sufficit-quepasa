@@ -16,7 +16,7 @@ func UserController(w http.ResponseWriter, r *http.Request) {
 	// setting default reponse type as json
 	w.Header().Set("Content-Type", "application/json")
 
-	response := &models.QpResponse{}
+	response := &models.QpInfoResponse{}
 
 	// reading body to avoid converting to json if empty
 	body, err := ioutil.ReadAll(r.Body)
@@ -50,6 +50,15 @@ func UserController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// searching user
+	user, err = models.WhatsappService.DB.Users.Find(user.Username)
+	if err != nil {
+		jsonError := fmt.Errorf("user not found: %v", err.Error())
+		response.ParseError(jsonError)
+		RespondInterface(w, response)
+		return
+	}
+
 	server, err := GetServer(r)
 	if err != nil {
 		response.ParseError(err)
@@ -65,7 +74,7 @@ func UserController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.ParseSuccess("server attached for user: " + user.Username)
+	response.PatchSuccess(server, "server attached for user: "+user.Username)
 	RespondSuccess(w, response)
 	return
 }
