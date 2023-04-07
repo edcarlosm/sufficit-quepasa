@@ -8,6 +8,7 @@ import (
 )
 
 const (
+	WEBSOCKETSSL        = "WEBSOCKETSSL"
 	ENVIRONMENT         = "APP_ENV"
 	MIGRATIONS          = "MIGRATIONS"
 	TITLE               = "APP_TITLE"
@@ -23,6 +24,17 @@ func (_ *Environment) IsDevelopment() bool {
 	environment, _ := GetEnvStr(ENVIRONMENT)
 	if strings.ToLower(environment) == "development" {
 		return true
+	} else {
+		return false
+	}
+}
+
+// WEBSOCKETSSL => default false
+func (_ *Environment) UseSslForWebSocket() bool {
+	migrations, _ := GetEnvStr(WEBSOCKETSSL)
+	boolMigrations, err := strconv.ParseBool(migrations)
+	if err == nil {
+		return boolMigrations
 	} else {
 		return false
 	}
