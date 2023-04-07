@@ -18,7 +18,7 @@ func RedirectToLogin(w http.ResponseWriter, r *http.Request) {
 // Google chrome bloqueou wss, portanto retornaremos sempre ws apatir de agora
 func WebSocketProtocol() string {
 	protocol := "ws"
-	isSecure := models.ENV.UseSslForWebSocket()
+	isSecure := models.ENV.UseSSLForWebSocket()
 	if isSecure {
 		protocol = "wss"
 	}
