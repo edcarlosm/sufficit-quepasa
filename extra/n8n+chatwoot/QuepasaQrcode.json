@@ -48,7 +48,7 @@
     },
     {
       "parameters": {
-        "url": "=https://{{ $node[\"Colocando Dados\"].json[\"URL DO QUEPASA\"] }}/scan",
+        "url": "={{ $node[\"Colocando Dados\"].json[\"URL DO QUEPASA\"] }}/scan",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -72,7 +72,7 @@
     {
       "parameters": {
         "requestMethod": "POST",
-        "url": "=https://{{ $node[\"Colocando Dados\"].json[\"URL CHATWOOT\"] }}/api/v1/accounts/{{  $node[\"Colocando Dados\"].json[\"ID DA CONTA\"] }}/conversations/{{ $node.Webhook.json.body.messages[0].conversation_id }}/messages",
+        "url": "={{ $node[\"Colocando Dados\"].json[\"URL CHATWOOT\"] }}/api/v1/accounts/{{  $node[\"Colocando Dados\"].json[\"ID DA CONTA\"] }}/conversations/{{ $node.Webhook.json.body.messages[0].conversation_id }}/messages",
         "allowUnauthorizedCerts": true,
         "jsonParameters": true,
         "options": {
@@ -159,7 +159,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "=https://{{ $node[\"Colocando Dados\"].json[\"URL CHATWOOT\"] }}/api/v1/accounts/{{ $node.Webhook.json.body.messages[0].account_id }}/conversations/{{ $node.Webhook.json.body.messages[0].conversation_id }}/messages ",
+        "url": "={{ $node[\"Colocando Dados\"].json[\"URL CHATWOOT\"] }}/api/v1/accounts/{{ $node.Webhook.json.body.messages[0].account_id }}/conversations/{{ $node.Webhook.json.body.messages[0].conversation_id }}/messages ",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -200,7 +200,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "=https://{{ $node[\"Colocando Dados\"].json[\"URL CHATWOOT\"] }}/api/v1/accounts/{{ $node.Webhook.json.body.messages[0].account_id }}/conversations/{{ $node.Webhook.json.body.messages[0].conversation_id }}/messages ",
+        "url": "={{ $node[\"Colocando Dados\"].json[\"URL CHATWOOT\"] }}/api/v1/accounts/{{ $node.Webhook.json.body.messages[0].account_id }}/conversations/{{ $node.Webhook.json.body.messages[0].conversation_id }}/messages ",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -240,7 +240,7 @@
     },
     {
       "parameters": {
-        "baseUrl": "https://quepasa.socialatendimento.com.br",
+        "baseUrl": "={{ $node[\"Colocando Dados\"].json[\"URL DO QUEPASA\"] }}",
         "token": "={{ $node[\"Colocando Dados\"].json[\"TOKEN DO QUEPASA\"] }}",
         "resource": "webhook"
       },
@@ -257,7 +257,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "=https://{{ $node[\"Colocando Dados\"].json[\"URL CHATWOOT\"] }}/api/v1/accounts/{{ $node.Webhook.json.body.messages[0].account_id }}/conversations/{{ $node.Webhook.json.body.messages[0].conversation_id }}/messages ",
+        "url": "={{ $node[\"Colocando Dados\"].json[\"URL CHATWOOT\"] }}/api/v1/accounts/{{ $node.Webhook.json.body.messages[0].account_id }}/conversations/{{ $node.Webhook.json.body.messages[0].conversation_id }}/messages ",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -312,7 +312,7 @@
     },
     {
       "parameters": {
-        "url": "=https://{{ $node[\"Colocando Dados\"].json[\"URL DO QUEPASA\"] }}/command",
+        "url": "={{ $node[\"Colocando Dados\"].json[\"URL DO QUEPASA\"] }}/command",
         "sendQuery": true,
         "queryParameters": {
           "parameters": [
@@ -348,7 +348,7 @@
     },
     {
       "parameters": {
-        "baseUrl": "=https://{{ $node[\"Colocando Dados\"].json[\"URL DO QUEPASA\"] }}",
+        "baseUrl": "={{ $node[\"Colocando Dados\"].json[\"URL DO QUEPASA\"] }}",
         "token": "={{ $node[\"Colocando Dados\"].json[\"TOKEN DO QUEPASA\"] }}",
         "resource": "information"
       },
@@ -364,7 +364,7 @@
     },
     {
       "parameters": {
-        "baseUrl": "=https://{{ $node[\"Colocando Dados\"].json[\"URL DO QUEPASA\"] }}",
+        "baseUrl": "={{ $node[\"Colocando Dados\"].json[\"URL DO QUEPASA\"] }}",
         "token": "={{ $node[\"Colocando Dados\"].json[\"TOKEN DO QUEPASA\"] }}",
         "resource": "webhook",
         "operation": "setup",
@@ -462,7 +462,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "=https://{{ $node[\"Colocando Dados\"].json[\"URL CHATWOOT\"] }}/api/v1/accounts/{{ $node.Webhook.json.body.messages[0].account_id }}/conversations/{{ $node.Webhook.json.body.messages[0].conversation_id }}/messages ",
+        "url": "={{ $node[\"Colocando Dados\"].json[\"URL CHATWOOT\"] }}/api/v1/accounts/{{ $node.Webhook.json.body.messages[0].account_id }}/conversations/{{ $node.Webhook.json.body.messages[0].conversation_id }}/messages ",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -503,7 +503,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "=https://{{ $node[\"Colocando Dados\"].json[\"URL CHATWOOT\"] }}/api/v1/accounts/{{ $node.Webhook.json.body.messages[0].account_id }}/conversations/{{ $node.Webhook.json.body.messages[0].conversation_id }}/messages ",
+        "url": "={{ $node[\"Colocando Dados\"].json[\"URL CHATWOOT\"] }}/api/v1/accounts/{{ $node.Webhook.json.body.messages[0].account_id }}/conversations/{{ $node.Webhook.json.body.messages[0].conversation_id }}/messages ",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -695,11 +695,15 @@
           "string": [
             {
               "name": "URL N8N",
-              "value": "n8n.socialatendimento.com.br"
+              "value": "https://n8n.socialatendimento.com.br"
             },
             {
               "name": "URL DO QUEPASA",
-              "value": "quepasa.socialatendimento.com.br"
+              "value": "http://185.252.232.245:31000"
+            },
+            {
+              "name": "URL CHATWOOT",
+              "value": "https://sender.socialatendimento.com.br"
             },
             {
               "name": "TOKEN DO QUEPASA",
@@ -708,10 +712,6 @@
             {
               "name": "NUMERO DO INBOX",
               "value": "={{ $json.body.contact_inbox.inbox_id }}"
-            },
-            {
-              "name": "URL CHATWOOT",
-              "value": "sender.socialatendimento.com.br"
             },
             {
               "name": "ID DA CONTA",
@@ -1008,7 +1008,7 @@
   },
   "active": true,
   "settings": {},
-  "versionId": "07b0f419-fca6-4366-9434-59a319c1881d",
+  "versionId": "47c85307-cffb-499a-9e8a-af2685c4f950",
   "id": "14",
   "meta": {
     "instanceId": "cf33494a10c7fddb894ec4f480b7a0ef8832652eb98e75664a7d2731824deaf9"
