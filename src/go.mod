@@ -71,4 +71,4 @@ replace github.com/sufficit/sufficit-quepasa/whatsapp => ./whatsapp
 
 replace github.com/sufficit/sufficit-quepasa/whatsmeow => ./whatsmeow
 
-go 1.18
+go 1.19
