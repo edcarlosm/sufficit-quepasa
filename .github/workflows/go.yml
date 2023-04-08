@@ -32,9 +32,11 @@ jobs:
         export PATH="$HOME/go/bin:$PATH"
         
     - name: Build
+      working-directory: ./src
       run: go build -v ./...
 
     - name: Test
+      working-directory: ./src
       run: go test -v ./...
 
     - name: Format
