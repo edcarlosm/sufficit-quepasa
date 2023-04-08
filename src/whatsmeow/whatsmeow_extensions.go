@@ -208,7 +208,7 @@ func GenerateButtonsMessage(messageText string) *waProto.ButtonsMessage {
 
 func IsValidForButtons(text string) bool {
 	lowerText := strings.ToLower(text)
-	if strings.Contains(lowerText, "$buttons:") {
+	if strings.Contains(lowerText, "buttons:") {
 		matches := BUTTONSMSGREGEX.FindStringSubmatch(text)
 		if len(matches) > 0 {
 			if len(strings.TrimSpace(matches[0])) > 0 {
