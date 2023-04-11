@@ -44,7 +44,7 @@ func UserController(w http.ResponseWriter, r *http.Request) {
 
 	// creating an empty webhook, to filter or clear it all
 	if user == nil || len(user.Username) == 0 {
-		jsonErr := fmt.Errorf("invalid user body: %s", err.Error())
+		jsonErr := fmt.Errorf("invalid user body: %s", string(body))
 		response.ParseError(jsonErr)
 		RespondInterface(w, response)
 		return
