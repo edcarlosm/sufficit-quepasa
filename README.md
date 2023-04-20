@@ -47,6 +47,11 @@
 git clone https://github.com/sufficit/sufficit-quepasa /opt/quepasa-source
 bash /opt/quepasa-source/helpers/install.sh
 ```
+ **Clone and Install ARM64**
+```bash
+git clone https://github.com/sufficit/sufficit-quepasa /opt/quepasa-source
+bash /opt/quepasa-source/helpers/install-arm64.sh
+```
     
   ### **Final step**
 
